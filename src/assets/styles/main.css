@@ -89,20 +89,7 @@ html, body {
   position: relative;
 }
 
-/* 全局背景层：本地全屏立绘 + 暗角遮罩，加载失败时由 body 渐变兜底 */
-#app::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: -2;
-  background-image: url('/img/bg.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  opacity: 0.95;
-  pointer-events: none;
-  animation: bg-breath 24s ease-in-out infinite;
-}
+/* 全局背景层：由 App.vue 的 .immersive-bg 通过 :style 注入 BASE_URL 路径（兼容子路径部署），此处不再硬编码 url() */
 #app::after {
   content: '';
   position: fixed;

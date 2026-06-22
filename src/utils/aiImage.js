@@ -31,6 +31,13 @@ const LOCAL_EVENT_SET = new Set([
 
 const HAS_LOCAL_BG = true
 
+/**
+ * 本地图根路径前缀
+ * 兼容 GitHub Pages 子路径部署：本地 dev → '/'，CI 构建 → '/sanguo/'
+ * （读自 vite.config.js 的 base，无运行时副作用）
+ */
+const IMG_BASE = (import.meta.env.BASE_URL || '/').replace(/\/?$/, '/') + 'img/'
+
 /** 给上层可选：判断某资源是否走本地（用于显示"AI生成"角标等） */
 export function hasLocalAsset(kind, id) {
   switch (kind) {
@@ -86,7 +93,7 @@ const BUILDING_SEEDS = {
 export function heroImage(heroId) {
   if (!heroId) return ''
   if (LOCAL_HERO_SET.has(heroId)) {
-    return `/img/heroes/${heroId}.png`
+    return `${IMG_BASE}heroes/${heroId}.png`
   }
   // CDN 兜底
   const sum = String(heroId).split('').reduce((a, c) => a + c.charCodeAt(0), 0)
@@ -101,7 +108,7 @@ export function heroImage(heroId) {
  */
 export function eventImage(type) {
   if (LOCAL_EVENT_SET.has(type)) {
-    return `/img/events/${type}.png`
+    return `${IMG_BASE}events/${type}.png`
   }
   const seed = EVENT_SEEDS[type] || EVENT_SEEDS.gossip
   return `https://picsum.photos/seed/${seed}/800/240`
@@ -113,7 +120,7 @@ export function eventImage(type) {
  */
 export function bgImage() {
   if (HAS_LOCAL_BG) {
-    return '/img/bg.png'
+    return `${IMG_BASE}bg.png`
   }
   return 'https://picsum.photos/seed/sanguo-mountains/1600/900?grayscale&blur=1'
 }
@@ -124,7 +131,7 @@ export function bgImage() {
  */
 export function buildingImage(key) {
   if (LOCAL_BUILDING_SET.has(key)) {
-    return `/img/buildings/${key}.png`
+    return `${IMG_BASE}buildings/${key}.png`
   }
   const seed = BUILDING_SEEDS[key] || `sanguo-${key}`
   return `https://picsum.photos/seed/${seed}/300/300?grayscale`

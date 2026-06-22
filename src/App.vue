@@ -1,8 +1,8 @@
 <template>
   <div class="stage">
     <div class="app-shell">
-      <!-- 全屏沉浸场景背景层（与 main.css #app::before 协同） -->
-      <div class="immersive-bg"></div>
+      <!-- 全屏沉浸场景背景层（图片走 BASE_URL，兼容子路径部署） -->
+      <div class="immersive-bg" :style="bgStyle"></div>
       <div class="immersive-vignette"></div>
 
       <!-- 鎏金边框装饰 -->
@@ -40,7 +40,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import ScrollHUD from './components/ScrollHUD.vue'
 import BannerNav from './components/BannerNav.vue'
@@ -49,6 +49,11 @@ import EndingModal from './components/EndingModal.vue'
 
 const route = useRoute()
 const transitionName = ref('scene-fade')
+
+// 背景图：用 BASE_URL 拼接，兼容 GitHub Pages 子路径部署
+const bgStyle = computed(() => ({
+  backgroundImage: `url(${import.meta.env.BASE_URL}img/bg.png)`
+}))
 
 const ORDER = ['/city', '/heroes', '/battle', '/map', '/profile', '/chronicle']
 watch(
@@ -108,7 +113,6 @@ function particleStyle(i) {
   position: absolute;
   inset: 0;
   z-index: 0;
-  background-image: url('/img/bg.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
