@@ -1,0 +1,353 @@
+/* ============================================================
+   卧龙吟·诸侯纪 —— 主题样式
+   主题：汉宫朱金（暗赭羊皮 + 鎏金 + 朱砂 + 墨黑）
+   ============================================================ */
+
+:root {
+  /* 主色板 */
+  --c-bg-deep: #1a0e07;          /* 最底层暗夜 */
+  --c-bg: #261610;               /* 应用底色 */
+  --c-paper: #ecdcb4;            /* 羊皮纸 */
+  --c-paper-dark: #c9a96a;       /* 旧羊皮 */
+  --c-card: #f4e6c1;             /* 卡片底 */
+  --c-card-dark: #2e1c10;        /* 暗卡片（用于资源栏/Tab） */
+  --c-ink: #2a1810;              /* 墨黑 */
+  --c-ink-soft: #4a2f1d;
+  --c-muted: #7a5a3a;
+  --c-line: #b08a4a;             /* 古铜线 */
+  --c-line-dark: #5a3a1c;
+
+  --c-gold: #e8c468;             /* 鎏金 */
+  --c-gold-light: #f5d98c;
+  --c-gold-dark: #a87a28;
+  --c-gold-shine: #fff1c2;
+
+  --c-red: #a8231a;              /* 朱砂红（印章） */
+  --c-red-light: #c8423a;
+  --c-red-dark: #6e1410;
+
+  --c-green: #4d7a4c;
+  --c-blue: #355a78;
+
+  /* 阴影 */
+  --shadow-card: 0 2px 0 #6e4a20, 0 4px 12px rgba(0,0,0,.35);
+  --shadow-inset: inset 0 0 0 1px rgba(255, 220, 150, .25);
+  --shadow-gold-glow: 0 0 8px rgba(232, 196, 104, .6);
+
+  --r-card: 4px;
+  --r-pill: 999px;
+
+  /* 字体 */
+  --font-serif: 'KaiTi', 'STKaiti', 'Noto Serif SC', 'Songti SC', 'STSong', 'SimSun', serif;
+  --font-title: 'STKaiti', 'KaiTi', 'Noto Serif SC', 'STSong', 'SimSun', serif;
+  --font-num: 'Georgia', 'Times New Roman', 'STSong', serif;
+
+  /* 深木鎏金 panel（鎏金沉浸口径，统一供 view 复用） */
+  --panel-deep-1: rgba(40, 22, 10, .85);
+  --panel-deep-2: rgba(20, 10, 4, .92);
+  --panel-deep-strong-1: rgba(40, 22, 10, .96);
+  --panel-deep-strong-2: rgba(20, 10, 4, .98);
+  --panel-bg-deep: linear-gradient(180deg, var(--panel-deep-1), var(--panel-deep-2));
+  --panel-bg-deep-strong: linear-gradient(180deg, var(--panel-deep-strong-1), var(--panel-deep-strong-2));
+  --panel-border-gold: 1px solid rgba(232, 196, 104, .45);
+}
+
+.panel--deep {
+  background: var(--panel-bg-deep);
+  border: var(--panel-border-gold);
+}
+.panel--deep-strong {
+  background: var(--panel-bg-deep-strong);
+  border: var(--panel-border-gold);
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  /* 兜底：仿《千里江山图》绢黄 + 远山青绿渐变（图片未下载时也好看） */
+  background:
+    radial-gradient(ellipse at 50% 110%, rgba(60, 90, 70, .55) 0%, transparent 55%),
+    radial-gradient(ellipse at 50% -10%, rgba(180, 140, 70, .35) 0%, transparent 50%),
+    linear-gradient(180deg, #f0dca6 0%, #e3c378 38%, #b9a05a 62%, #6e7a5a 85%, #3c4a3a 100%);
+  color: var(--c-ink);
+  font-family: var(--font-serif);
+  font-size: 14px;
+  line-height: 1.55;
+  user-select: none;
+  overscroll-behavior: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+#app {
+  height: 100%;
+  position: relative;
+}
+
+/* 全局背景层：本地全屏立绘 + 暗角遮罩，加载失败时由 body 渐变兜底 */
+#app::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background-image: url('/img/bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.95;
+  pointer-events: none;
+  animation: bg-breath 24s ease-in-out infinite;
+}
+#app::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at center, transparent 35%, rgba(20, 10, 4, .55) 100%),
+    linear-gradient(180deg, rgba(40, 20, 8, .45) 0%, transparent 30%, transparent 70%, rgba(20, 10, 4, .6) 100%);
+}
+@keyframes bg-breath {
+  0%, 100% { transform: scale(1) translateY(0); filter: brightness(1) saturate(1); }
+  50%      { transform: scale(1.04) translateY(-6px); filter: brightness(.95) saturate(1.05); }
+}
+
+/* ============================================================
+   羊皮纸纹理 —— SVG data URI，所有页面通用
+   ============================================================ */
+.paper-bg {
+  background-color: var(--c-paper);
+  background-image:
+    /* 暗角晕影 */
+    radial-gradient(ellipse at center, transparent 50%, rgba(60, 30, 10, .35) 100%),
+    /* 颗粒纹理 */
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.45  0 0 0 0 0.30  0 0 0 0 0.15  0 0 0 0.22 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"),
+    /* 米黄底 */
+    linear-gradient(180deg, #f0dfb0 0%, #e3ce95 100%);
+  background-size: cover, 160px 160px, cover;
+}
+
+/* 山水水墨远景背景 */
+.ink-bg {
+  background-color: var(--c-bg-deep);
+  background-image:
+    radial-gradient(ellipse at center top, rgba(232, 196, 104, .08) 0%, transparent 60%),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 400' preserveAspectRatio='xMidYMid slice'><defs><linearGradient id='m' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='%23000' stop-opacity='0'/><stop offset='1' stop-color='%23000' stop-opacity='.55'/></linearGradient></defs><path d='M0 320 Q60 280 120 305 T240 295 T360 310 T480 290 T600 305 L600 400 L0 400 Z' fill='%23120804' opacity='.7'/><path d='M0 350 Q80 320 160 340 T320 335 T480 345 T600 335 L600 400 L0 400 Z' fill='%23000' opacity='.55'/><rect width='600' height='400' fill='url(%23m)'/></svg>");
+  background-size: cover, cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* ============================================================
+   按钮：鎏金 / 朱印 / 古朴
+   ============================================================ */
+button {
+  font-family: var(--font-serif);
+  position: relative;
+  background: linear-gradient(180deg, #f5d98c 0%, #d4a849 60%, #b8862e 100%);
+  color: #3a2410;
+  border: 1px solid var(--c-gold-dark);
+  border-radius: var(--r-card);
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 220, .6),
+    inset 0 -2px 0 rgba(80, 40, 10, .3),
+    0 2px 0 #6e4a20,
+    0 4px 8px rgba(0, 0, 0, .35);
+  transition: transform .08s ease, box-shadow .15s ease, filter .15s;
+}
+button:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow:
+    inset 0 1px 4px rgba(80, 40, 10, .5),
+    0 0 0 #6e4a20,
+    0 1px 3px rgba(0, 0, 0, .3);
+}
+button:disabled {
+  filter: grayscale(.5) brightness(.85);
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+button.btn {
+  background: linear-gradient(180deg, #f4e6c1 0%, #d8be83 100%);
+  color: var(--c-ink);
+  border: 1px solid var(--c-line);
+  padding: 7px 14px;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+}
+button.btn.primary {
+  background: linear-gradient(180deg, #f5d98c, #c89938);
+  border-color: var(--c-gold-dark);
+}
+button.btn.danger {
+  background: linear-gradient(180deg, #d75a52, #8e1a14);
+  border-color: var(--c-red-dark);
+  color: #fff1c2;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, .35);
+}
+
+/* ============================================================
+   卡片：深木纹 + 鎏金阳刻角饰（沉浸场景上的木牌挂件）
+   ============================================================ */
+.card {
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(40, 22, 10, .82), rgba(20, 10, 4, .88)),
+    var(--c-card);
+  border: 1px solid rgba(232, 196, 104, .55);
+  border-radius: var(--r-card);
+  padding: 12px;
+  margin-bottom: 12px;
+  color: var(--c-gold-light);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 240, 200, .12),
+    inset 0 0 18px rgba(0, 0, 0, .45),
+    0 2px 0 #1a0e06,
+    0 4px 10px rgba(0, 0, 0, .55);
+}
+/* 卡片四角阳刻装饰（金色小角） */
+.card::before,
+.card::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 1.5px solid var(--c-gold);
+  pointer-events: none;
+  filter: drop-shadow(0 0 2px rgba(232, 196, 104, .6));
+}
+.card::before {
+  top: 3px; left: 3px;
+  border-right: none;
+  border-bottom: none;
+}
+.card::after {
+  bottom: 3px; right: 3px;
+  border-left: none;
+  border-top: none;
+}
+
+/* ============================================================
+   视图容器与卷首标题（深底沉浸版）
+   ============================================================ */
+.view {
+  min-height: 100%;
+  padding: 4px 2px 8px;
+}
+.view-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 6px 0 14px;
+  font-family: var(--font-title);
+  font-size: 20px;
+  letter-spacing: 4px;
+  color: var(--c-gold-light);
+  text-shadow:
+    0 1px 0 rgba(0, 0, 0, .85),
+    0 0 8px rgba(232, 196, 104, .35),
+    0 0 14px rgba(0, 0, 0, .65);
+}
+.view-title::before,
+.view-title::after {
+  content: '';
+  flex: 1;
+  max-width: 60px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--c-gold), transparent);
+  box-shadow: 0 0 4px rgba(232, 196, 104, .55);
+}
+.view-tip {
+  margin: 0 0 14px;
+  color: var(--c-gold-light);
+  opacity: .8;
+  font-size: 12px;
+  text-align: center;
+  letter-spacing: 1px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .8);
+}
+
+/* 朱印小红章（可作标签） */
+.seal {
+  display: inline-block;
+  background: var(--c-red);
+  color: var(--c-gold-light);
+  font-family: var(--font-title);
+  font-size: 11px;
+  padding: 2px 6px;
+  border: 1px solid var(--c-red-dark);
+  box-shadow: inset 0 0 0 1px rgba(255, 240, 200, .25);
+  letter-spacing: 2px;
+}
+
+/* 金色等级牌 */
+.level-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  font-family: var(--font-num);
+  font-weight: 700;
+  font-size: 11px;
+  background: linear-gradient(180deg, #f5d98c, #b8862e);
+  color: #3a2410;
+  border: 1px solid var(--c-gold-dark);
+  border-radius: 3px;
+  letter-spacing: 1px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 220, .5);
+}
+
+/* 数字（衬线大字） */
+.num {
+  font-family: var(--font-num);
+  font-weight: 700;
+}
+
+/* 输入框 */
+input, textarea {
+  font-family: var(--font-serif);
+  color: var(--c-ink);
+  background: rgba(255, 245, 210, .85);
+  border: 1px solid var(--c-line);
+  border-radius: 3px;
+  padding: 6px 10px;
+  font-size: 13px;
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+input:focus, textarea:focus {
+  border-color: var(--c-gold-dark);
+  box-shadow: 0 0 0 2px rgba(232, 196, 104, .35);
+}
+
+a { color: var(--c-red); text-decoration: none; }
+
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-thumb {
+  background: rgba(110, 74, 32, .5);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-track { background: transparent; }
+
+/* 通用动效 */
+@keyframes pulse-gold {
+  0%, 100% { box-shadow: 0 0 6px rgba(232, 196, 104, .5); }
+  50%      { box-shadow: 0 0 14px rgba(232, 196, 104, .9); }
+}
+.pulse-gold { animation: pulse-gold 2.2s ease-in-out infinite; }
+
+@keyframes float-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
