@@ -82,8 +82,16 @@ html, body {
   user-select: none;
   overscroll-behavior: none;
   -webkit-font-smoothing: antialiased;
+  /* 关键：消除移动端 click 300ms tap 延迟（iOS Safari 双击缩放检测） */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
   /* 全局：禁用 body 自身滚动条，让 .app-main 接管 */
   overflow: hidden;
+}
+
+/* 按钮/可交互元素必须显式声明 touch-action，否则 iOS 仍会延迟 */
+button, a, [role="button"], .b-cell, .action-card, .picker-card, .garr-slot, .m-close {
+  touch-action: manipulation;
 }
 
 /* ============================================================
@@ -102,10 +110,12 @@ html, body {
 *::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(180deg, var(--c-gold), var(--c-gold-light));
 }
-/* Firefox */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(232, 196, 104, .55) rgba(20, 10, 4, .35);
+/* Firefox（仅桌面端启用 thin 滚动条，移动端 Firefox 渲染开销过大） */
+@media (hover: hover) and (pointer: fine) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(232, 196, 104, .55) rgba(20, 10, 4, .35);
+  }
 }
 
 #app {

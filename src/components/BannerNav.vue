@@ -1,230 +1,126 @@
 <template>
-  <nav class="banner-nav" :class="{ expanded }">
-    <!-- 旗杆 -->
-    <div class="flag-pole"></div>
-
-    <!-- 折叠提示按钮（永远显示一面主旗） -->
-    <button class="pole-toggle" @click="toggle" :title="expanded ? '收旗' : '点旗布阵'">
-      <AppIcon kind="misc" id="flag" :size="18" />
-    </button>
-
-    <!-- 5 杆军旗 -->
-    <div class="flag-stack">
-      <router-link
-        v-for="(t, i) in tabs"
-        :key="t.path"
-        :to="t.path"
-        class="flag-item"
-        active-class="active"
-        :style="{ '--i': i, '--delay': (i * 70) + 'ms' }"
-        @click="onPick"
-      >
-        <div class="flag-cloth">
-          <AppIcon class="flag-icon" :kind="t.iconKind" :id="t.iconId" :size="20" />
-          <span class="flag-label">{{ t.title }}</span>
-        </div>
-        <div class="flag-tail"></div>
-      </router-link>
-    </div>
+  <nav class="dragon-bar">
+    <router-link
+      v-for="t in tabs"
+      :key="t.path"
+      :to="t.path"
+      class="d-tab"
+      active-class="active"
+    >
+      <span class="d-glyph">{{ t.glyph }}</span>
+      <span class="d-name">{{ t.title }}</span>
+      <span class="d-underline"></span>
+    </router-link>
   </nav>
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { useRouter } from 'vue-router'
-import AppIcon from './AppIcon.vue'
 
 const router = useRouter()
-const expanded = ref(true)
+
+// 篆刻字形（每个 tab 用 1 个字代表，强调铭文质感）
+const GLYPH = {
+  '/city': '城',
+  '/heroes': '将',
+  '/battle': '战',
+  '/map': '图',
+  '/profile': '主',
+  '/chronicle': '史'
+}
+
 const tabs = computed(() =>
   router.options.routes
-    .filter((r) => r.meta && r.meta.title && r.meta.iconKind && r.meta.iconId)
-    .filter((r) => r.path !== '/chronicle')
-    .map((r) => ({ path: r.path, title: r.meta.title, iconKind: r.meta.iconKind, iconId: r.meta.iconId }))
+    .filter((r) => r.meta && r.meta.title)
+    .map((r) => ({
+      path: r.path,
+      title: r.meta.title,
+      glyph: GLYPH[r.path] || r.meta.title[0]
+    }))
 )
-
-function toggle() { expanded.value = !expanded.value }
-function onPick() { /* 保留展开 */ }
 </script>
 
 <style scoped>
-.banner-nav {
+.dragon-bar {
   position: absolute;
-  right: 4px;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 60;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 56px;
+  z-index: 80;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-around;
+  padding: 0 4px;
+  background:
+    linear-gradient(180deg, transparent 0%, rgba(20, 10, 4, .55) 35%, rgba(20, 10, 4, .92) 100%);
+  border-top: 1px solid rgba(232, 196, 104, .35);
+  /* 暗刻龙骨纹理：极淡的菱形纹 */
+  background-image:
+    linear-gradient(180deg, transparent 0%, rgba(20, 10, 4, .55) 35%, rgba(20, 10, 4, .92) 100%),
+    repeating-linear-gradient(45deg, transparent 0 6px, rgba(232, 196, 104, .04) 6px 7px);
+}
+.d-tab {
+  position: relative;
+  flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-  pointer-events: none;
-}
-
-/* 旗杆装饰 */
-.flag-pole {
-  position: absolute;
-  right: 10px;
-  top: -10px;
-  bottom: -10px;
-  width: 4px;
-  background: linear-gradient(180deg, #d4a849 0%, #6e4a20 30%, #3a2410 100%);
-  border-left: 1px solid #fff1c2;
-  border-right: 1px solid #1a0e07;
-  border-radius: 2px;
-  box-shadow: 2px 0 6px rgba(0,0,0,.5);
-  pointer-events: none;
-}
-.flag-pole::before, .flag-pole::after {
-  content: '';
-  position: absolute;
-  left: -3px;
-  width: 10px;
-  height: 10px;
-  background: radial-gradient(ellipse at 30% 30%, #fff1c2, #d4a849 40%, #6e4a20);
-  border: 1px solid #1a0e07;
-  border-radius: 50%;
-  box-shadow: 0 0 4px rgba(0,0,0,.6);
-}
-.flag-pole::before { top: -8px; }
-.flag-pole::after { bottom: -8px; }
-
-/* 折叠按钮 */
-.pole-toggle {
-  pointer-events: auto;
-  position: absolute;
-  right: 0;
-  top: -52px;
-  width: 28px;
-  height: 28px;
-  background: linear-gradient(180deg, #a8231a 0%, #6e1410 100%);
-  color: #fff1c2;
-  border: 1px solid #4a0808;
-  border-radius: 50%;
-  display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0;
-  font-size: 14px;
-  box-shadow:
-    inset 0 0 0 1px rgba(255,240,200,.35),
-    0 0 8px rgba(168, 35, 26, .7),
-    0 2px 4px rgba(0,0,0,.5);
-  cursor: pointer;
-  transition: transform .25s ease;
-}
-.pole-toggle:hover { transform: scale(1.1) rotate(10deg); }
-.banner-nav.expanded .pole-toggle { transform: rotate(180deg); }
-
-/* 旗组容器 */
-.flag-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  align-items: flex-end;
-  padding: 4px 8px 4px 0;
-  pointer-events: auto;
-}
-
-/* 单面旗 */
-.flag-item {
-  position: relative;
-  display: flex;
-  align-items: center;
+  gap: 1px;
+  color: #b09870;
   text-decoration: none;
-  color: #fff1c2;
-  height: 36px;
-  transform: translateX(120%);
-  opacity: 0;
-  animation: flag-in .45s cubic-bezier(.2,.8,.25,1.2) forwards;
-  animation-delay: var(--delay, 0ms);
-  transition: transform .25s ease, filter .25s;
+  font-family: var(--font-title);
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: color .18s;
 }
-.banner-nav:not(.expanded) .flag-item {
-  animation: flag-out .35s cubic-bezier(.5,0,.75,0) forwards;
+.d-tab:hover { color: #f0d590; }
+.d-glyph {
+  font-size: 18px;
+  line-height: 1;
+  color: inherit;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .85);
 }
-@keyframes flag-in {
-  0% { transform: translateX(120%) rotate(8deg); opacity: 0; }
-  60% { transform: translateX(-4%) rotate(-2deg); opacity: 1; }
-  100% { transform: translateX(0) rotate(0); opacity: 1; }
+.d-name {
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: inherit;
+  opacity: .85;
 }
-@keyframes flag-out {
-  to { transform: translateX(120%) rotate(8deg); opacity: 0; }
+.d-underline {
+  position: absolute;
+  bottom: 4px;
+  width: 14px;
+  height: 2px;
+  background: transparent;
+  border-radius: 1px;
+  transition: background .18s, width .25s cubic-bezier(.2,.8,.25,1.05);
 }
 
-.flag-cloth {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 4px 10px 4px 8px;
-  background:
-    linear-gradient(180deg, #c0392b 0%, #8e1a14 60%, #4a0808 100%);
-  border: 1px solid #4a0808;
-  border-left-width: 0;
-  font-family: var(--font-title);
-  font-size: 12px;
-  letter-spacing: 2px;
-  text-shadow: 0 1px 0 rgba(0,0,0,.55);
-  position: relative;
-  /* 旗帜飘扬感：右侧锯齿 */
-  clip-path: polygon(0 0, 100% 0, 92% 50%, 100% 100%, 0 100%);
-  box-shadow:
-    inset 0 1px 0 rgba(255,240,200,.35),
-    inset 0 -2px 4px rgba(0,0,0,.4),
-    0 2px 6px rgba(0,0,0,.5);
-  filter: saturate(.85) brightness(.85);
-  transition: filter .25s, transform .25s;
+/* 选中态：印章感 */
+.d-tab.active {
+  color: #fff1c2;
 }
-.flag-cloth::before {
+.d-tab.active .d-glyph {
+  color: #fff1c2;
+  text-shadow: 0 0 8px rgba(232, 196, 104, .75), 0 1px 2px rgba(0, 0, 0, .9);
+}
+.d-tab.active .d-underline {
+  width: 22px;
+  background: linear-gradient(90deg, transparent, #e8c468, transparent);
+}
+.d-tab.active::before {
   content: '';
   position: absolute;
-  inset: 2px;
-  border: 1px solid rgba(255, 240, 200, .25);
+  inset: 4px 8px;
+  background: radial-gradient(ellipse at center, rgba(232, 196, 104, .18) 0%, transparent 65%);
+  border-radius: 50%;
   pointer-events: none;
-  clip-path: polygon(0 0, 100% 0, 92% 50%, 100% 100%, 0 100%);
-}
-.flag-icon {
-  color: #fff1c2;
-  filter: drop-shadow(0 1px 0 rgba(0,0,0,.6));
-}
-.flag-label {
-  color: #fff1c2;
-  font-weight: 700;
 }
 
-/* 旗尾穗 */
-.flag-tail {
-  width: 4px;
-  height: 36px;
-  background: linear-gradient(180deg, #d4a849 0%, #6e4a20 100%);
-  border-left: 1px solid #fff1c2;
-  margin-left: 0;
-}
-
-/* 激活态：完整亮起 + 飘扬动画 */
-.flag-item.active .flag-cloth {
-  filter: saturate(1.2) brightness(1.1);
-  transform: translateX(-6px);
-  box-shadow:
-    inset 0 1px 0 rgba(255,240,200,.55),
-    inset 0 -2px 4px rgba(0,0,0,.5),
-    0 0 10px rgba(232, 196, 104, .65),
-    0 2px 8px rgba(0,0,0,.6);
-  animation: flag-wave 2.4s ease-in-out infinite;
-}
-.flag-item.active .flag-icon {
-  filter: drop-shadow(0 0 4px rgba(255, 241, 194, .8));
-}
-@keyframes flag-wave {
-  0%, 100% { transform: translateX(-6px) skewY(0deg); }
-  25%      { transform: translateX(-5px) skewY(-1.5deg); }
-  75%      { transform: translateX(-7px) skewY(1.5deg); }
-}
-
-.flag-item:hover .flag-cloth { filter: saturate(1.1) brightness(1.05); transform: translateX(-3px); }
-
-/* 折叠态：仅展示主按钮 */
-.banner-nav:not(.expanded) .flag-pole {
-  opacity: .35;
-  transition: opacity .35s;
+@media (max-width: 768px), (pointer: coarse) {
+  .d-tab:hover { color: #b09870; }
 }
 </style>

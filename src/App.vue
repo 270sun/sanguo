@@ -1,8 +1,10 @@
 <template>
   <div class="stage">
     <div class="app-shell">
-      <!-- 全屏沉浸场景背景层（图片走 BASE_URL，兼容子路径部署） -->
-      <div class="immersive-bg" :style="bgStyle"></div>
+      <!-- 全屏沉浸场景背景层：按路由 cross-fade -->
+      <transition name="bg-fade">
+        <div class="immersive-bg" :key="route.path" :style="bgStyle"></div>
+      </transition>
       <div class="immersive-vignette"></div>
 
       <!-- 鎏金边框装饰 -->
@@ -31,9 +33,9 @@
       <EventModal />
       <EndingModal />
 
-      <!-- 飘落落叶/灰烬粒子（沉浸气氛） -->
+      <!-- 飘落落叶/灰烬粒子（沉浸气氛；移动端 3 颗，PC 8 颗） -->
       <div class="particle-layer" aria-hidden="true">
-        <span v-for="i in 8" :key="i" class="particle" :style="particleStyle(i)"></span>
+        <span v-for="i in particleCount" :key="i" class="particle" :style="particleStyle(i)"></span>
       </div>
     </div>
   </div>
@@ -42,19 +44,31 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { useGameStore } from './stores/game'
 import ScrollHUD from './components/ScrollHUD.vue'
 import BannerNav from './components/BannerNav.vue'
 import EventModal from './components/EventModal.vue'
 import EndingModal from './components/EndingModal.vue'
 
 const route = useRoute()
+const game = useGameStore()
 const transitionName = ref('scene-fade')
 const mainEl = ref(null)
 
-// 背景图：用 BASE_URL 拼接，兼容 GitHub Pages 子路径部署
-const bgStyle = computed(() => ({
-  backgroundImage: `url(${import.meta.env.BASE_URL}img/bg.png)`
-}))
+// 背景图：按当前路由切换，CG 化呈现
+const BG_BASE = `${import.meta.env.BASE_URL || '/'}img/bg/`.replace(/\/+/g, '/')
+const ROUTE_BG = {
+  '/city': 'city.png',
+  '/heroes': 'heroes.png',
+  '/battle': 'battle.png',
+  '/map': 'map.png',
+  '/profile': 'profile.png',
+  '/chronicle': 'chronicle.png'
+}
+const bgStyle = computed(() => {
+  const file = ROUTE_BG[route.path] || 'city.png'
+  return { backgroundImage: `url(${BG_BASE}${file})` }
+})
 
 /**
  * 鼠标滚轮加速：默认浏览器 wheel step 约 33px，体感"滑很多次才能滚动"。
@@ -63,9 +77,12 @@ const bgStyle = computed(() => ({
  */
 let _wheelTarget = 0
 let _wheelRaf = 0
+const _isCoarse = (typeof window !== 'undefined') && window.matchMedia('(pointer: coarse)').matches
 function onWheel(e) {
   const el = mainEl.value
   if (!el) return
+  // 移动/触控屏直接走原生 touch 滚动，不接管
+  if (_isCoarse) return
   // 触摸板 / Mac 惯性滚动 deltaMode === 0 且 |deltaY| 小，保留原生体验
   if (e.deltaMode === 0 && Math.abs(e.deltaY) < 30) return
   _wheelTarget = el.scrollTop + e.deltaY * 2.6
@@ -94,6 +111,7 @@ watch(
     const fi = ORDER.indexOf(from)
     if (ti < 0 || fi < 0) { transitionName.value = 'scene-fade'; return }
     transitionName.value = ti > fi ? 'scene-right' : 'scene-left'
+    game.playSfx('page')
   }
 )
 
@@ -109,6 +127,13 @@ function particleStyle(i) {
     '--drift': drift + 'px'
   }
 }
+
+// 设备性能档位：移动端 / 触控屏 / 窄屏 → 减半粒子，降级动画
+const isLowPower = (typeof window !== 'undefined') &&
+  (window.matchMedia('(max-width: 768px)').matches ||
+   window.matchMedia('(pointer: coarse)').matches ||
+   window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+const particleCount = isLowPower ? 3 : 8
 </script>
 
 <style scoped>
@@ -148,11 +173,20 @@ function particleStyle(i) {
   background-repeat: no-repeat;
   filter: brightness(.92) saturate(1.05);
   animation: bg-pan 30s ease-in-out infinite alternate;
+  transition: filter .55s ease;
 }
 @keyframes bg-pan {
   0%   { transform: scale(1.05) translate(-1%, -1%); }
   100% { transform: scale(1.05) translate(1%, 1%); }
 }
+/* 背景 cross-fade 过渡 */
+.bg-fade-enter-active,
+.bg-fade-leave-active {
+  transition: opacity .65s ease;
+}
+.bg-fade-enter-from,
+.bg-fade-leave-to { opacity: 0; }
+.bg-fade-leave-active { position: absolute; inset: 0; }
 .immersive-vignette {
   position: absolute;
   inset: 0;
@@ -211,7 +245,7 @@ function particleStyle(i) {
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
   touch-action: pan-y;
-  padding: 130px 44px 16px 12px;
+  padding: 64px 12px 64px 12px;
   /* 鎏金细滚动条（Firefox） */
   scrollbar-width: thin;
   scrollbar-color: rgba(232, 196, 104, .55) rgba(20, 10, 4, .35);
@@ -233,7 +267,7 @@ function particleStyle(i) {
 .app-main::before {
   content: '';
   position: absolute;
-  inset: 120px 40px 8px 6px;
+  inset: 56px 6px 56px 6px;
   z-index: -1;
   pointer-events: none;
   background:
@@ -284,5 +318,26 @@ function particleStyle(i) {
   10%  { opacity: .65; }
   90%  { opacity: .55; }
   100% { transform: translate3d(var(--drift, 0), 105vh, 0) rotate(360deg); opacity: 0; }
+}
+
+/* ============================================================
+   移动端 / 触控屏性能降级：去 GPU 重 backdrop-filter + 简化 transition
+   ============================================================ */
+@media (max-width: 768px), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .app-main::before { backdrop-filter: none; }
+  .immersive-bg { animation: none !important; }
+  /* 路由切换去掉 filter: blur()——它在移动 GPU 上每帧都重新合成 */
+  .scene-right-enter-from,
+  .scene-right-leave-to,
+  .scene-left-enter-from,
+  .scene-left-leave-to,
+  .scene-fade-enter-from,
+  .scene-fade-leave-to { filter: none !important; }
+  .scene-right-enter-active,
+  .scene-right-leave-active,
+  .scene-left-enter-active,
+  .scene-left-leave-active,
+  .scene-fade-enter-active,
+  .scene-fade-leave-active { transition: opacity .25s ease, transform .25s ease !important; }
 }
 </style>

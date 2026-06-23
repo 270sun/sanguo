@@ -419,4 +419,13 @@ function remainOf(q) {
 .flash-enter-active, .flash-leave-active { transition: opacity .25s, transform .25s; }
 .flash-enter-from { opacity: 0; transform: translate(-50%, -8px); }
 .flash-leave-to { opacity: 0; transform: translate(-50%, -8px); }
+
+/* 移动端：禁用 hover 状态（避免 sticky-hover 残留高亮）+ 简化建造进度条 */
+@media (max-width: 768px), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .b-cell:hover { transform: none; box-shadow: 0 2px 4px rgba(0, 0, 0, .5), inset 0 0 0 1px rgba(0, 0, 0, .35); }
+  .bar-fill.build, .bar-fill.build-mini {
+    animation: none;
+    background: linear-gradient(90deg, #b8862e, #d4af37);
+  }
+}
 </style>

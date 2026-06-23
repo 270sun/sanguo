@@ -298,4 +298,8 @@ function close() {
 .ending-fade-leave-to {
   opacity: 0;
 }
+
+@media (max-width: 768px), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .ending-mask { backdrop-filter: none; }
+}
 </style>

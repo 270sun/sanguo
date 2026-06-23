@@ -1,101 +1,107 @@
 <template>
-  <header class="scroll-hud">
-    <!-- 卷轴顶杆 -->
-    <div class="scroll-rod top">
-      <div class="rod-cap left"></div>
-      <div class="rod-bar"></div>
-      <div class="rod-cap right"></div>
-    </div>
-
-    <!-- 卷轴纸面 -->
-    <div class="scroll-paper">
-      <!-- 朱红印章 -->
-      <div class="seal-stamp">
-        <span class="seal-char">汉</span>
-      </div>
-
-      <!-- 主公标签 -->
-      <div class="lord-row">
-        <span class="lord-name">{{ game.meta.lordName }}</span>
-        <span class="lord-title">·诸侯</span>
-        <span
-          class="season-chip"
-          :style="{ '--sc': seasonObj.color, borderColor: seasonObj.color }"
-          :title="seasonTip"
-        >
-          <span class="sc-label" :style="{ color: seasonObj.color }">{{ seasonObj.label }}</span>
-          <span class="sc-date">{{ game.currentYear }}年·{{ game.currentSeasonDay }}日</span>
-          <span class="sc-progress">
-            <span class="sc-fill" :style="{ width: seasonPct + '%', background: seasonObj.color }"></span>
-          </span>
-        </span>
-        <router-link to="/chronicle" class="chronicle-pin" :class="{ alert: !!game.pendingEvent }">
-          <AppIcon kind="misc" id="scroll" :size="12" />
-          <span>{{ game.chronicle.length }}</span>
-          <span v-if="game.pendingEvent" class="cb-dot"></span>
-        </router-link>
-      </div>
-
-      <!-- 资源行 -->
-      <div class="res-row">
-        <div v-for="r in game.resourceList" :key="r.key" class="res-pill">
-          <AppIcon class="res-icon" :kind="r.iconKind || 'res'" :id="r.iconId || r.key" :size="16" />
-          <span class="res-val" :key="Math.floor(r.value)">{{ formatNum(r.value) }}</span>
-          <span v-if="r.rate" class="res-rate" :class="{ neg: r.rate < 0 }">
-            {{ r.rate >= 0 ? '+' : '' }}{{ r.rate }}
-          </span>
+  <header class="hud-mini">
+    <!-- 左：主公 + 季节小印 -->
+    <div class="hud-left">
+      <span class="lord-seal" :title="'主公·' + game.meta.lordName">{{ game.meta.lordName[0] }}</span>
+      <div class="lord-info">
+        <div class="lord-name">{{ game.meta.lordName }}</div>
+        <div class="sub-line">
+          <span class="year">{{ game.currentYear }}年</span>
+          <span class="season-dot" :style="{ background: seasonObj.color }"></span>
+          <span class="season-label">{{ seasonObj.label }}</span>
+          <span class="day">·{{ game.currentSeasonDay }}日</span>
         </div>
       </div>
+    </div>
 
-      <!-- 精力 / 民心条 -->
-      <div class="status-row">
-        <div class="status-bar" :title="apTip">
-          <span class="s-label">精力</span>
-          <div class="bar-track">
-            <div class="bar-fill" :style="{ width: apPct + '%', background: game.apTier.color }"></div>
-            <span class="bar-text">{{ Math.round(game.ap.cur) }} / {{ game.ap.max }}</span>
+    <!-- 右：账册抽屉触发 + 史册红印 + 静音 -->
+    <div class="hud-right">
+      <button
+        class="ledger-btn"
+        :class="{ open: ledgerOpen, alert: lowRes }"
+        @click="toggleLedger"
+        title="账册"
+      >
+        <span class="ledger-icon">册</span>
+        <span v-if="lowRes" class="warn-dot"></span>
+      </button>
+      <router-link to="/chronicle" class="chronicle-pin" :class="{ alert: !!game.pendingEvent }" title="史册">
+        <span class="pin-char">史</span>
+        <span class="pin-count">{{ game.chronicle.length }}</span>
+        <span v-if="game.pendingEvent" class="cb-dot"></span>
+      </router-link>
+      <button class="mute-btn" @click="game.toggleMute" :title="game.muted ? '已静音' : '声音开'">
+        {{ game.muted ? '🔇' : '🔔' }}
+      </button>
+    </div>
+
+    <!-- 账册抽屉：资源 + 精力 + 民心 -->
+    <transition name="ledger">
+      <div v-if="ledgerOpen" class="ledger-drawer" @click.self="ledgerOpen = false">
+        <div class="ledger-panel" @wheel.stop>
+          <div class="ledger-title">▸ 府库账册</div>
+          <div class="res-grid">
+            <div v-for="r in game.resourceList" :key="r.key" class="res-cell">
+              <AppIcon class="res-icon" :kind="r.iconKind || 'res'" :id="r.iconId || r.key" :size="20" />
+              <div class="res-meta">
+                <div class="res-val">{{ formatNum(r.value) }}</div>
+                <div class="res-rate" :class="{ neg: r.rate < 0, pos: r.rate > 0 }">
+                  {{ r.rate ? (r.rate >= 0 ? '+' : '') + r.rate + '/日' : '—' }}
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="status-bar" :title="moraleTip">
-          <span class="s-label" :class="{ warn: moralePct < 70 }">民心</span>
-          <div class="bar-track">
-            <div class="bar-fill morale" :style="{ width: moralePct + '%' }"></div>
-            <span class="bar-text">{{ Math.round(game.policy.morale) }} / 100</span>
+          <div class="ledger-title sec">▸ 君主气象</div>
+          <div class="status-row">
+            <div class="status-bar" :title="apTip">
+              <span class="s-label">精力</span>
+              <div class="bar-track">
+                <div class="bar-fill" :style="{ width: apPct + '%', background: game.apTier.color }"></div>
+                <span class="bar-text">{{ Math.round(game.ap.cur) }} / {{ game.ap.max }}</span>
+              </div>
+            </div>
+            <div class="status-bar" :title="moraleTip">
+              <span class="s-label" :class="{ warn: moralePct < 70 }">民心</span>
+              <div class="bar-track">
+                <div class="bar-fill morale" :style="{ width: moralePct + '%' }"></div>
+                <span class="bar-text">{{ moralePct }} / 100</span>
+              </div>
+            </div>
           </div>
+          <div class="season-tip">{{ seasonTip }}</div>
         </div>
       </div>
-    </div>
-
-    <!-- 卷轴底部丝穗 -->
-    <div class="scroll-tassels">
-      <span class="tassel"></span>
-      <span class="tassel"></span>
-      <span class="tassel"></span>
-    </div>
+    </transition>
   </header>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, onUnmounted, watch } from 'vue'
 import { useGameStore } from '../stores/game'
 import AppIcon from './AppIcon.vue'
 
 const game = useGameStore()
+const ledgerOpen = ref(false)
 const seasonObj = computed(() => game.currentSeason)
-const seasonPct = computed(() => Math.round(game.seasonProgress * 100))
-const seasonTip = computed(() => {
-  const s = seasonObj.value
-  return `${s.label}季 · ${game.currentYear}年第 ${game.currentSeasonDay} 日\n${s.flavor}\n当前加成：${game.seasonBuffText}`
-})
+const seasonTip = computed(() => `${seasonObj.value.flavor}（${game.seasonBuffText}）`)
 const apPct = computed(() => Math.round((game.ap.cur / game.ap.max) * 100))
 const moralePct = computed(() => Math.round(game.policy.morale))
-const apTip = computed(() => `精力：执行内政/出征消耗，自动恢复（当前 ${Math.round(game.ap.cur)}/${game.ap.max}）`)
-const moraleTip = computed(() => {
-  const m = Math.round(game.policy.morale)
-  let warn = ''
-  if (m < 70) warn = '；< 70 易发生灾祸'
-  return `民心：影响产出与赋税效率（${m}/100${warn}）`
-})
+const apTip = computed(() => `精力：执行内政/出征消耗，自动恢复`)
+const moraleTip = computed(() => `民心：影响产出与赋税效率${moralePct.value < 70 ? '（< 70 易发生灾祸）' : ''}`)
+
+const lowRes = computed(() =>
+  game.resourceList.some((r) => r.value < 50 && r.rate < 0)
+)
+
+function toggleLedger() { ledgerOpen.value = !ledgerOpen.value }
+
+let autoCloseTimer = null
+function scheduleClose() {
+  if (autoCloseTimer) clearTimeout(autoCloseTimer)
+  autoCloseTimer = setTimeout(() => { ledgerOpen.value = false }, 4000)
+}
+watch(ledgerOpen, (v) => { if (v) scheduleClose(); else if (autoCloseTimer) clearTimeout(autoCloseTimer) })
+onUnmounted(() => { if (autoCloseTimer) clearTimeout(autoCloseTimer) })
 
 function formatNum(n) {
   const v = Math.floor(n)
@@ -106,297 +112,177 @@ function formatNum(n) {
 </script>
 
 <style scoped>
-.scroll-hud {
+.hud-mini {
   position: absolute;
   top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 96%;
-  max-width: 460px;
-  z-index: 50;
+  left: 0;
+  right: 0;
+  height: 56px;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  background:
+    linear-gradient(180deg, rgba(20, 10, 4, .85) 0%, rgba(20, 10, 4, .55) 70%, transparent 100%);
+  border-bottom: 1px solid rgba(232, 196, 104, .25);
   pointer-events: none;
-  animation: hud-down .7s cubic-bezier(.2,.8,.25,1.05) backwards;
 }
-@keyframes hud-down {
-  from { transform: translate(-50%, -100%); opacity: 0; }
-  to   { transform: translate(-50%, 0); opacity: 1; }
-}
+.hud-left, .hud-right { display: flex; align-items: center; gap: 8px; pointer-events: auto; }
 
-/* 卷轴顶杆 */
-.scroll-rod {
-  display: flex;
-  align-items: center;
-  height: 12px;
-  pointer-events: auto;
-}
-.rod-bar {
-  flex: 1;
-  height: 9px;
-  background:
-    linear-gradient(180deg, #3a2410 0%, #6e4a20 40%, #d4a849 50%, #6e4a20 60%, #1a0e07 100%);
-  border-top: 1px solid #8a5c1a;
-  border-bottom: 1px solid #1a0e07;
-  box-shadow: 0 2px 6px rgba(0,0,0,.5);
-}
-.rod-cap {
-  width: 22px;
-  height: 14px;
-  background:
-    radial-gradient(ellipse at 30% 30%, #fff1c2 0%, #d4a849 30%, #6e4a20 100%);
-  border: 1px solid #1a0e07;
-  border-radius: 50%;
-  box-shadow:
-    inset 0 1px 0 rgba(255,240,200,.55),
-    0 2px 4px rgba(0,0,0,.5);
-}
-
-/* 卷轴纸面 */
-.scroll-paper {
-  position: relative;
-  background:
-    /* 暗角 */
-    radial-gradient(ellipse at center, transparent 40%, rgba(80, 40, 10, .25) 100%),
-    /* 颗粒 */
-    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.45  0 0 0 0 0.30  0 0 0 0 0.15  0 0 0 0.22 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"),
-    /* 米黄基 */
-    linear-gradient(180deg, #f0dfb0 0%, #e3ce95 60%, #c9a96a 100%);
-  background-size: cover, 160px 160px, cover;
-  border-left: 1px solid #8a5c1a;
-  border-right: 1px solid #8a5c1a;
-  padding: 8px 14px 10px;
-  pointer-events: auto;
-  box-shadow:
-    inset 0 6px 10px rgba(80, 40, 10, .25),
-    inset 0 -2px 4px rgba(80, 40, 10, .35),
-    0 4px 12px rgba(0,0,0,.5);
-}
-
-/* 朱印 */
-.seal-stamp {
-  position: absolute;
-  right: 10px;
-  top: 6px;
-  width: 30px;
-  height: 30px;
-  background: var(--c-red);
+/* 主公印 */
+.lord-seal {
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #c52a2a, #7a1414);
   color: #fff1c2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1.5px solid #4a0808;
   font-family: var(--font-title);
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 18px;
+  border: 1.5px solid #f0d590;
+  box-shadow: 0 0 6px rgba(212, 175, 55, .55);
+  border-radius: 4px;
   letter-spacing: 0;
-  box-shadow:
-    inset 0 0 0 1px rgba(255,240,200,.4),
-    0 0 6px rgba(168, 35, 26, .85),
-    0 2px 4px rgba(0,0,0,.4);
-  transform: rotate(-8deg);
-  opacity: .92;
 }
-.seal-char { text-shadow: 0 0 2px rgba(255,240,200,.4); }
-
-/* 主公标签 */
-.lord-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--font-title);
-  color: #2a1810;
-  font-size: 13px;
-  letter-spacing: 2px;
-  margin-bottom: 6px;
-  padding-right: 42px;
-}
+.lord-info { display: flex; flex-direction: column; line-height: 1.15; }
 .lord-name {
-  font-weight: 700;
-  color: #6e1410;
-  text-shadow: 0 1px 0 rgba(255,245,210,.6);
+  font-family: var(--font-title);
+  font-size: 14px;
+  color: #fff1c2;
+  letter-spacing: 2px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .8);
 }
-.lord-title { font-size: 11px; color: #7a5a3a; }
-.season-chip {
-  margin-left: 4px;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 1px 6px;
-  border: 1px solid var(--c-red-dark);
-  border-left-width: 3px;
-  border-radius: 2px;
-  background: linear-gradient(180deg, rgba(40, 24, 14, .78), rgba(20, 10, 4, .9));
-  cursor: help;
+.sub-line {
+  display: flex; align-items: center; gap: 4px;
   font-size: 10px;
-  line-height: 1.4;
-  letter-spacing: .03em;
+  color: #d4c082;
+  letter-spacing: 1px;
 }
-.sc-label {
+.year { color: #e8c468; font-family: var(--font-num); }
+.season-dot { width: 6px; height: 6px; border-radius: 50%; }
+.season-label { font-family: var(--font-title); }
+.day { color: #b0a070; font-family: var(--font-num); }
+
+/* 右侧三件套 */
+.ledger-btn, .chronicle-pin, .mute-btn {
+  position: relative;
+  width: 34px; height: 34px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255, 240, 200, .12);
+  border: 1px solid rgba(232, 196, 104, .55);
+  color: #fff1c2;
+  border-radius: 3px;
+  cursor: pointer;
+  font-family: var(--font-title);
+  font-size: 14px;
+  text-decoration: none;
+  letter-spacing: 0;
+  transition: background .15s, color .15s;
+}
+.ledger-btn.open {
+  background: rgba(232, 196, 104, .35);
+  color: #1a0e07;
+}
+.chronicle-pin { gap: 2px; }
+.pin-char { font-size: 12px; }
+.pin-count { font-size: 11px; font-family: var(--font-num); color: #e8c468; }
+.chronicle-pin.alert .pin-char { color: #ff9c4a; }
+.cb-dot, .warn-dot {
+  position: absolute;
+  top: 2px; right: 2px;
+  width: 8px; height: 8px;
+  background: var(--c-red);
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(255, 70, 60, .9);
+}
+.mute-btn { font-size: 14px; background: transparent; }
+
+/* 账册抽屉 */
+.ledger-drawer {
+  position: absolute;
+  top: 56px;
+  left: 0; right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, .35);
+  z-index: 90;
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 12px;
+  pointer-events: auto;
+}
+.ledger-panel {
+  margin-top: 6px;
+  width: 100%;
+  max-width: 320px;
+  background: linear-gradient(180deg, rgba(255, 245, 210, .98), rgba(220, 195, 140, .98));
+  border: 1.5px solid var(--c-gold-dark);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .65);
+  padding: 10px 12px;
+  max-height: 100%;
+  overflow-y: auto;
+  border-radius: 0 0 4px 4px;
+}
+.ledger-title {
   font-family: var(--font-title);
   font-size: 12px;
-  font-weight: 700;
-}
-.sc-date {
-  color: var(--c-paper-dark);
-  opacity: .85;
-  font-family: var(--font-num);
-}
-.sc-progress {
-  display: inline-block;
-  width: 26px;
-  height: 3px;
-  background: rgba(0,0,0,.55);
-  border-radius: 1px;
-  overflow: hidden;
-}
-.sc-fill { display: block; height: 100%; transition: width .35s; }
-.chronicle-pin {
-  margin-left: auto;
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  padding: 1px 6px;
-  background: rgba(40, 24, 14, .15);
-  border: 1px solid var(--c-line);
-  color: #2a1810;
-  text-decoration: none;
-  font-size: 11px;
-  font-family: var(--font-num);
-  position: relative;
-  transition: all .2s;
-}
-.chronicle-pin:hover { background: rgba(168, 35, 26, .25); color: var(--c-red-dark); }
-.chronicle-pin .cb-dot {
-  position: absolute;
-  top: -3px; right: -3px;
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: var(--c-red);
-  box-shadow: 0 0 6px rgba(255, 70, 60, .9);
-  animation: cb-blink 1.2s infinite;
-}
-@keyframes cb-blink {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50%      { opacity: .4; transform: scale(.7); }
-}
-
-/* 资源行 */
-.res-row {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 4px;
+  color: var(--c-red);
+  letter-spacing: 3px;
+  border-left: 2px solid var(--c-red);
+  padding-left: 6px;
   margin-bottom: 6px;
 }
-.res-pill {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-  padding: 2px 4px;
-  background:
-    linear-gradient(180deg, rgba(255, 245, 210, .55), rgba(220, 195, 140, .55));
-  border: 1px solid rgba(110, 74, 32, .35);
-  border-radius: 2px;
-  font-size: 11px;
+.ledger-title.sec { margin-top: 8px; }
+.res-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px 8px; margin-bottom: 4px; }
+.res-cell {
+  display: flex; align-items: center; gap: 6px;
+  padding: 4px 6px;
+  background: rgba(255, 240, 200, .55);
+  border: 1px solid var(--c-line);
 }
-.res-icon { color: #6e1410; }
-.res-val {
-  font-family: var(--font-num);
-  font-weight: 700;
-  color: #2a1810;
-  font-size: 12px;
-  animation: val-pop .3s ease;
-}
-@keyframes val-pop {
-  0% { transform: scale(1.15); color: var(--c-red); }
-  100% { transform: scale(1); }
-}
-.res-rate {
-  font-size: 9px;
-  color: #4d7a4c;
-}
-.res-rate.neg { color: #d75a52; }
-
-/* 状态条 */
-.status-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
-}
-.status-bar {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-  font-size: 10px;
-}
-.s-label {
-  color: var(--c-red-dark);
-  font-family: var(--font-title);
-  letter-spacing: 1px;
-  flex-shrink: 0;
-  font-weight: 700;
-  width: 26px;
-}
-.s-label.warn {
-  color: #ff5a4e;
-  animation: warn-blink 1.6s infinite;
-}
-@keyframes warn-blink {
-  0%, 100% { opacity: 1; }
-  50%      { opacity: .55; }
-}
+.res-meta { display: flex; flex-direction: column; line-height: 1.15; }
+.res-val { font-family: var(--font-num); font-size: 13px; color: var(--c-ink); font-weight: 700; }
+.res-rate { font-size: 9px; color: var(--c-muted); font-family: var(--font-num); }
+.res-rate.pos { color: var(--c-green); }
+.res-rate.neg { color: var(--c-red); }
+.status-row { display: flex; flex-direction: column; gap: 4px; }
+.status-bar { display: flex; align-items: center; gap: 6px; }
+.s-label { font-size: 11px; color: var(--c-muted); letter-spacing: 1px; font-family: var(--font-title); min-width: 28px; }
+.s-label.warn { color: var(--c-red); }
 .bar-track {
-  flex: 1;
+  flex: 1; height: 12px;
+  background: rgba(20, 10, 4, .35);
+  border: 1px solid var(--c-line);
   position: relative;
-  height: 12px;
-  background: rgba(0, 0, 0, .55);
-  border: 1px solid rgba(110, 74, 32, .55);
   border-radius: 2px;
   overflow: hidden;
 }
+.bar-fill { height: 100%; transition: width .4s; background: var(--c-gold); }
+.bar-fill.morale { background: linear-gradient(90deg, #b8362c, #d4a849); }
 .bar-text {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
   font-size: 9px;
   font-family: var(--font-num);
-  font-weight: 700;
   color: #fff1c2;
-  text-shadow: 0 0 3px #000, 0 1px 2px rgba(0,0,0,.9);
+  text-shadow: 0 0 2px #000;
   letter-spacing: 0;
-  z-index: 2;
 }
-.bar-fill {
-  height: 100%;
-  transition: width .35s ease, background .25s;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .25);
-}
-.bar-fill.morale {
-  background: linear-gradient(90deg, #a8231a 0%, #d4af37 100%);
+.season-tip {
+  margin-top: 6px;
+  font-size: 10px;
+  color: var(--c-muted);
+  font-style: italic;
+  letter-spacing: 0.5px;
+  line-height: 1.5;
 }
 
-/* 底部丝穗 */
-.scroll-tassels {
-  position: relative;
-  height: 18px;
-  display: flex;
-  justify-content: center;
-  gap: 28px;
-  pointer-events: none;
-}
-.tassel {
-  width: 2px;
-  height: 18px;
-  background: linear-gradient(180deg, #a8231a 0%, #6e1410 70%, transparent 100%);
-  border-radius: 0 0 2px 2px;
-  animation: tassel-sway 3.6s ease-in-out infinite;
-  transform-origin: top center;
-}
-.tassel:nth-child(2) { animation-delay: .3s; }
-.tassel:nth-child(3) { animation-delay: .6s; }
-@keyframes tassel-sway {
-  0%, 100% { transform: rotate(-4deg); }
-  50%      { transform: rotate(4deg); }
+/* 抽屉动画 */
+.ledger-enter-active, .ledger-leave-active { transition: opacity .2s; }
+.ledger-enter-from, .ledger-leave-to { opacity: 0; }
+.ledger-enter-active .ledger-panel, .ledger-leave-active .ledger-panel { transition: transform .25s cubic-bezier(.2,.8,.25,1.05); }
+.ledger-enter-from .ledger-panel { transform: translateY(-12px); }
+.ledger-leave-to .ledger-panel { transform: translateY(-12px); }
+
+@media (max-width: 768px), (pointer: coarse) {
+  .lord-seal { box-shadow: none; }
 }
 </style>

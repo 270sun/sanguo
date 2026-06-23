@@ -347,4 +347,12 @@ function formatTime(ts) {
 
 .fade-enter-active, .fade-leave-active { transition: opacity .18s; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
+
+@media (max-width: 768px), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .detail-mask {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(8, 4, 2, .82);
+  }
+}
 </style>

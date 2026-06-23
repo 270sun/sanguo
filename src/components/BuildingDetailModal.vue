@@ -1,7 +1,7 @@
 <template>
   <transition name="modal">
     <div v-if="show" class="modal-mask" @click.self="$emit('close')">
-      <div class="modal-panel ink-frame">
+      <div class="modal-panel ink-frame" @wheel.stop>
         <header class="m-head">
           <div class="m-title">
             <span class="m-icon">{{ cfg.icon }}</span>
@@ -111,7 +111,7 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted, onUnmounted } from 'vue'
+import { computed, ref, onMounted, onUnmounted, watch } from 'vue'
 import { useGameStore } from '../stores/game'
 import { BUILDING_MAP } from '../data/buildings.js'
 import { findHero } from '../data/heroes.js'
@@ -159,13 +159,19 @@ const canStart = computed(() => {
   return { ok: true }
 })
 
-// 进度
+// 进度（仅在弹窗显示时跑 setInterval，避免后台空转）
 const now = ref(Date.now())
 let timer = null
-onMounted(() => {
+function startTick() {
+  if (timer) return
   timer = setInterval(() => { now.value = Date.now() }, 1000)
-})
-onUnmounted(() => { if (timer) clearInterval(timer) })
+}
+function stopTick() {
+  if (timer) { clearInterval(timer); timer = null }
+}
+onMounted(() => { if (props.show) startTick() })
+onUnmounted(stopTick)
+watch(() => props.show, (v) => { v ? startTick() : stopTick() })
 
 const buildRemain = computed(() => {
   void now.value
@@ -268,24 +274,48 @@ function showToast(msg, type = 'ok') {
   align-items: center;
   justify-content: space-between;
   border-bottom: 1.5px solid var(--c-line);
-  padding-bottom: 6px;
-  margin-bottom: 8px;
+  padding: 4px 2px 8px;
+  margin: -10px -12px 8px;
+  padding-left: 12px;
+  padding-right: 12px;
+  /* 始终吸顶，滚动时关闭按钮永远可见 */
+  position: sticky;
+  top: -10px;
+  z-index: 3;
+  background: linear-gradient(180deg, rgba(255, 245, 210, .99) 88%, rgba(255, 245, 210, .92));
+  backdrop-filter: blur(2px);
 }
 .m-title { display: flex; align-items: center; gap: 8px; }
 .m-icon { font-size: 30px; }
 .m-name { font-family: var(--font-title); font-size: 16px; letter-spacing: 3px; color: var(--c-ink); }
 .m-sub { font-size: 11px; color: var(--c-muted); letter-spacing: 1px; }
 .m-close {
-  background: transparent;
-  border: 1px solid var(--c-muted);
-  width: 26px; height: 26px;
-  font-size: 14px;
+  position: relative;
+  background: rgba(255, 240, 200, .9);
+  border: 1.5px solid var(--c-gold-dark);
+  width: 36px; height: 36px;
+  font-size: 18px;
   line-height: 1;
   cursor: pointer;
   padding: 0;
-  color: var(--c-muted);
+  color: var(--c-ink);
+  border-radius: 4px;
+  flex-shrink: 0;
+  transition: background .15s, color .15s, border-color .15s, transform .15s;
 }
-.m-close:hover { color: var(--c-red); border-color: var(--c-red); }
+/* 隐形扩大点击热区到 48×48，避免手指/鼠标"擦边" */
+.m-close::before {
+  content: '';
+  position: absolute;
+  inset: -6px;
+}
+.m-close:hover {
+  color: #fff1c2;
+  background: var(--c-red);
+  border-color: var(--c-red);
+  transform: scale(1.05);
+}
+.m-close:active { transform: scale(.95); }
 
 .m-sec { margin-bottom: 10px; }
 .sec-title {
@@ -442,5 +472,21 @@ function showToast(msg, type = 'ok') {
   padding: 6px 8px;
   background: rgba(255, 240, 200, .6);
   border-left: 2px solid var(--c-gold-dark);
+}
+
+/* 移动端性能降级：去 backdrop-filter，简化建造进度条动画 */
+@media (max-width: 768px), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .m-head { backdrop-filter: none; }
+  .bar-fill.build {
+    animation: none;
+    background: linear-gradient(90deg, #b8862e, #d4af37);
+  }
+  .action-card { transition: none; }
+  .action-card:not(.disabled):hover { transform: none; box-shadow: none; }
+  /* 移动端 hover 状态会被 sticky-touch 保留，导致 box-shadow 一直亮——彻底禁用 */
+  .picker-card:hover { background: rgba(255, 245, 210, .85); }
+  .garr-slot.empty:hover { color: var(--c-muted); border-color: var(--c-line); }
+  .g-btn:hover, .btn.ghost:hover { color: var(--c-muted); border-color: var(--c-muted); }
+  .m-close:hover { color: var(--c-ink); background: rgba(255, 240, 200, .9); border-color: var(--c-gold-dark); transform: none; }
 }
 </style>

@@ -369,4 +369,8 @@ function onSkip() {
 .evt-modal-leave-to { opacity: 0; }
 .evt-modal-enter-from .evt-panel { transform: scale(.92); }
 .evt-modal-leave-to .evt-panel { transform: scale(.96); }
+
+@media (max-width: 768px), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .evt-mask { backdrop-filter: none; }
+}
 </style>

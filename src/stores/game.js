@@ -60,6 +60,8 @@ function createInitialState() {
       season: 'spring',
       playSec: 0
     },
+    /** 全局静音开关（持久化） */
+    muted: false,
     resources: {
       grain: 500,
       coin: 500,
@@ -386,6 +388,23 @@ export const useGameStore = defineStore('game', {
       this.saveToLocalSync()
     },
 
+    /** 切换静音 */
+    toggleMute() {
+      this.muted = !this.muted
+      this.saveToLocalSync()
+    },
+
+    /** 播放音效（受 muted 控制；失败静默） */
+    playSfx(key) {
+      if (this.muted) return
+      try {
+        const url = `${(import.meta.env.BASE_URL || '/').replace(/\/?$/, '/')}sfx/${key}.mp3`
+        const a = new Audio(url)
+        a.volume = 0.55
+        a.play().catch(() => { /* 用户未交互或文件缺失，静默 */ })
+      } catch (_) { /* noop */ }
+    },
+
     /** 每秒 tick：增加资源、恢复精力、税率影响民心、推进建造队列、检查事件触发 */
     applyTick(seconds = 1) {
       // 累计游戏时长 & 季节切换检测
@@ -558,7 +577,10 @@ export const useGameStore = defineStore('game', {
         this.city[d.key] = (this.city[d.key] || 0) + 1
         // 驻守超限时自动遣返（如等级下降不会发生，这里只为安全）
       }
-      if (done.length) this.saveToLocal()
+      if (done.length) {
+        this.saveToLocal()
+        this.playSfx('drum')
+      }
     },
 
     /** 派遣武将驻守建筑 */
@@ -621,6 +643,7 @@ export const useGameStore = defineStore('game', {
     /** 季节切换时插入史册一条 + 把事件冷却往前推进缩短，让玩家立刻感知 */
     _onSeasonChange(prevKey, season) {
       const year = this.currentYear
+      this.playSfx('guqin')
       this.chronicle.unshift({
         id: 'c_season_' + Date.now(),
         ts: Date.now(),
@@ -804,6 +827,7 @@ export const useGameStore = defineStore('game', {
         key: e.key,
         ts: Date.now()
       }
+      this.playSfx('bell')
       this.saveToLocal()
     },
 
@@ -1053,7 +1077,8 @@ export const useGameStore = defineStore('game', {
       }
 
       if (result.win) {
-        // 胜利：占领 + 发放奖励
+        this.playSfx('stamp')
+        // 占领 + 发放奖励
         this.territories.push(territoryId)
         delete this.territoryCooldown[territoryId]
         // 世界局势同步：该州转归玩家
