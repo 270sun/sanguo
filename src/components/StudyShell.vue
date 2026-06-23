@@ -9,27 +9,22 @@
         </transition>
       </div>
 
-      <!-- 器物热区层：用绝对定位百分比放置在书房 CG 的"案几"区域 -->
+      <!-- 案上器物层：上排 3 件、下排 3 件，避开 CG 中央案几主物 -->
       <div class="desk-items">
         <button
           v-for="it in items"
           :key="it.id"
           class="desk-item"
-          :class="['pos-' + it.id, { focus: hover === it.id }]"
+          :class="{ focus: hover === it.id }"
           :style="{ left: it.x + '%', top: it.y + '%' }"
           @mouseenter="hover = it.id"
           @mouseleave="hover = null"
           @click="enter(it)"
         >
           <span class="halo"></span>
-          <span class="glyph">{{ it.glyph }}</span>
+          <img class="artifact" :src="itemImg(it.id)" :alt="it.title" draggable="false" />
           <span class="seal">{{ it.title }}</span>
         </button>
-      </div>
-
-      <!-- 中央：朱印（点击 = 当前主公印玺速览，预留扩展） -->
-      <div class="center-seal" aria-hidden="true">
-        <span>三</span>
       </div>
     </div>
   </transition>
@@ -45,20 +40,23 @@ const router = useRouter()
 const game = useGameStore()
 
 const isStudy = computed(() => route.path === '/')
-
 const hover = ref(null)
 
+const ITEM_BASE = `${import.meta.env.BASE_URL || '/'}img/items/`.replace(/\/+/g, '/')
+function itemImg(id) { return `${ITEM_BASE}${id}.png` }
+
+// 上排 3 件（25/50/75 横向均布、纵向 35%），下排 3 件（25/50/75 横向均布、纵向 70%）
 const items = [
-  { id: 'city',      title: '城',  glyph: '城', x: 22, y: 58, path: '/city',      tip: '巡视城防，整顿政务' },
-  { id: 'heroes',    title: '将',  glyph: '将', x: 38, y: 50, path: '/heroes',    tip: '点阅麾下武将，论功行赏' },
-  { id: 'battle',    title: '战',  glyph: '战', x: 54, y: 56, path: '/battle',    tip: '亲点三军，出征讨贼' },
-  { id: 'map',       title: '图',  glyph: '图', x: 70, y: 50, path: '/map',       tip: '俯瞰天下舆图，洞察四方' },
-  { id: 'profile',   title: '主',  glyph: '主', x: 16, y: 78, path: '/profile',   tip: '览阅主公本纪与品阶' },
-  { id: 'chronicle', title: '史',  glyph: '史', x: 80, y: 78, path: '/chronicle', tip: '翻阅起居注，回首旧事' }
+  { id: 'city',      title: '城 · 城池', x: 22, y: 32, path: '/city',      tip: '巡视城防，整顿政务' },
+  { id: 'heroes',    title: '将 · 武将', x: 50, y: 30, path: '/heroes',    tip: '点阅麾下武将，论功行赏' },
+  { id: 'map',       title: '图 · 天下', x: 78, y: 32, path: '/map',       tip: '俯瞰天下舆图，洞察四方' },
+  { id: 'battle',    title: '战 · 出征', x: 22, y: 70, path: '/battle',    tip: '亲点三军，出征讨贼' },
+  { id: 'profile',   title: '主 · 主公', x: 50, y: 72, path: '/profile',   tip: '览阅主公本纪与品阶' },
+  { id: 'chronicle', title: '史 · 史册', x: 78, y: 70, path: '/chronicle', tip: '翻阅起居注，回首旧事' }
 ]
 
 const whisperText = computed(() => {
-  if (!hover.value) return `${game.meta.lordName || '主公'} · 入主第${game.currentYear || 1}年`
+  if (!hover.value) return `${game.meta.lordName || '主公'} · 入主第 ${game.currentYear || 1} 年 · ${game.currentSeason?.label || ''}`
   const it = items.find((x) => x.id === hover.value)
   return it ? it.tip : ''
 })
@@ -70,7 +68,6 @@ function enter(it) {
 </script>
 
 <style scoped>
-/* 整层放在 main 之上、HUD 之下 —— 仅根路径出现 */
 .study-shell {
   position: absolute;
   inset: 0;
@@ -89,22 +86,24 @@ function enter(it) {
   font-size: 14px;
   color: #f0d590;
   letter-spacing: 4px;
-  background:
-    radial-gradient(ellipse at center, rgba(20, 10, 4, .55), transparent 75%);
+  background: radial-gradient(ellipse at center, rgba(20, 10, 4, .55), transparent 75%);
   text-shadow: 0 0 10px rgba(232, 196, 104, .35), 0 1px 3px rgba(0, 0, 0, .85);
   pointer-events: none;
+  white-space: nowrap;
 }
+.whisper-enter-active,
+.whisper-leave-active { transition: opacity .22s ease, transform .22s ease; }
+.whisper-enter-from { opacity: 0; transform: translateY(-4px); }
+.whisper-leave-to   { opacity: 0; transform: translateY(4px); }
 
 /* 案上器物层 */
-.desk-items {
-  position: absolute;
-  inset: 0;
-}
+.desk-items { position: absolute; inset: 0; }
+
 .desk-item {
   position: absolute;
   transform: translate(-50%, -50%);
-  width: 96px;
-  height: 96px;
+  width: 168px;
+  height: 168px;
   padding: 0;
   border: 0;
   background: transparent;
@@ -114,98 +113,75 @@ function enter(it) {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform .25s cubic-bezier(.2,.8,.25,1.1);
+  transition: transform .35s cubic-bezier(.2,.8,.25,1.1);
+  /* 默认轻微浮影 */
+  filter: drop-shadow(0 6px 8px rgba(0, 0, 0, .65));
 }
-.desk-item:hover { transform: translate(-50%, -54%) scale(1.06); }
-.desk-item:active { transform: translate(-50%, -50%) scale(.96); }
+.desk-item:hover {
+  transform: translate(-50%, -56%) scale(1.08);
+  filter: drop-shadow(0 14px 18px rgba(0, 0, 0, .75))
+          drop-shadow(0 0 14px rgba(232, 196, 104, .55));
+}
+.desk-item:active {
+  transform: translate(-50%, -50%) scale(.96);
+}
 
-/* 器物光晕（hover 时浮现金色光） */
+/* 器物图（透明 PNG） */
+.artifact {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* 金色光晕（hover 时浮现） */
 .halo {
   position: absolute;
-  inset: 0;
+  inset: 6%;
   border-radius: 50%;
   background: radial-gradient(circle at center,
     rgba(232, 196, 104, .35) 0%,
-    rgba(232, 196, 104, .15) 30%,
-    transparent 70%);
+    rgba(232, 196, 104, .12) 35%,
+    transparent 72%);
   opacity: 0;
   transform: scale(.7);
   transition: opacity .35s, transform .45s cubic-bezier(.2,.8,.25,1.1);
-  filter: blur(2px);
+  filter: blur(3px);
+  pointer-events: none;
 }
 .desk-item:hover .halo,
 .desk-item.focus .halo {
   opacity: 1;
-  transform: scale(1.15);
-}
-
-/* 字形（鎏金小篆） */
-.glyph {
-  position: relative;
-  z-index: 2;
-  font-family: var(--font-title);
-  font-size: 30px;
-  color: #f4dca0;
-  text-shadow:
-    0 0 12px rgba(232, 196, 104, .55),
-    0 2px 4px rgba(0, 0, 0, .9);
-  pointer-events: none;
-  user-select: none;
+  transform: scale(1.18);
 }
 
 /* 题字（hover 时浮出） */
 .seal {
   position: absolute;
-  bottom: -8px;
+  bottom: -6px;
   left: 50%;
-  transform: translate(-50%, 6px);
+  transform: translate(-50%, 8px);
   font-family: var(--font-title);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 4px;
-  color: #c19a52;
+  color: #f0d590;
   opacity: 0;
   transition: opacity .25s, transform .25s;
   pointer-events: none;
   white-space: nowrap;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, .8);
+  padding: 3px 10px;
+  border-radius: 3px;
+  background: rgba(20, 10, 4, .72);
+  border: 1px solid rgba(232, 196, 104, .35);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .9);
 }
 .desk-item:hover .seal,
 .desk-item.focus .seal {
   opacity: 1;
   transform: translate(-50%, 0);
-}
-
-/* 中央朱印（书房正中央的"三"字朱红印章） */
-.center-seal {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 78px;
-  height: 78px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background:
-    linear-gradient(135deg, #b1281f 0%, #8c1a14 100%);
-  box-shadow:
-    0 0 0 2px #6b110c,
-    0 0 18px rgba(177, 40, 31, .45),
-    inset 0 0 12px rgba(0, 0, 0, .35);
-  color: #f7e5b8;
-  font-family: var(--font-title);
-  font-size: 44px;
-  letter-spacing: 2px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, .7);
-  opacity: .88;
-  pointer-events: none;
-  /* 朱印细微呼吸 */
-  animation: seal-pulse 4.6s ease-in-out infinite;
-}
-@keyframes seal-pulse {
-  0%, 100% { box-shadow: 0 0 0 2px #6b110c, 0 0 18px rgba(177, 40, 31, .45), inset 0 0 12px rgba(0, 0, 0, .35); }
-  50%      { box-shadow: 0 0 0 2px #6b110c, 0 0 28px rgba(232, 110, 90, .55), inset 0 0 12px rgba(0, 0, 0, .35); }
 }
 
 /* 整体淡入淡出 */
@@ -214,11 +190,14 @@ function enter(it) {
 .study-fade-enter-from,
 .study-fade-leave-to { opacity: 0; }
 
-/* 移动端：器物缩小 + 站位调整为两行三列均布 */
+/* 中等屏 */
+@media (max-width: 1080px) {
+  .desk-item { width: 132px; height: 132px; }
+}
+/* 移动 / 触控 */
 @media (max-width: 640px), (pointer: coarse) {
-  .desk-item { width: 72px; height: 72px; }
-  .glyph { font-size: 24px; }
-  .center-seal { width: 60px; height: 60px; font-size: 34px; }
+  .desk-item { width: 96px; height: 96px; }
   .desk-item:hover { transform: translate(-50%, -50%) scale(1); }
+  .whisper { font-size: 12px; letter-spacing: 2px; top: 56px; padding: 4px 14px; }
 }
 </style>
