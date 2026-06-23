@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { saveToLocal, scheduleSave, flushSave, loadFromLocal, exportCode, importCode } from '../systems/saveSystem'
 import BUILDINGS, { BUILDING_MAP, computeBaseRates, canUpgrade } from '../data/buildings.js'
 import { rollHeroes, recruitCostOf, findHero, TASKS } from '../data/heroes.js'
-import { TERRITORY_MAP, BATTLE_COOLDOWN_SEC, computePartyPower, resolveBattle } from '../data/territories.js'
+import { TERRITORY_MAP, MAJOR_IDS, BATTLE_COOLDOWN_SEC, computePartyPower, resolveBattle } from '../data/territories.js'
 import { detectBonds, combinePowerMul, combineRateBonus } from '../data/bonds.js'
 import { SPECIALIZATION_MAP, aggregateSpecEffects, nextStageCost } from '../data/specializations.js'
 import { rollEvent, EVENT_MAP } from '../data/events.js'
@@ -738,10 +738,10 @@ export const useGameStore = defineStore('game', {
       while (this.worldLog.length > 8) this.worldLog.pop()
     },
 
-    /** 结局画卷触发检测：8 州霸业 / 13 州一统 */
+    /** 结局画卷触发检测：8 州霸业 / 13 州一统（仅按主城计算） */
     _checkEnding() {
       if (!this.ending) this.ending = { hegemony: false, unify: false }
-      const n = this.territories.length
+      const n = this.territories.filter((id) => MAJOR_IDS.has(id)).length
       if (n >= 13 && !this.ending.unify) {
         this.ending.unify = true
         this.pendingEnding = 'unify'

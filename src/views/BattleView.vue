@@ -64,7 +64,16 @@
         :class="{ on: selectedHeroes.includes(h.id) }"
         @click="toggleHero(h.id)"
       >
-        <div class="pick-avatar">{{ h.meta.avatar }}</div>
+        <div class="pick-avatar">
+          <img
+            v-if="hasLocalAsset('hero', h.id)"
+            class="pick-art"
+            :src="heroImage(h.id)"
+            :alt="h.meta.name"
+            loading="lazy"
+          />
+          <span v-else class="pick-emoji">{{ h.meta.avatar }}</span>
+        </div>
         <div class="pick-info">
           <div class="pick-name">{{ h.meta.name }} <span class="lv">Lv{{ h.level }}</span></div>
           <div class="pick-stat">武{{ h.meta.stats.wu }}·智{{ h.meta.stats.wen }}·统{{ h.meta.stats.tong }}</div>
@@ -198,6 +207,7 @@ import { detectBonds, combinePowerMul } from '../data/bonds'
 import { FACTIONS } from '../data/factions'
 import AppIcon from '../components/AppIcon.vue'
 import ChinaMap from '../components/ChinaMap.vue'
+import { heroImage, hasLocalAsset } from '../utils/aiImage.js'
 
 const game = useGameStore()
 const route = useRoute()
@@ -592,7 +602,7 @@ function fmtTs(ts) {
     inset 0 0 18px rgba(0, 0, 0, .5);
 }
 .pick-avatar {
-  width: 26px; height: 26px;
+  width: 36px; height: 36px;
   font-size: 18px;
   display: flex;
   align-items: center;
@@ -604,7 +614,26 @@ function fmtTs(ts) {
   color: var(--c-gold-light);
   border-radius: 50%;
   flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
   filter: drop-shadow(0 0 4px rgba(232, 196, 104, .45));
+}
+.pick-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  border-radius: 50%;
+  display: block;
+}
+.pick-emoji {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }
 .pick-info { flex: 1; min-width: 0; }
 .pick-name {

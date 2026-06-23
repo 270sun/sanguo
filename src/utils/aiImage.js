@@ -16,7 +16,20 @@
  * ============================================================ */
 
 const LOCAL_HERO_SET = new Set([
-  'lvbu', 'zhuge', 'guanyu', 'zhaoyun', 'zhangfei', 'dianwei'
+  'caocao', 'caohong', 'caopi', 'caoren', 'caorenmin', 'caoxiu', 'caozhang', 'caozhen',
+  'chenggong', 'chengpu', 'dianwei', 'diaochan', 'dingfeng', 'dongzhuo', 'erqiao_da',
+  'fazheng', 'fuxi', 'ganning', 'gaoxiang', 'gongsunzan', 'guanning', 'guanping',
+  'guanyu', 'gulong', 'guojia', 'hanke', 'huafa', 'huanggai', 'huangzhong', 'huatuo',
+  'huaxiong', 'jiangqin', 'jiangwei', 'jianyong', 'jiaxu', 'liaohua', 'lidian',
+  'lingong', 'liubang', 'liubei', 'liushaoshou', 'liuzhang', 'liyan', 'lufeng',
+  'lusu', 'luxun', 'lvbu', 'lvmeng', 'machao', 'mafu', 'majiale', 'mancong', 'maojie',
+  'mengda', 'mengyou', 'mizhu', 'pangtong', 'panzhang', 'sima', 'simashi', 'simazhao',
+  'sunce', 'sunjian', 'sunqian', 'sunquan', 'sunshangxiang', 'taishici', 'wangping',
+  'wangxiang', 'weiyan', 'wenchou', 'wuyi', 'xiahoudun', 'xiahouyuan', 'xuchu',
+  'xuhuang', 'xunyu', 'xushen', 'yanliang', 'yuanshao', 'yueyi', 'yujin', 'yujishi',
+  'zhangfei', 'zhanggu', 'zhanghe', 'zhanghong', 'zhangliao', 'zhangni', 'zhangyi',
+  'zhaoyun', 'zhongyao', 'zhouyou', 'zhouyu', 'zhouyu_jr', 'zhuge', 'zhugejin',
+  'zhuran', 'zhuzhi', 'zuoci'
 ])
 
 const LOCAL_BUILDING_SET = new Set([

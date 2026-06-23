@@ -43,7 +43,12 @@
       <p class="empty-title">尚无武将归附</p>
       <p class="empty-hint">前往下方客栈招贤纳士，共图大业</p>
     </div>
-    <div v-else class="my-grid hero-gallery">
+    <div v-else class="my-grid hero-gallery"
+         ref="galleryEl"
+         @mousedown="onDragStart"
+         @mousemove="onDragMove"
+         @mouseup="onDragEnd"
+         @mouseleave="onDragEnd">
       <div
         v-for="(h, i) in myHeroes"
         :key="h.id"
@@ -62,9 +67,9 @@
 
         <div class="card-head">
           <div class="avatar-wrap" :style="{ boxShadow: `0 0 10px ${h.qmeta.glow}` }">
-            <span class="avatar avatar-fallback">{{ h.meta.avatar }}</span>
+            <span v-if="!hasFullArt(h.id)" class="avatar avatar-fallback">{{ h.meta.avatar }}</span>
             <img
-              v-if="!avatarFailed[h.id] && !hasFullArt(h.id)"
+              v-if="!avatarFailed[h.id]"
               class="avatar-img"
               :class="{ loaded: avatarLoaded[h.id] }"
               :src="heroImage(h.id)"
@@ -160,7 +165,7 @@
       >
         <div class="quality-ribbon"></div>
         <div class="r-avatar-wrap" :style="{ boxShadow: `0 0 14px ${r.qmeta.glow}` }">
-          <span class="r-avatar avatar-fallback">{{ r.avatar }}</span>
+          <span v-if="avatarFailed[r.id] || !hasLocalAsset('hero', r.id)" class="r-avatar avatar-fallback">{{ r.avatar }}</span>
           <img
             v-if="!avatarFailed[r.id]"
             class="r-avatar-img"
@@ -235,6 +240,54 @@ function rateIconConf(k) { return RATE_ICON_MAP[k] || { kind: 'misc', id: 'star'
 
 const game = useGameStore()
 const tasks = TASK_LIST
+
+/** 武将廊 - 拖拽滚动支持（鼠标按下拖动可平移卡片）
+ *  关键设计：
+ *   - mousedown 只记录起点，不立即进入 dragging 状态（否则 pointer-events:none 会吃掉按钮 click）
+ *   - mousemove 累计位移 > DRAG_THRESHOLD(5px) 才真正"升级为拖拽"
+ *   - mouseup 时若从未升级，则什么都不做 → click 正常派发到 ×/升级按钮
+ */
+const DRAG_THRESHOLD = 5
+const galleryEl = ref(null)
+const drag = reactive({ pressed: false, dragging: false, startX: 0, startScroll: 0, moved: 0 })
+function onDragStart(e) {
+  if (e.button !== 0) return
+  const el = galleryEl.value
+  if (!el) return
+  drag.pressed = true
+  drag.dragging = false
+  drag.startX = e.clientX
+  drag.startScroll = el.scrollLeft
+  drag.moved = 0
+}
+function onDragMove(e) {
+  if (!drag.pressed) return
+  const el = galleryEl.value
+  if (!el) return
+  const dx = e.clientX - drag.startX
+  drag.moved = Math.abs(dx)
+  if (!drag.dragging && drag.moved > DRAG_THRESHOLD) {
+    drag.dragging = true
+    el.classList.add('dragging')
+  }
+  if (drag.dragging) {
+    el.scrollLeft = drag.startScroll - dx
+    e.preventDefault()
+  }
+}
+function onDragEnd() {
+  if (!drag.pressed) return
+  const wasDragging = drag.dragging
+  drag.pressed = false
+  drag.dragging = false
+  const el = galleryEl.value
+  if (el) el.classList.remove('dragging')
+  // 仅在"真的拖拽过"时，吞掉随后立刻触发的 click（避免拖动结束意外点击卡内按钮）
+  if (wasDragging && el) {
+    const swallow = (ev) => { ev.stopPropagation(); ev.preventDefault() }
+    el.addEventListener('click', swallow, { capture: true, once: true })
+  }
+}
 
 /** 头像加载失败缓存：id -> true，避免每次 computed 重置 */
 const avatarFailed = reactive({})
@@ -466,15 +519,22 @@ function onDismiss(heroId) {
   -webkit-overflow-scrolling: touch;
   touch-action: pan-x;
   overscroll-behavior-x: contain;
+  cursor: grab;
+  user-select: none;
 }
+.hero-gallery.dragging {
+  cursor: grabbing;
+  scroll-snap-type: none;   /* 拖拽时禁用 snap，避免回弹 */
+}
+.hero-gallery.dragging .hero-card { pointer-events: none; }
 .hero-gallery::-webkit-scrollbar { height: 6px; }
 .hero-gallery::-webkit-scrollbar-thumb {
   background: linear-gradient(90deg, var(--c-gold-dark), var(--c-gold));
   border-radius: 3px;
 }
 .hero-gallery .hero-card {
-  flex: 0 0 280px;
-  min-height: 420px;
+  flex: 0 0 220px;
+  min-height: 340px;
   scroll-snap-align: start;
   overflow: hidden;
 }
@@ -507,16 +567,16 @@ function onDismiss(heroId) {
   position: relative;
   z-index: 2;
 }
-.hero-gallery .hero-card .card-head { margin-top: 220px; }
+.hero-gallery .hero-card .card-head { margin-top: 160px; }
 .hero-gallery .hero-card .avatar-wrap {
-  width: 32px; height: 32px;
+  width: 28px; height: 28px;
   background: rgba(20,10,4,.85);
 }
-.hero-gallery .hero-card .name { font-size: 18px; text-shadow: 0 2px 8px rgba(0,0,0,.95); }
+.hero-gallery .hero-card .name { font-size: 15px; text-shadow: 0 2px 8px rgba(0,0,0,.95); }
 
 @media (max-width: 640px), (pointer: coarse) {
-  .hero-gallery .hero-card { flex-basis: 240px; min-height: 380px; }
-  .hero-gallery .hero-card .card-head { margin-top: 180px; }
+  .hero-gallery .hero-card { flex-basis: 190px; min-height: 300px; }
+  .hero-gallery .hero-card .card-head { margin-top: 130px; }
   .hero-card:hover .hero-art { transform: none; }
 }
 

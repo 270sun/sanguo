@@ -19,8 +19,8 @@
           <div class="ending-stats">
             <div class="stat-row">
               <span class="stat-label">已据州郡</span>
-              <b class="stat-num">{{ game.territories.length }}</b>
-              <span class="stat-unit">/ 13</span>
+              <b class="stat-num">{{ majorOwnedCount }}</b>
+              <span class="stat-unit">/ {{ majorTotal }}</span>
             </div>
             <div class="stat-row">
               <span class="stat-label">麾下武将</span>
@@ -51,8 +51,14 @@
 <script setup>
 import { computed } from 'vue'
 import { useGameStore } from '../stores/game'
+import { MAJOR_IDS, MAJOR_TERRITORIES } from '../data/territories.js'
 
 const game = useGameStore()
+
+const majorTotal = MAJOR_TERRITORIES.length
+const majorOwnedCount = computed(() =>
+  game.territories.filter((id) => MAJOR_IDS.has(id)).length
+)
 
 const ENDINGS = {
   hegemony: {
