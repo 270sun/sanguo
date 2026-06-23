@@ -1,7 +1,12 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 
 const routes = [
-  { path: '/', redirect: '/city' },
+  {
+    path: '/',
+    name: 'study',
+    component: () => import('../views/StudyView.vue'),
+    meta: { title: '书房', iconKind: 'tab', iconId: 'study' }
+  },
   {
     path: '/city',
     name: 'city',

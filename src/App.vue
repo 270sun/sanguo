@@ -1,7 +1,7 @@
 <template>
   <div class="stage">
-    <div class="app-shell">
-      <!-- 全屏沉浸场景背景层：按路由 cross-fade -->
+    <div class="app-shell" :class="{ 'in-subpage': inSubPage }">
+      <!-- 全屏沉浸场景背景层：按路由 cross-fade + 子页面 zoom 推进 -->
       <transition name="bg-fade">
         <div class="immersive-bg" :key="route.path" :style="bgStyle"></div>
       </transition>
@@ -15,20 +15,27 @@
         <span class="corner br"></span>
       </div>
 
-      <!-- 顶部下垂卷轴 HUD -->
+      <!-- 极简顶部 HUD（仅 40px 透明印玺条） -->
       <ScrollHUD />
 
-      <!-- 主场景（无 padding，让页面自己掌控布局） -->
+      <!-- 根路径：书房 6 件器物入口（自管显隐） -->
+      <StudyShell />
+
+      <!-- 主场景：子路由内容卡片化浮起；根路径为空 -->
       <main class="app-main" ref="mainEl" @wheel.passive="onWheel">
         <router-view v-slot="{ Component, route }">
-          <transition :name="transitionName" mode="out-in">
-            <component :is="Component" :key="route.path" />
+          <transition name="page-rise" mode="out-in">
+            <div v-if="route.path !== '/'" class="page-card" :key="route.path">
+              <button class="back-to-study" @click="goStudy" title="退回书房">
+                <span class="back-glyph">◀</span>
+                <span class="back-text">书房</span>
+              </button>
+              <component :is="Component" />
+            </div>
+            <div v-else class="page-empty" :key="'study-empty'"></div>
           </transition>
         </router-view>
       </main>
-
-      <!-- 右侧令旗导航 -->
-      <BannerNav />
 
       <EventModal />
       <EndingModal />
@@ -43,30 +50,38 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useGameStore } from './stores/game'
 import ScrollHUD from './components/ScrollHUD.vue'
-import BannerNav from './components/BannerNav.vue'
+import StudyShell from './components/StudyShell.vue'
 import EventModal from './components/EventModal.vue'
 import EndingModal from './components/EndingModal.vue'
 
 const route = useRoute()
+const router = useRouter()
 const game = useGameStore()
 const transitionName = ref('scene-fade')
 const mainEl = ref(null)
 
+const inSubPage = computed(() => route.path !== '/')
+function goStudy() {
+  game.playSfx && game.playSfx('page')
+  router.push('/')
+}
+
 // 背景图：按当前路由切换，CG 化呈现
 const BG_BASE = `${import.meta.env.BASE_URL || '/'}img/bg/`.replace(/\/+/g, '/')
 const ROUTE_BG = {
-  '/city': 'city.png',
-  '/heroes': 'heroes.png',
-  '/battle': 'battle.png',
-  '/map': 'map.png',
-  '/profile': 'profile.png',
+  '/':          'study.png',
+  '/city':      'city.png',
+  '/heroes':    'heroes.png',
+  '/battle':    'battle.png',
+  '/map':       'map.png',
+  '/profile':   'profile.png',
   '/chronicle': 'chronicle.png'
 }
 const bgStyle = computed(() => {
-  const file = ROUTE_BG[route.path] || 'city.png'
+  const file = ROUTE_BG[route.path] || 'study.png'
   return { backgroundImage: `url(${BG_BASE}${file})` }
 })
 
@@ -245,7 +260,7 @@ const particleCount = isLowPower ? 3 : 8
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
   touch-action: pan-y;
-  padding: 64px 12px 64px 12px;
+  padding: 56px 12px 24px 12px;
   /* 鎏金细滚动条（Firefox） */
   scrollbar-width: thin;
   scrollbar-color: rgba(232, 196, 104, .55) rgba(20, 10, 4, .35);
@@ -267,7 +282,7 @@ const particleCount = isLowPower ? 3 : 8
 .app-main::before {
   content: '';
   position: absolute;
-  inset: 56px 6px 56px 6px;
+  inset: 48px 6px 24px 6px;
   z-index: -1;
   pointer-events: none;
   background:
@@ -321,11 +336,88 @@ const particleCount = isLowPower ? 3 : 8
 }
 
 /* ============================================================
+   主公书房子页面卡片 + 镜头推进
+   ============================================================ */
+/* 进入子页面：背景图轻 zoom 推进 + 加暗，把焦点交给卡片 */
+.app-shell.in-subpage .immersive-bg {
+  transform: scale(1.06);
+  filter: brightness(.62) saturate(1.05) blur(.5px);
+  transition: transform .55s cubic-bezier(.2,.8,.25,1.05), filter .45s ease;
+}
+.immersive-bg {
+  transform: scale(1.0);
+  transition: transform .55s cubic-bezier(.2,.8,.25,1.05), filter .45s ease;
+}
+
+/* 内容卡片：仿宣纸鎏金边 */
+.page-card {
+  position: relative;
+  margin: 0 auto;
+  max-width: 1080px;
+  min-height: calc(100vh - 120px);
+  padding: 44px 22px 28px 22px;
+  background:
+    linear-gradient(180deg, rgba(28, 16, 8, .82) 0%, rgba(20, 10, 4, .92) 100%);
+  border-radius: 8px;
+  box-shadow:
+    0 0 0 1px rgba(232, 196, 104, .45),
+    0 0 0 6px rgba(20, 10, 4, .55),
+    0 0 32px rgba(0, 0, 0, .65);
+}
+
+/* 返回书房按钮 */
+.back-to-study {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  z-index: 30;
+  height: 30px;
+  padding: 0 14px 0 10px;
+  border: 1px solid rgba(232, 196, 104, .55);
+  border-radius: 15px;
+  background: linear-gradient(180deg, rgba(40, 22, 10, .85), rgba(20, 10, 4, .9));
+  color: #f0d590;
+  font-family: var(--font-title);
+  font-size: 12px;
+  letter-spacing: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: transform .18s, box-shadow .18s, color .18s;
+}
+.back-to-study:hover {
+  color: #fff1c2;
+  transform: translateX(-2px);
+  box-shadow: 0 0 12px rgba(232, 196, 104, .35);
+}
+.back-glyph { font-size: 10px; opacity: .8; }
+.back-text { color: inherit; }
+
+.page-empty { width: 100%; height: 100%; }
+
+/* 卡片浮起过渡 */
+.page-rise-enter-active,
+.page-rise-leave-active {
+  transition: opacity .35s ease, transform .35s cubic-bezier(.2,.8,.25,1.1);
+}
+.page-rise-enter-from {
+  opacity: 0;
+  transform: translateY(18px) scale(.985);
+}
+.page-rise-leave-to {
+  opacity: 0;
+  transform: translateY(-12px) scale(.99);
+}
+
+/* ============================================================
    移动端 / 触控屏性能降级：去 GPU 重 backdrop-filter + 简化 transition
    ============================================================ */
 @media (max-width: 768px), (pointer: coarse), (prefers-reduced-motion: reduce) {
   .app-main::before { backdrop-filter: none; }
   .immersive-bg { animation: none !important; }
+  .app-shell.in-subpage .immersive-bg { transform: none; filter: brightness(.6); }
+  .page-card { padding: 40px 12px 20px 12px; border-radius: 6px; }
   /* 路由切换去掉 filter: blur()——它在移动 GPU 上每帧都重新合成 */
   .scene-right-enter-from,
   .scene-right-leave-to,
