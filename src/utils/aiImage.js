@@ -16,8 +16,7 @@
  * ============================================================ */
 
 const LOCAL_HERO_SET = new Set([
-  'lvbu', 'zhuge', 'guanyu', 'zhaoyun', 'sima', 'zhouyu',
-  'zhangfei', 'dianwei', 'lusu', 'wangping', 'caoren', 'chenggong'
+  'lvbu', 'zhuge', 'guanyu', 'zhaoyun', 'zhangfei', 'dianwei'
 ])
 
 const LOCAL_BUILDING_SET = new Set([

@@ -43,7 +43,7 @@
       <p class="empty-title">尚无武将归附</p>
       <p class="empty-hint">前往下方客栈招贤纳士，共图大业</p>
     </div>
-    <div v-else class="my-grid">
+    <div v-else class="my-grid hero-gallery">
       <div
         v-for="(h, i) in myHeroes"
         :key="h.id"
@@ -52,11 +52,19 @@
         :style="{ '--i': i }"
       >
         <div class="quality-ribbon"></div>
+        <!-- 立绘背景层（仅在有本地立绘时铺满） -->
+        <div
+          v-if="hasFullArt(h.id)"
+          class="hero-art"
+          :style="{ backgroundImage: `url(${heroImage(h.id)})` }"
+        ></div>
+        <div class="hero-art-shade" v-if="hasFullArt(h.id)"></div>
+
         <div class="card-head">
           <div class="avatar-wrap" :style="{ boxShadow: `0 0 10px ${h.qmeta.glow}` }">
             <span class="avatar avatar-fallback">{{ h.meta.avatar }}</span>
             <img
-              v-if="!avatarFailed[h.id]"
+              v-if="!avatarFailed[h.id] && !hasFullArt(h.id)"
               class="avatar-img"
               :class="{ loaded: avatarLoaded[h.id] }"
               :src="heroImage(h.id)"
@@ -65,7 +73,7 @@
               @load="avatarLoaded[h.id] = true"
               @error="avatarFailed[h.id] = true"
             />
-            <span v-if="!avatarFailed[h.id] && !avatarLoaded[h.id]" class="avatar-spinner"></span>
+            <span v-if="!avatarFailed[h.id] && !avatarLoaded[h.id] && !hasFullArt(h.id)" class="avatar-spinner"></span>
           </div>
           <div class="head-info">
             <div class="name-row">
@@ -201,8 +209,11 @@ import { useGameStore } from '../stores/game'
 import { findHero, QUALITY_META, FACTION_META, TASK_LIST } from '../data/heroes'
 import { BONDS } from '../data/bonds'
 import { BUILDING_MAP } from '../data/buildings'
-import { heroImage } from '../utils/aiImage.js'
+import { heroImage, hasLocalAsset } from '../utils/aiImage.js'
 import AppIcon from '../components/AppIcon.vue'
+
+/** 是否拥有真实立绘（决定是否启用立绘廊模式） */
+function hasFullArt(heroId) { return hasLocalAsset('hero', heroId) }
 
 /** task.key -> AppIcon 映射 */
 const TASK_ICON_MAP = {
@@ -440,6 +451,75 @@ function onDismiss(heroId) {
   grid-template-columns: 1fr;
   gap: 10px;
 }
+
+/* ===== 立绘廊：横向滑动，每张卡显示立绘背景 ===== */
+.hero-gallery {
+  display: flex;
+  grid-template-columns: none;
+  gap: 12px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 8px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(232, 196, 104, .55) rgba(20, 10, 4, .35);
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
+  overscroll-behavior-x: contain;
+}
+.hero-gallery::-webkit-scrollbar { height: 6px; }
+.hero-gallery::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, var(--c-gold-dark), var(--c-gold));
+  border-radius: 3px;
+}
+.hero-gallery .hero-card {
+  flex: 0 0 280px;
+  min-height: 420px;
+  scroll-snap-align: start;
+  overflow: hidden;
+}
+/* 立绘背景层 */
+.hero-art {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-size: cover;
+  background-position: top center;
+  opacity: .92;
+  transition: transform 8s ease;
+}
+.hero-card:hover .hero-art { transform: scale(1.05); }
+.hero-art-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(180deg, rgba(20,10,4,.15) 0%, rgba(20,10,4,.45) 55%, rgba(10,4,2,.95) 100%);
+  pointer-events: none;
+}
+/* 文字内容浮在立绘上：放到底部 */
+.hero-gallery .hero-card .card-head,
+.hero-gallery .hero-card .stat-row,
+.hero-gallery .hero-card .skill-box,
+.hero-gallery .hero-card .task-row,
+.hero-gallery .hero-card .exp-row,
+.hero-gallery .hero-card .lvup-btn {
+  position: relative;
+  z-index: 2;
+}
+.hero-gallery .hero-card .card-head { margin-top: 220px; }
+.hero-gallery .hero-card .avatar-wrap {
+  width: 32px; height: 32px;
+  background: rgba(20,10,4,.85);
+}
+.hero-gallery .hero-card .name { font-size: 18px; text-shadow: 0 2px 8px rgba(0,0,0,.95); }
+
+@media (max-width: 640px), (pointer: coarse) {
+  .hero-gallery .hero-card { flex-basis: 240px; min-height: 380px; }
+  .hero-gallery .hero-card .card-head { margin-top: 180px; }
+  .hero-card:hover .hero-art { transform: none; }
+}
+
 .hero-card, .recruit-card {
   position: relative;
   background: var(--panel-bg-deep);
