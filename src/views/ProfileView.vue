@@ -351,7 +351,8 @@ function formatDate(ts) {
  * ============================================================ */
 
 .profile-view {
-  height: calc(100vh - 130px - 16px);
+  /* 贴合 .app-main 的可视高度（外层已是滚动容器，padding 已减去 HUD/底部空间） */
+  height: 100%;
   display: flex;
   flex-direction: column;
   overflow: hidden;

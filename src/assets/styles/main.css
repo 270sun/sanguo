@@ -82,6 +82,30 @@ html, body {
   user-select: none;
   overscroll-behavior: none;
   -webkit-font-smoothing: antialiased;
+  /* 全局：禁用 body 自身滚动条，让 .app-main 接管 */
+  overflow: hidden;
+}
+
+/* ============================================================
+ *  全局：鎏金细滚动条（适配所有可滚动子区，如战报弹窗、卷宗列表）
+ * ============================================================ */
+*::-webkit-scrollbar { width: 6px; height: 6px; }
+*::-webkit-scrollbar-track {
+  background: rgba(20, 10, 4, .35);
+  border-radius: 3px;
+}
+*::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--c-gold-dark), var(--c-gold));
+  border-radius: 3px;
+  border: 1px solid rgba(20, 10, 4, .55);
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--c-gold), var(--c-gold-light));
+}
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(232, 196, 104, .55) rgba(20, 10, 4, .35);
 }
 
 #app {

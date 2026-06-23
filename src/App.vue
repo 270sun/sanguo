@@ -17,7 +17,7 @@
       <ScrollHUD />
 
       <!-- 主场景（无 padding，让页面自己掌控布局） -->
-      <main class="app-main">
+      <main class="app-main" ref="mainEl" @wheel.passive="onWheel">
         <router-view v-slot="{ Component, route }">
           <transition :name="transitionName" mode="out-in">
             <component :is="Component" :key="route.path" />
@@ -49,11 +49,41 @@ import EndingModal from './components/EndingModal.vue'
 
 const route = useRoute()
 const transitionName = ref('scene-fade')
+const mainEl = ref(null)
 
 // 背景图：用 BASE_URL 拼接，兼容 GitHub Pages 子路径部署
 const bgStyle = computed(() => ({
   backgroundImage: `url(${import.meta.env.BASE_URL}img/bg.png)`
 }))
+
+/**
+ * 鼠标滚轮加速：默认浏览器 wheel step 约 33px，体感"滑很多次才能滚动"。
+ * 这里用 rAF 队列把当前 deltaY 放大到 2.6x 平滑滚到目标位置，每帧 0.18 系数衰减，
+ * 避免 setInterval 抢占主线程，也避免直接 jump 突兀。
+ */
+let _wheelTarget = 0
+let _wheelRaf = 0
+function onWheel(e) {
+  const el = mainEl.value
+  if (!el) return
+  // 触摸板 / Mac 惯性滚动 deltaMode === 0 且 |deltaY| 小，保留原生体验
+  if (e.deltaMode === 0 && Math.abs(e.deltaY) < 30) return
+  _wheelTarget = el.scrollTop + e.deltaY * 2.6
+  if (_wheelRaf) return
+  const step = () => {
+    if (!mainEl.value) { _wheelRaf = 0; return }
+    const cur = mainEl.value.scrollTop
+    const diff = _wheelTarget - cur
+    if (Math.abs(diff) < 1) {
+      mainEl.value.scrollTop = _wheelTarget
+      _wheelRaf = 0
+      return
+    }
+    mainEl.value.scrollTop = cur + diff * 0.22
+    _wheelRaf = requestAnimationFrame(step)
+  }
+  _wheelRaf = requestAnimationFrame(step)
+}
 
 const ORDER = ['/city', '/heroes', '/battle', '/map', '/profile', '/chronicle']
 watch(
@@ -171,7 +201,7 @@ function particleStyle(i) {
 .corner.br::before { bottom: 0; right: 0; }
 .corner.br::after  { bottom: 0; right: 0; }
 
-/* 主场景：不留 padding，由页面自由布局 */
+/* 主场景：唯一全局滚动容器（页面组件不再自带 height/overflow，以免双层滚动卡顿） */
 .app-main {
   position: absolute;
   inset: 0;
@@ -179,12 +209,31 @@ function particleStyle(i) {
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
-  padding: 130px 56px 16px 8px;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  padding: 130px 44px 16px 12px;
+  /* 鎏金细滚动条（Firefox） */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(232, 196, 104, .55) rgba(20, 10, 4, .35);
+}
+/* 鎏金细滚动条（WebKit） */
+.app-main::-webkit-scrollbar { width: 6px; height: 6px; }
+.app-main::-webkit-scrollbar-track {
+  background: rgba(20, 10, 4, .35);
+  border-radius: 3px;
+}
+.app-main::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--c-gold-dark), var(--c-gold));
+  border-radius: 3px;
+  border: 1px solid rgba(20, 10, 4, .55);
+}
+.app-main::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--c-gold), var(--c-gold-light));
 }
 .app-main::before {
   content: '';
   position: absolute;
-  inset: 120px 50px 8px 2px;
+  inset: 120px 40px 8px 6px;
   z-index: -1;
   pointer-events: none;
   background:

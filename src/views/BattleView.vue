@@ -368,8 +368,7 @@ function fmtTs(ts) {
 
 <style scoped>
 .battle-view {
-  max-height: calc(100vh - 130px - 16px);
-  overflow-y: auto;
+  /* 由 .app-main 统一滚动，本页不再自滚（避免双层 overflow 卡顿） */
 }
 .map-wrap {
   width: 100%;
