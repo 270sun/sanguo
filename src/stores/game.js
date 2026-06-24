@@ -1247,3 +1247,6 @@ function labelOf(k) {
 }
 
 export { TAX_TABLE, BUILDINGS, BUILDING_MAP }
+
+// 为单元测试暴露内部工具（不影响运行时使用）
+export { deepMergeDefaults, hydrateSaveData }
