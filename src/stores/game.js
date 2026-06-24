@@ -50,6 +50,82 @@ function rollFirstEventAt() {
   return Date.now() + sec * 1000
 }
 
+/**
+ * 主循环 setInterval handle，放在模块作用域（而非 store this 上）。
+ * Pinia 默认会把 state 字段包成 reactive proxy，将 timer id 挂到 reactive
+ * 上既不必要也可能在某些热重载场景下泄漏。这里集中管理 start/stop。
+ */
+let _tickHandle = null
+function stopGlobalTick() {
+  if (_tickHandle != null) {
+    clearInterval(_tickHandle)
+    _tickHandle = null
+  }
+}
+
+/**
+ * 通用深合并：用 init 默认值填补 data 缺失字段，已存在的 leaf 值以 data 为准。
+ * 数组按"data 优先"原则整体替换（避免把存档数组与默认空数组拼起来导致重复）。
+ */
+function _isPlainObject(v) {
+  return v && typeof v === 'object' && !Array.isArray(v)
+}
+function deepMergeDefaults(defaults, data) {
+  if (!_isPlainObject(defaults)) return data === undefined ? defaults : data
+  const out = {}
+  for (const k of Object.keys(defaults)) {
+    const dv = defaults[k]
+    const sv = data?.[k]
+    if (sv === undefined || sv === null) {
+      out[k] = dv
+    } else if (_isPlainObject(dv) && _isPlainObject(sv)) {
+      out[k] = deepMergeDefaults(dv, sv)
+    } else {
+      out[k] = sv
+    }
+  }
+  // 保留 data 中默认值未声明的额外字段（向前兼容）
+  if (_isPlainObject(data)) {
+    for (const k of Object.keys(data)) {
+      if (!(k in out)) out[k] = data[k]
+    }
+  }
+  return out
+}
+
+/**
+ * 将存档原始对象规范化为可 $patch 的状态对象。
+ * 统一处理：默认字段填补、过期事件时间复位、玩家州 owner 锁定、武将字段补全。
+ */
+function hydrateSaveData(data) {
+  const init = createInitialState()
+  const merged = deepMergeDefaults(init, data)
+
+  // 1) 事件计划过期：超过 STALE 阈值则重新摇骰下一次时间
+  if (!merged.eventNextAt || Date.now() - merged.eventNextAt > EVENT_STALE_SEC * 1000) {
+    merged.eventNextAt = rollFirstEventAt()
+  }
+
+  // 2) 玩家已占领的州，强制 owner=player 防止 world 默认值覆盖
+  if (Array.isArray(merged.territories) && merged.world) {
+    for (const tid of merged.territories) {
+      if (merged.world[tid]) {
+        merged.world[tid].owner = 'player'
+        merged.world[tid].power = 0
+      }
+    }
+  }
+
+  // 3) 武将字段补全（旧档可能缺 level/exp/task）
+  if (Array.isArray(merged.heroes)) {
+    merged.heroes = merged.heroes.map((h) => ({
+      level: 1, exp: 0, task: null, recruitedAt: Date.now(), ...h
+    }))
+  }
+
+  return merged
+}
+
 function createInitialState() {
   return {
     meta: {
@@ -475,8 +551,14 @@ export const useGameStore = defineStore('game', {
     },
 
     startTick() {
-      if (this._tickHandle) clearInterval(this._tickHandle)
-      this._tickHandle = setInterval(() => this.applyTick(1), TICK_MS)
+      // 用模块级闭包持有 handle，避免 Pinia 把 setInterval id 包成 reactive proxy
+      stopGlobalTick()
+      _tickHandle = setInterval(() => this.applyTick(1), TICK_MS)
+    },
+
+    /** 停止主循环：组件卸载 / 页面隐藏时显式调用，避免 handle 泄漏 */
+    stopTick() {
+      stopGlobalTick()
     },
 
     settleOffline() {
@@ -1139,50 +1221,7 @@ export const useGameStore = defineStore('game', {
     loadFromLocal() {
       const data = loadFromLocal()
       if (data) {
-        const init = createInitialState()
-        if (!data.ap) data.ap = init.ap
-        if (!data.policy) data.policy = init.policy
-        if (data.policy && data.policy.tax === undefined) data.policy.tax = 'normal'
-        if (!Array.isArray(data.heroRoster)) data.heroRoster = []
-        if (!Array.isArray(data.heroes)) data.heroes = []
-        if (!Array.isArray(data.battleLog)) data.battleLog = []
-        if (!data.territoryCooldown || typeof data.territoryCooldown !== 'object') data.territoryCooldown = {}
-        if (!data.specialization || typeof data.specialization !== 'object') data.specialization = init.specialization
-        if (data.specialization.stage == null) data.specialization.stage = 0
-        if (!Array.isArray(data.buildQueue)) data.buildQueue = []
-        if (!data.garrison || typeof data.garrison !== 'object') data.garrison = {}
-        if (!data.actionCooldown || typeof data.actionCooldown !== 'object') data.actionCooldown = {}
-        if (!data.governance || typeof data.governance !== 'object') data.governance = init.governance
-        for (const k of ['tech', 'culture', 'security', 'commerce']) {
-          if (data.governance[k] == null) data.governance[k] = init.governance[k]
-        }
-        if (!Array.isArray(data.chronicle)) data.chronicle = []
-        if (!data.eventNextAt || Date.now() - data.eventNextAt > EVENT_STALE_SEC * 1000) {
-          data.eventNextAt = rollFirstEventAt()
-        }
-        if (data.pendingEvent === undefined) data.pendingEvent = null
-        if (!data.flags || typeof data.flags !== 'object') data.flags = init.flags
-        // 季节 / 世界局势 hydration 兼容
-        if (typeof data.meta?.playSec !== 'number') {
-          if (!data.meta) data.meta = init.meta
-          data.meta.playSec = 0
-        }
-        if (!data.world || typeof data.world !== 'object') data.world = init.world
-        // 玩家已占领的州，强制 owner=player 防止覆盖
-        if (Array.isArray(data.territories)) {
-          for (const tid of data.territories) {
-            if (data.world[tid]) { data.world[tid].owner = 'player'; data.world[tid].power = 0 }
-          }
-        }
-        if (!Array.isArray(data.worldLog)) data.worldLog = []
-        if (typeof data.worldNextAt !== 'number') data.worldNextAt = Date.now() + 45 * 1000
-        if (!data.ending || typeof data.ending !== 'object') data.ending = { hegemony: false, unify: false }
-        if (data.pendingEnding === undefined) data.pendingEnding = null
-        // 补武将字段
-        data.heroes = data.heroes.map((h) => ({
-          level: 1, exp: 0, task: null, recruitedAt: Date.now(), ...h
-        }))
-        this.$patch(data)
+        this.$patch(hydrateSaveData(data))
       }
       this.settleOffline()
     },
@@ -1192,39 +1231,7 @@ export const useGameStore = defineStore('game', {
     importSaveCode(code) {
       const data = importCode(code)
       if (data) {
-        const init = createInitialState()
-        if (!data.ap) data.ap = init.ap
-        if (!Array.isArray(data.heroRoster)) data.heroRoster = []
-        if (!Array.isArray(data.heroes)) data.heroes = []
-        if (!Array.isArray(data.battleLog)) data.battleLog = []
-        if (!data.territoryCooldown || typeof data.territoryCooldown !== 'object') data.territoryCooldown = {}
-        if (!data.specialization || typeof data.specialization !== 'object') data.specialization = init.specialization
-        if (data.specialization.stage == null) data.specialization.stage = 0
-        if (!Array.isArray(data.buildQueue)) data.buildQueue = []
-        if (!data.garrison || typeof data.garrison !== 'object') data.garrison = {}
-        if (!data.actionCooldown || typeof data.actionCooldown !== 'object') data.actionCooldown = {}
-        if (!data.governance || typeof data.governance !== 'object') data.governance = init.governance
-        if (!Array.isArray(data.chronicle)) data.chronicle = []
-        if (!data.eventNextAt || Date.now() - data.eventNextAt > EVENT_STALE_SEC * 1000) {
-          data.eventNextAt = rollFirstEventAt()
-        }
-        if (data.pendingEvent === undefined) data.pendingEvent = null
-        if (!data.flags || typeof data.flags !== 'object') data.flags = init.flags
-        if (typeof data.meta?.playSec !== 'number') {
-          if (!data.meta) data.meta = init.meta
-          data.meta.playSec = 0
-        }
-        if (!data.world || typeof data.world !== 'object') data.world = init.world
-        if (Array.isArray(data.territories)) {
-          for (const tid of data.territories) {
-            if (data.world[tid]) { data.world[tid].owner = 'player'; data.world[tid].power = 0 }
-          }
-        }
-        if (!Array.isArray(data.worldLog)) data.worldLog = []
-        if (typeof data.worldNextAt !== 'number') data.worldNextAt = Date.now() + 45 * 1000
-        if (!data.ending || typeof data.ending !== 'object') data.ending = { hegemony: false, unify: false }
-        if (data.pendingEnding === undefined) data.pendingEnding = null
-        this.$patch(data)
+        this.$patch(hydrateSaveData(data))
         this.saveToLocalSync()
         return true
       }

@@ -1,11 +1,17 @@
 import LZString from 'lz-string'
 
 const STORAGE_KEY = 'sanguo_save_v1'
+/**
+ * 压缩存档采用 UTF16 编码（localStorage 是 UTF16 存储，UTF16 压缩比 Base64 节省约 33%）。
+ * 写入时所有内容以 'LZ1|' 前缀打头，便于读取时区分历史明文 JSON。
+ */
+const COMPRESSED_PREFIX = 'LZ1|'
 
 export function saveToLocal(state) {
   try {
     const json = JSON.stringify(state)
-    localStorage.setItem(STORAGE_KEY, json)
+    const compressed = LZString.compressToUTF16(json)
+    localStorage.setItem(STORAGE_KEY, COMPRESSED_PREFIX + compressed)
     return true
   } catch (e) {
     console.warn('保存失败', e)
@@ -74,6 +80,13 @@ export function loadFromLocal() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return null
+    // 兼容 v1 之前的明文 JSON 存档（首字符为 '{'）
+    if (raw.startsWith(COMPRESSED_PREFIX)) {
+      const body = raw.slice(COMPRESSED_PREFIX.length)
+      const json = LZString.decompressFromUTF16(body)
+      if (!json) return null
+      return JSON.parse(json)
+    }
     return JSON.parse(raw)
   } catch (e) {
     console.warn('读取存档失败', e)

@@ -71,6 +71,7 @@
             :src="heroImage(h.id)"
             :alt="h.meta.name"
             loading="lazy"
+            decoding="async"
           />
           <span v-else class="pick-emoji">{{ h.meta.avatar }}</span>
         </div>

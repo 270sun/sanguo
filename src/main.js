@@ -17,6 +17,14 @@ game.startTick()
 
 window.addEventListener('beforeunload', () => {
   game.saveToLocal()
+  game.stopTick()
 })
+
+// Vite HMR：模块热替换前先停掉旧的 setInterval，避免热更后多个 tick 叠加
+if (import.meta.hot) {
+  import.meta.hot.dispose(() => {
+    game.stopTick()
+  })
+}
 
 app.mount('#app')

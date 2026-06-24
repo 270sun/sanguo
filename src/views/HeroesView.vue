@@ -75,6 +75,7 @@
               :src="heroImage(h.id)"
               :alt="h.meta.name"
               loading="lazy"
+              decoding="async"
               @load="avatarLoaded[h.id] = true"
               @error="avatarFailed[h.id] = true"
             />
@@ -173,6 +174,7 @@
             :src="heroImage(r.id)"
             :alt="r.name"
             loading="lazy"
+            decoding="async"
             @load="avatarLoaded[r.id] = true"
             @error="avatarFailed[r.id] = true"
           />
