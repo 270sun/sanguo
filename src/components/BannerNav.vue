@@ -47,7 +47,7 @@ const tabs = computed(() =>
   left: 0;
   right: 0;
   bottom: 0;
-  height: 56px;
+  height: 64px;
   z-index: 80;
   display: flex;
   align-items: stretch;
@@ -68,34 +68,35 @@ const tabs = computed(() =>
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1px;
+  gap: 3px;
   color: #b09870;
   text-decoration: none;
   font-family: var(--font-title);
   letter-spacing: 1px;
   cursor: pointer;
-  transition: color .18s;
+  transition: color .18s, transform .15s;
 }
 .d-tab:hover { color: #f0d590; }
 .d-glyph {
-  font-size: 18px;
+  font-size: var(--fs-3xl);
   line-height: 1;
   color: inherit;
   text-shadow: 0 1px 2px rgba(0, 0, 0, .85);
+  transition: transform .18s;
 }
 .d-name {
-  font-size: 9px;
+  font-size: var(--fs-2xs);
   letter-spacing: 2px;
   color: inherit;
-  opacity: .85;
+  opacity: 1;
 }
 .d-underline {
   position: absolute;
-  bottom: 4px;
+  bottom: 6px;
   width: 14px;
   height: 2px;
   background: transparent;
-  border-radius: 1px;
+  border-radius: var(--r-sm);
   transition: background .18s, width .25s cubic-bezier(.2,.8,.25,1.05);
 }
 
@@ -106,19 +107,23 @@ const tabs = computed(() =>
 .d-tab.active .d-glyph {
   color: #fff1c2;
   text-shadow: 0 0 8px rgba(232, 196, 104, .75), 0 1px 2px rgba(0, 0, 0, .9);
+  transform: translateY(-1px) scale(1.06);
 }
 .d-tab.active .d-underline {
-  width: 22px;
+  width: 26px;
+  height: 3px;
   background: linear-gradient(90deg, transparent, #e8c468, transparent);
+  box-shadow: 0 0 6px rgba(232, 196, 104, .6);
 }
 .d-tab.active::before {
   content: '';
   position: absolute;
   inset: 4px 8px;
-  background: radial-gradient(ellipse at center, rgba(232, 196, 104, .18) 0%, transparent 65%);
+  background: radial-gradient(ellipse at center, rgba(232, 196, 104, .22) 0%, transparent 65%);
   border-radius: 50%;
   pointer-events: none;
 }
+.d-tab:active .d-glyph { transform: translateY(1px) scale(.96); }
 
 @media (max-width: 768px), (pointer: coarse) {
   .d-tab:hover { color: #b09870; }

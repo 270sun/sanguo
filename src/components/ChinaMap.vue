@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="china-map" :class="{ compact }">
     <svg class="map-svg" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid meet">
       <defs>
@@ -583,7 +583,7 @@ const tierLegend = [
 }
 .t-text {
   font-family: var(--font-title);
-  font-size: 13px;
+  font-size: 14px;
   fill: #ffe89a;
   font-weight: 700;
   paint-order: stroke;
@@ -626,19 +626,19 @@ const tierLegend = [
 
 .lg-title {
   font-family: var(--font-title);
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: 4px;
   fill: var(--c-gold);
 }
 .lg-text {
   font-family: var(--font-title);
-  font-size: 10px;
+  font-size: 12px;
   fill: var(--c-gold-light);
   letter-spacing: 1px;
 }
 .cmp-c {
   font-family: var(--font-title);
-  font-size: 10px;
+  font-size: 12px;
   fill: var(--c-gold);
   letter-spacing: 1px;
 }
@@ -656,7 +656,7 @@ const tierLegend = [
 .minor-city.locked { opacity: 0.45; filter: grayscale(0.5); }
 .mc-text {
   font-family: var(--font-title);
-  font-size: 9px;
+  font-size: 12px;
   fill: rgba(232, 196, 104, 0.78);
   letter-spacing: 0.5px;
   paint-order: stroke;

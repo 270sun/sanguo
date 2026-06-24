@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <transition name="modal">
     <div v-if="show" class="modal-mask" @click.self="$emit('close')">
       <div class="modal-panel ink-frame" @wheel.stop>
@@ -287,8 +287,8 @@ function showToast(msg, type = 'ok') {
 }
 .m-title { display: flex; align-items: center; gap: 8px; }
 .m-icon { font-size: 30px; }
-.m-name { font-family: var(--font-title); font-size: 16px; letter-spacing: 3px; color: var(--c-ink); }
-.m-sub { font-size: 11px; color: var(--c-muted); letter-spacing: 1px; }
+.m-name { font-family: var(--font-title); font-size: 17px; letter-spacing: 3px; color: var(--c-ink); }
+.m-sub { font-size: 13px; color: var(--c-muted); letter-spacing: 1px; }
 .m-close {
   position: relative;
   background: rgba(255, 240, 200, .9);
@@ -299,7 +299,7 @@ function showToast(msg, type = 'ok') {
   cursor: pointer;
   padding: 0;
   color: var(--c-ink);
-  border-radius: 4px;
+  border-radius: var(--r-md);
   flex-shrink: 0;
   transition: background .15s, color .15s, border-color .15s, transform .15s;
 }
@@ -320,29 +320,29 @@ function showToast(msg, type = 'ok') {
 .m-sec { margin-bottom: 10px; }
 .sec-title {
   font-family: var(--font-title);
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: 3px;
   color: var(--c-red);
   margin-bottom: 6px;
   border-left: 2px solid var(--c-red);
   padding-left: 6px;
 }
-.sec-title .cap { font-size: 10px; color: var(--c-muted); letter-spacing: 1px; }
+.sec-title .cap { font-size: 12px; color: var(--c-muted); letter-spacing: 1px; }
 
 /* 升级 */
 .upgrade-row { display: flex; align-items: center; gap: 8px; }
-.upgrade-cost { flex: 1; display: flex; flex-wrap: wrap; gap: 4px; font-size: 11px; align-items: center; }
+.upgrade-cost { flex: 1; display: flex; flex-wrap: wrap; gap: 4px; font-size: 13px; align-items: center; }
 .u-label { color: var(--c-muted); }
 .u-cost { color: var(--c-ink); }
 .u-cost.lack { color: var(--c-red); text-decoration: line-through; }
-.u-time { margin-left: 4px; color: var(--c-gold-dark); font-family: var(--font-num); font-size: 11px; }
-.upgrade-btn { font-size: 11px; padding: 5px 12px; letter-spacing: 1px; white-space: nowrap; }
+.u-time { margin-left: 4px; color: var(--c-gold-dark); font-family: var(--font-num); font-size: 13px; }
+.upgrade-btn { font-size: 13px; padding: 5px 12px; letter-spacing: 1px; white-space: nowrap; }
 
 .build-bar-row { background: rgba(255, 240, 200, .55); border: 1px dashed var(--c-line); padding: 6px 8px; }
-.build-info { display: flex; justify-content: space-between; align-items: center; font-size: 11px; margin-bottom: 4px; }
+.build-info { display: flex; justify-content: space-between; align-items: center; font-size: 13px; margin-bottom: 4px; }
 .b-label { color: var(--c-ink); letter-spacing: 1px; font-weight: 600; }
 .b-time { font-family: var(--font-num); color: var(--c-gold-dark); }
-.bar-track { height: 10px; background: rgba(0,0,0,.3); border: 1px solid var(--c-gold-dark); border-radius: 2px; overflow: hidden; position: relative; }
+.bar-track { height: 10px; background: rgba(0,0,0,.3); border: 1px solid var(--c-gold-dark); border-radius: var(--r-sm); overflow: hidden; position: relative; }
 .bar-fill.build {
   height: 100%;
   background: linear-gradient(90deg, #b8862e 0%, #d4af37 50%, #fff5cf 100%);
@@ -355,7 +355,7 @@ function showToast(msg, type = 'ok') {
   100% { background-position: -200% 0; }
 }
 .build-actions { display: flex; gap: 6px; margin-top: 6px; }
-.btn.small { font-size: 10px; padding: 3px 8px; }
+.btn.small { font-size: 12px; padding: 3px 8px; }
 .btn.ghost {
   background: transparent;
   border: 1px solid var(--c-muted);
@@ -382,11 +382,11 @@ function showToast(msg, type = 'ok') {
 }
 .action-card.disabled { opacity: .55; cursor: not-allowed; }
 .ac-head { display: flex; align-items: center; gap: 4px; }
-.ac-icon { font-size: 16px; }
-.ac-name { font-family: var(--font-title); font-size: 12px; letter-spacing: 2px; color: var(--c-ink); font-weight: 700; }
-.ac-ap { margin-left: auto; font-size: 9px; padding: 1px 4px; background: var(--c-red); color: #fff1c2; }
-.ac-desc { font-size: 10px; color: var(--c-muted); margin: 2px 0; line-height: 1.35; }
-.ac-status { font-size: 10px; font-family: var(--font-num); }
+.ac-icon { font-size: 17px; }
+.ac-name { font-family: var(--font-title); font-size: 13px; letter-spacing: 2px; color: var(--c-ink); font-weight: 700; }
+.ac-ap { margin-left: auto; font-size: 12px; padding: 1px 4px; background: var(--c-red); color: #fff1c2; }
+.ac-desc { font-size: 12px; color: var(--c-muted); margin: 2px 0; line-height: 1.35; }
+.ac-status { font-size: 12px; font-family: var(--font-num); }
 .ac-ready { color: var(--c-green); }
 .ac-cd { color: var(--c-red); }
 
@@ -408,20 +408,20 @@ function showToast(msg, type = 'ok') {
   justify-content: center;
 }
 .garr-slot.empty:hover { color: var(--c-red); border-color: var(--c-red); }
-.g-avatar { font-size: 16px; }
-.g-name { font-size: 11px; color: var(--c-ink); font-family: var(--font-title); letter-spacing: 1px; }
+.g-avatar { font-size: 17px; }
+.g-name { font-size: 13px; color: var(--c-ink); font-family: var(--font-title); letter-spacing: 1px; }
 .g-btn {
   margin-left: auto;
   border: 1px solid var(--c-muted);
   background: transparent;
-  font-size: 10px;
+  font-size: 12px;
   padding: 1px 5px;
   cursor: pointer;
   color: var(--c-muted);
 }
 .g-btn:hover { color: var(--c-red); border-color: var(--c-red); }
 .plus { font-size: 18px; line-height: 1; }
-.hint { font-size: 10px; }
+.hint { font-size: 12px; }
 .garr-picker {
   border: 1px solid var(--c-gold-dark);
   background: rgba(232, 196, 104, .15);
@@ -431,7 +431,7 @@ function showToast(msg, type = 'ok') {
   gap: 4px;
   margin-bottom: 6px;
 }
-.picker-empty { font-size: 11px; color: var(--c-muted); padding: 4px; }
+.picker-empty { font-size: 13px; color: var(--c-muted); padding: 4px; }
 .picker-card {
   display: flex;
   align-items: center;
@@ -440,13 +440,13 @@ function showToast(msg, type = 'ok') {
   border: 1px solid var(--c-line);
   background: rgba(255, 245, 210, .85);
   cursor: pointer;
-  font-size: 11px;
+  font-size: 13px;
 }
 .picker-card:hover { background: rgba(255, 215, 100, .55); }
-.p-avatar { font-size: 14px; }
+.p-avatar { font-size: 15px; }
 .p-name { font-family: var(--font-title); letter-spacing: 1px; }
-.p-lv { color: var(--c-gold-dark); font-family: var(--font-num); font-size: 9px; }
-.garr-tip { font-size: 10px; color: var(--c-muted); text-align: center; }
+.p-lv { color: var(--c-gold-dark); font-family: var(--font-num); font-size: 12px; }
+.garr-tip { font-size: 12px; color: var(--c-muted); text-align: center; }
 
 /* lore */
 .lore-sec {
@@ -459,12 +459,12 @@ function showToast(msg, type = 'ok') {
   align-items: center;
   cursor: pointer;
   font-family: var(--font-title);
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: 2px;
   color: var(--c-gold-dark);
 }
 .lore-text {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--c-ink);
   letter-spacing: 0.5px;
   line-height: 1.65;

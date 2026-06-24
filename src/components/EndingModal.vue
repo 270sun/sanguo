@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <transition name="ending-fade">
     <div v-if="game.pendingEnding" class="ending-mask" @click.self="close">
       <div class="scroll-wrap">
@@ -135,7 +135,7 @@ function close() {
     inset 0 1px 0 rgba(255, 220, 160, .35),
     inset 0 -1px 0 rgba(0, 0, 0, .5),
     0 0 8px rgba(232, 196, 104, .35);
-  border-radius: 3px;
+  border-radius: var(--r-sm);
   position: relative;
 }
 .scroll-cap::before,
@@ -216,7 +216,7 @@ function close() {
   100% { text-shadow: 0 0 14px rgba(232, 196, 104, .6); }
 }
 .ending-sub {
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: 4px;
   color: var(--c-red);
   font-style: italic;
@@ -231,7 +231,7 @@ function close() {
 }
 .poem-line {
   font-family: var(--font-title);
-  font-size: 13px;
+  font-size: 14px;
   letter-spacing: 2px;
   line-height: 1.9;
   color: var(--c-ink);
@@ -253,7 +253,7 @@ function close() {
   border: 1px solid rgba(140, 80, 30, .35);
 }
 .stat-row {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--c-muted);
   display: flex;
   align-items: baseline;
@@ -263,14 +263,14 @@ function close() {
 .stat-label { font-family: var(--font-title); }
 .stat-num {
   font-family: var(--font-num);
-  font-size: 16px;
+  font-size: 17px;
   color: var(--c-red);
   font-weight: 700;
 }
-.stat-unit { font-size: 10px; color: var(--c-muted); }
+.stat-unit { font-size: 12px; color: var(--c-muted); }
 
 .ending-flavor {
-  font-size: 11px;
+  font-size: 13px;
   font-style: italic;
   color: var(--c-gold-dark);
   letter-spacing: 1px;
@@ -283,7 +283,7 @@ function close() {
   color: #fff5cf;
   border: 1px solid var(--c-gold-dark);
   font-family: var(--font-title);
-  font-size: 14px;
+  font-size: 15px;
   letter-spacing: 6px;
   padding: 8px 24px;
   cursor: pointer;

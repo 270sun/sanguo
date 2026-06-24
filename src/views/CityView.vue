@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <section class="view city-view">
     <!-- 顶部治理迷你条（治安/科技/文化/商业）：沿用原设计 -->
     <div class="gov-section">
@@ -345,33 +345,33 @@ function remainOf(q) {
 /* ============== 治理条 ============== */
 .gov-section { display: flex; flex-direction: column; gap: 4px; }
 .gov-head { display: flex; align-items: center; gap: 5px; padding: 0 2px; }
-.gh-title { font-family: var(--font-title); font-size: 12px; font-weight: 700; color: var(--c-gold); letter-spacing: .12em; }
-.gh-tip { font-size: 10px; color: var(--c-paper-dark); opacity: .75; margin-left: auto; }
+.gh-title { font-family: var(--font-title); font-size: 13px; font-weight: 700; color: var(--c-gold); letter-spacing: .12em; }
+.gh-tip { font-size: 12px; color: var(--c-paper-dark); opacity: .75; margin-left: auto; }
 .gov-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
 .gov-pill {
   display: flex; flex-direction: column; gap: 3px; padding: 4px 6px 5px;
   background: linear-gradient(180deg, rgba(40,24,14,.82), rgba(20,10,4,.88));
-  border: 1px solid rgba(232,196,104,.45); border-left-width: 3px; border-radius: 2px;
+  border: 1px solid rgba(232,196,104,.45); border-left-width: 3px; border-radius: var(--r-sm);
   box-shadow: 0 2px 4px rgba(0,0,0,.5), inset 0 0 0 1px rgba(0,0,0,.35); cursor: help;
 }
 .gp-top { display: flex; align-items: center; gap: 4px; line-height: 1; }
-.gp-icon { font-size: 12px; flex: 0 0 auto; }
-.gp-label { font-size: 11px; color: var(--c-gold-light); font-family: var(--font-title); letter-spacing: .04em; flex: 1; }
-.gp-num { font-family: var(--font-num); font-size: 12px; font-weight: 700; text-align: right; }
-.gp-num-max { font-size: 9px; font-weight: 400; color: var(--c-paper-dark); opacity: .7; margin-left: 1px; }
-.gp-bar { display: block; height: 4px; background: rgba(0,0,0,.45); border-radius: 1px; overflow: hidden; }
+.gp-icon { font-size: 13px; flex: 0 0 auto; }
+.gp-label { font-size: 13px; color: var(--c-gold-light); font-family: var(--font-title); letter-spacing: .04em; flex: 1; }
+.gp-num { font-family: var(--font-num); font-size: 13px; font-weight: 700; text-align: right; }
+.gp-num-max { font-size: 12px; font-weight: 400; color: var(--c-paper-dark); opacity: .7; margin-left: 1px; }
+.gp-bar { display: block; height: 4px; background: rgba(0,0,0,.45); border-radius: var(--r-sm); overflow: hidden; }
 .gp-fill { display: block; height: 100%; transition: width .35s; }
 
 /* ============== 队列条 ============== */
 .queue-strip {
   display: flex; align-items: center; gap: 6px; padding: 4px 8px;
   background: linear-gradient(180deg, rgba(60,30,10,.85), rgba(30,14,6,.9));
-  border: 1px solid var(--c-gold-dark); border-radius: 2px; font-size: 10px;
+  border: 1px solid var(--c-gold-dark); border-radius: var(--r-sm); font-size: 12px;
   box-shadow: 0 2px 6px rgba(0,0,0,.55);
 }
 .qs-label { display: inline-flex; align-items: center; gap: 3px; font-family: var(--font-title); letter-spacing: 2px; color: var(--c-gold-light); flex-shrink: 0; }
 .qs-item { display: flex; align-items: center; gap: 3px; flex: 1; cursor: pointer; min-width: 0; }
-.qs-icon { font-size: 14px; flex-shrink: 0; color: var(--c-gold); }
+.qs-icon { font-size: 15px; flex-shrink: 0; color: var(--c-gold); }
 .qs-bar { flex: 1; height: 5px; background: rgba(0,0,0,.55); border: 1px solid var(--c-gold-dark); min-width: 30px; overflow: hidden; }
 .qs-fill { display: block; height: 100%; background: linear-gradient(90deg, #b8862e, #d4af37, #fff5cf); background-size: 200% 100%; animation: build-flow 2.5s linear infinite; transition: width .4s; }
 @keyframes build-flow { 0% { background-position: 0 0; } 100% { background-position: -200% 0; } }
@@ -386,7 +386,7 @@ function remainOf(q) {
   background:
     radial-gradient(ellipse at center, rgba(20,10,4,.35), rgba(20,10,4,.55) 90%);
   border: 1px solid var(--c-gold-dark);
-  border-radius: 4px;
+  border-radius: var(--r-md);
   box-shadow: 0 4px 14px rgba(0,0,0,.55), inset 0 0 16px rgba(0,0,0,.45);
   overflow: hidden;
 }
@@ -425,21 +425,21 @@ function remainOf(q) {
   padding: 6px 10px;
   background: linear-gradient(180deg, rgba(40,22,10,.96), rgba(20,10,4,.96));
   border: 1px solid var(--c-gold);
-  border-radius: 3px;
+  border-radius: var(--r-sm);
   box-shadow: 0 6px 14px rgba(0,0,0,.65), 0 0 12px rgba(232,196,104,.4);
-  font-size: 11px;
+  font-size: 13px;
   color: var(--c-paper);
 }
 .ht-title {
   font-family: var(--font-title);
-  font-size: 12px;
+  font-size: 13px;
   color: #fff5cf;
   letter-spacing: 2px;
   margin-bottom: 3px;
 }
 .ht-desc { color: var(--c-paper); opacity: .85; line-height: 1.45; }
-.ht-locked { color: #f0a060; margin-top: 4px; font-size: 10px; letter-spacing: 1px; }
-.ht-meta { color: var(--c-gold-light); margin-top: 4px; font-size: 10px; letter-spacing: 1px; }
+.ht-locked { color: #f0a060; margin-top: 4px; font-size: 12px; letter-spacing: 1px; }
+.ht-meta { color: var(--c-gold-light); margin-top: 4px; font-size: 12px; letter-spacing: 1px; }
 .tip-fade-enter-active, .tip-fade-leave-active { transition: opacity .15s, transform .15s; }
 .tip-fade-enter-from { opacity: 0; transform: translate(-50%, -94%); }
 .tip-fade-leave-to { opacity: 0; transform: translate(-50%, -94%); }
@@ -449,7 +449,7 @@ function remainOf(q) {
   font-family: var(--font-title);
   letter-spacing: 3px;
   color: var(--c-gold-light);
-  font-size: 10px;
+  font-size: 12px;
   margin: 4px 0 0;
   flex-shrink: 0;
   text-shadow: 0 1px 2px rgba(0,0,0,.85), 0 0 6px rgba(0,0,0,.5);
@@ -459,7 +459,7 @@ function remainOf(q) {
 .toast {
   position: fixed; top: 100px; left: 50%; transform: translateX(-50%);
   z-index: 300; padding: 8px 18px;
-  font-family: var(--font-title); font-size: 14px; letter-spacing: 3px;
+  font-family: var(--font-title); font-size: 15px; letter-spacing: 3px;
   border: 1px solid var(--c-gold-dark);
   background: linear-gradient(180deg, #fff5cf, #d8a04a);
   color: var(--c-ink);

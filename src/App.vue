@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="stage">
     <div class="app-shell" :class="{ 'in-subpage': inSubPage }">
       <!-- 全屏沉浸场景背景层：按路由 cross-fade + 子页面 zoom 推进 -->
@@ -262,7 +262,7 @@ const particleCount = isLowPower ? 3 : 8
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
   touch-action: pan-y;
-  padding: 56px 12px 24px 12px;
+  padding: 56px 12px 32px 12px;
   /* 鎏金细滚动条（Firefox） */
   scrollbar-width: thin;
   scrollbar-color: rgba(232, 196, 104, .55) rgba(20, 10, 4, .35);
@@ -271,11 +271,11 @@ const particleCount = isLowPower ? 3 : 8
 .app-main::-webkit-scrollbar { width: 6px; height: 6px; }
 .app-main::-webkit-scrollbar-track {
   background: rgba(20, 10, 4, .35);
-  border-radius: 3px;
+  border-radius: var(--r-sm);
 }
 .app-main::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg, var(--c-gold-dark), var(--c-gold));
-  border-radius: 3px;
+  border-radius: var(--r-sm);
   border: 1px solid rgba(20, 10, 4, .55);
 }
 .app-main::-webkit-scrollbar-thumb:hover {
@@ -289,7 +289,7 @@ const particleCount = isLowPower ? 3 : 8
   pointer-events: none;
   background:
     radial-gradient(ellipse at center, rgba(20, 10, 4, .35) 0%, rgba(20, 10, 4, .55) 100%);
-  border-radius: 6px;
+  border-radius: var(--r-md);
   backdrop-filter: blur(.5px);
 }
 
@@ -360,7 +360,7 @@ const particleCount = isLowPower ? 3 : 8
   padding: 44px 22px 28px 22px;
   background:
     linear-gradient(180deg, rgba(28, 16, 8, .82) 0%, rgba(20, 10, 4, .92) 100%);
-  border-radius: 8px;
+  border-radius: var(--r-lg);
   box-shadow:
     0 0 0 1px rgba(232, 196, 104, .45),
     0 0 0 6px rgba(20, 10, 4, .55),
@@ -376,11 +376,11 @@ const particleCount = isLowPower ? 3 : 8
   height: 30px;
   padding: 0 14px 0 10px;
   border: 1px solid rgba(232, 196, 104, .55);
-  border-radius: 15px;
+  border-radius: var(--r-lg);
   background: linear-gradient(180deg, rgba(40, 22, 10, .85), rgba(20, 10, 4, .9));
   color: #f0d590;
   font-family: var(--font-title);
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: 4px;
   display: inline-flex;
   align-items: center;
@@ -393,7 +393,7 @@ const particleCount = isLowPower ? 3 : 8
   transform: translateX(-2px);
   box-shadow: 0 0 12px rgba(232, 196, 104, .35);
 }
-.back-glyph { font-size: 10px; opacity: .8; }
+.back-glyph { font-size: 12px; opacity: .8; }
 .back-text { color: inherit; }
 
 .page-empty { width: 100%; height: 100%; }
@@ -419,7 +419,7 @@ const particleCount = isLowPower ? 3 : 8
   .app-main::before { backdrop-filter: none; }
   .immersive-bg { animation: none !important; }
   .app-shell.in-subpage .immersive-bg { transform: none; filter: brightness(.6); }
-  .page-card { padding: 40px 12px 20px 12px; border-radius: 6px; }
+  .page-card { padding: 40px 12px 20px 12px; border-radius: var(--r-md); }
   /* 路由切换去掉 filter: blur()——它在移动 GPU 上每帧都重新合成 */
   .scene-right-enter-from,
   .scene-right-leave-to,

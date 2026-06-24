@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <!-- 仅在根路径渲染：6 件案上器物作为入口 -->
   <transition name="study-fade">
     <div v-if="isStudy" class="study-shell" :class="{ hovering: !!hover }">
@@ -84,7 +84,7 @@ function enter(it) {
   transform: translateX(-50%);
   padding: 6px 22px;
   font-family: var(--font-title);
-  font-size: 14px;
+  font-size: 15px;
   color: #f0d590;
   letter-spacing: 4px;
   background: radial-gradient(ellipse at center, rgba(20, 10, 4, .55), transparent 75%);
@@ -169,7 +169,7 @@ function enter(it) {
   left: 50%;
   transform: translate(-50%, 0);
   font-family: var(--font-title);
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 3px;
   color: #f0d590;
   opacity: 0.78;
@@ -177,7 +177,7 @@ function enter(it) {
   pointer-events: none;
   white-space: nowrap;
   padding: 2px 8px;
-  border-radius: 3px;
+  border-radius: var(--r-sm);
   background: rgba(20, 10, 4, .55);
   border: 1px solid rgba(232, 196, 104, .25);
   text-shadow: 0 1px 2px rgba(0, 0, 0, .9);
@@ -200,13 +200,13 @@ function enter(it) {
 /* 中等屏 */
 @media (max-width: 1080px) {
   .desk-item { width: 92px; height: 92px; }
-  .seal { font-size: 10px; letter-spacing: 2px; bottom: -12px; }
+  .seal { font-size: 12px; letter-spacing: 2px; bottom: -12px; }
 }
 /* 移动 / 触控 */
 @media (max-width: 640px), (pointer: coarse) {
   .desk-item { width: 72px; height: 72px; }
   .desk-item:hover { transform: translate(-50%, -50%) scale(1); }
-  .whisper { font-size: 12px; letter-spacing: 2px; top: 56px; padding: 4px 14px; }
-  .seal { font-size: 9px; letter-spacing: 1.5px; bottom: -10px; padding: 1px 6px; }
+  .whisper { font-size: 13px; letter-spacing: 2px; top: 56px; padding: 4px 14px; }
+  .seal { font-size: 12px; letter-spacing: 1.5px; bottom: -10px; padding: 1px 6px; }
 }
 </style>

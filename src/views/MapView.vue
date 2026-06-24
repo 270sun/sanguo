@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <section class="view map-view">
     <div class="overview-bar">
       <span class="pill pill-title">疆 域</span>
@@ -152,7 +152,7 @@ function formatTime(ts) {
   padding: 6px 8px;
   background: var(--panel-bg-deep);
   border: 1px solid rgba(232, 196, 104, .55);
-  border-radius: 2px;
+  border-radius: var(--r-sm);
   box-shadow:
     inset 0 0 0 1px rgba(255, 240, 200, .12),
     inset 0 0 14px rgba(0, 0, 0, .55),
@@ -168,12 +168,12 @@ function formatTime(ts) {
   align-items: center;
   gap: 3px;
   padding: 2px 8px;
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.4;
   color: var(--c-gold-light);
   background: rgba(20, 10, 4, .55);
   border: 1px solid rgba(232, 196, 104, .4);
-  border-radius: 10px;
+  border-radius: var(--r-lg);
   white-space: nowrap;
   text-shadow: 0 1px 2px rgba(0, 0, 0, .85);
 }
@@ -185,7 +185,7 @@ function formatTime(ts) {
   border-color: rgba(232, 196, 104, .65);
 }
 .pill-num .num {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--c-gold);
   font-weight: 700;
 }
@@ -211,7 +211,7 @@ function formatTime(ts) {
   background: linear-gradient(180deg, rgba(40, 24, 14, .82), rgba(20, 10, 4, .9));
   border: 1px solid rgba(232, 196, 104, .35);
   border-left: 3px solid var(--c-red-dark);
-  border-radius: 2px;
+  border-radius: var(--r-sm);
   box-shadow: 0 2px 5px rgba(0,0,0,.55), inset 0 0 0 1px rgba(0,0,0,.35);
 }
 .wc-head {
@@ -220,13 +220,13 @@ function formatTime(ts) {
   gap: 5px;
   margin-bottom: 4px;
   font-family: var(--font-title);
-  font-size: 11px;
+  font-size: 13px;
   color: var(--c-gold);
   letter-spacing: .12em;
 }
-.wc-tip { font-size: 9px; color: var(--c-paper-dark); opacity: .65; margin-left: auto; letter-spacing: 0; }
+.wc-tip { font-size: 12px; color: var(--c-paper-dark); opacity: .65; margin-left: auto; letter-spacing: 0; }
 .wc-list { display: flex; flex-direction: column; gap: 2px; }
-.wc-item { font-size: 11px; line-height: 1.4; color: var(--c-paper); display: flex; gap: 4px; }
+.wc-item { font-size: 13px; line-height: 1.4; color: var(--c-paper); display: flex; gap: 4px; }
 .wc-item.war .wc-dot { color: var(--c-red-dark); font-weight: 700; }
 .wc-item.truce .wc-dot { color: var(--c-paper-dark); opacity: .6; }
 .wc-text { flex: 1; }
@@ -252,7 +252,7 @@ function formatTime(ts) {
   width: min(86vw, 360px);
   background: var(--panel-bg-deep-strong);
   border: 1px solid var(--c-gold);
-  border-radius: 3px;
+  border-radius: var(--r-sm);
   padding: 14px 16px 12px;
   box-shadow:
     inset 0 0 0 1px rgba(255, 240, 200, .18),
@@ -271,14 +271,14 @@ function formatTime(ts) {
 }
 .d-name {
   font-family: var(--font-title);
-  font-size: 16px;
+  font-size: 17px;
   letter-spacing: 3px;
   color: var(--c-gold);
   text-shadow: 0 1px 2px rgba(0, 0, 0, .85);
 }
 .d-tag {
   font-family: var(--font-title);
-  font-size: 10px;
+  font-size: 12px;
   color: #fff1c2;
   padding: 1px 6px;
   border: 1px solid rgba(0, 0, 0, .55);
@@ -290,11 +290,11 @@ function formatTime(ts) {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 12px;
+  font-size: 13px;
 }
 .d-k {
   font-family: var(--font-title);
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 2px;
   color: var(--c-gold);
   min-width: 56px;
@@ -314,7 +314,7 @@ function formatTime(ts) {
 }
 .d-v .muted { color: var(--c-gold-light); opacity: .55; }
 .d-desc {
-  font-size: 11px;
+  font-size: 13px;
   opacity: .8;
   margin-top: 2px;
   padding-top: 6px;
@@ -330,13 +330,13 @@ function formatTime(ts) {
 .btn-close {
   font-family: var(--font-title);
   letter-spacing: 4px;
-  font-size: 13px;
+  font-size: 14px;
   color: #fff5cf;
   background: linear-gradient(180deg, #d75a52, #8e1a14);
   border: 1px solid var(--c-red-dark);
   padding: 6px 22px;
   cursor: pointer;
-  border-radius: 2px;
+  border-radius: var(--r-sm);
   box-shadow:
     inset 0 0 0 1px rgba(255, 240, 200, .3),
     0 2px 0 #0e0703;

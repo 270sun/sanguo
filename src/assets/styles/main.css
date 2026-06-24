@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
    卧龙吟·诸侯纪 —— 主题样式
    主题：汉宫朱金（暗赭羊皮 + 鎏金 + 朱砂 + 墨黑）
    ============================================================ */
@@ -36,6 +36,34 @@
 
   --r-card: 4px;
   --r-pill: 999px;
+
+  /* ============================================================
+   * Design Tokens（字号 / 间距 / 圆角）
+   * 命名约定：
+   *   - 字号：以 14px 为基准 sm，向两侧扩展（用于"整体 +1px"策略）
+   *   - 间距：4 的倍数，sp-3=12px 为常用卡片 padding
+   *   - 圆角：三档（sm 印章感 / md 卡片 / lg 大面板）
+   * ============================================================ */
+  --fs-3xs: 11px;
+  --fs-2xs: 12px;
+  --fs-xs:  13px;
+  --fs-sm:  14px;
+  --fs-md:  15px;
+  --fs-lg:  16px;
+  --fs-xl:  18px;
+  --fs-2xl: 20px;
+  --fs-3xl: 22px;
+
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+
+  --r-sm: 2px;
+  --r-md: 4px;
+  --r-lg: 8px;
 
   /* 字体 */
   --font-serif: 'KaiTi', 'STKaiti', 'Noto Serif SC', 'Songti SC', 'STSong', 'SimSun', serif;
@@ -77,7 +105,7 @@ html, body {
     linear-gradient(180deg, #f0dca6 0%, #e3c378 38%, #b9a05a 62%, #6e7a5a 85%, #3c4a3a 100%);
   color: var(--c-ink);
   font-family: var(--font-serif);
-  font-size: 14px;
+  font-size: var(--fs-md);
   line-height: 1.55;
   user-select: none;
   overscroll-behavior: none;
@@ -100,11 +128,11 @@ button, a, [role="button"], .b-cell, .action-card, .picker-card, .garr-slot, .m-
 *::-webkit-scrollbar { width: 6px; height: 6px; }
 *::-webkit-scrollbar-track {
   background: rgba(20, 10, 4, .35);
-  border-radius: 3px;
+  border-radius: var(--r-sm);
 }
 *::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg, var(--c-gold-dark), var(--c-gold));
-  border-radius: 3px;
+  border-radius: var(--r-sm);
   border: 1px solid rgba(20, 10, 4, .55);
 }
 *::-webkit-scrollbar-thumb:hover {
@@ -174,9 +202,9 @@ button {
   background: linear-gradient(180deg, #f5d98c 0%, #d4a849 60%, #b8862e 100%);
   color: #3a2410;
   border: 1px solid var(--c-gold-dark);
-  border-radius: var(--r-card);
+  border-radius: var(--r-md);
   padding: 8px 16px;
-  font-size: 14px;
+  font-size: var(--fs-md);
   font-weight: 700;
   letter-spacing: 1px;
   cursor: pointer;
@@ -205,7 +233,7 @@ button.btn {
   color: var(--c-ink);
   border: 1px solid var(--c-line);
   padding: 7px 14px;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   letter-spacing: 0.5px;
 }
 button.btn.primary {
@@ -274,7 +302,7 @@ button.btn.danger {
   gap: 10px;
   margin: 6px 0 14px;
   font-family: var(--font-title);
-  font-size: 20px;
+  font-size: var(--fs-3xl);
   letter-spacing: 4px;
   color: var(--c-gold-light);
   text-shadow:
@@ -295,7 +323,7 @@ button.btn.danger {
   margin: 0 0 14px;
   color: var(--c-gold-light);
   opacity: .8;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   text-align: center;
   letter-spacing: 1px;
   text-shadow: 0 1px 2px rgba(0, 0, 0, .8);
@@ -307,7 +335,7 @@ button.btn.danger {
   background: var(--c-red);
   color: var(--c-gold-light);
   font-family: var(--font-title);
-  font-size: 11px;
+  font-size: var(--fs-2xs);
   padding: 2px 6px;
   border: 1px solid var(--c-red-dark);
   box-shadow: inset 0 0 0 1px rgba(255, 240, 200, .25);
@@ -320,11 +348,11 @@ button.btn.danger {
   padding: 2px 8px;
   font-family: var(--font-num);
   font-weight: 700;
-  font-size: 11px;
+  font-size: var(--fs-2xs);
   background: linear-gradient(180deg, #f5d98c, #b8862e);
   color: #3a2410;
   border: 1px solid var(--c-gold-dark);
-  border-radius: 3px;
+  border-radius: var(--r-sm);
   letter-spacing: 1px;
   box-shadow: inset 0 1px 0 rgba(255, 255, 220, .5);
 }
@@ -341,9 +369,9 @@ input, textarea {
   color: var(--c-ink);
   background: rgba(255, 245, 210, .85);
   border: 1px solid var(--c-line);
-  border-radius: 3px;
+  border-radius: var(--r-sm);
   padding: 6px 10px;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   outline: none;
   transition: border-color .15s, box-shadow .15s;
 }
@@ -357,7 +385,7 @@ a { color: var(--c-red); text-decoration: none; }
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-thumb {
   background: rgba(110, 74, 32, .5);
-  border-radius: 2px;
+  border-radius: var(--r-sm);
 }
 ::-webkit-scrollbar-track { background: transparent; }
 

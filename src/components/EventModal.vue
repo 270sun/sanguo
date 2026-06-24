@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <transition name="evt-modal">
     <div v-if="show" class="evt-mask" @click.self="onSkip">
       <div class="evt-panel ink-frame" :class="typeClass">
@@ -154,7 +154,7 @@ function onSkip() {
   background: var(--c-red);
   color: #fff5cf;
   font-family: var(--font-title);
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 3px;
   padding: 4px 10px 5px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, .5);
@@ -206,7 +206,7 @@ function onSkip() {
   right: 10px;
   bottom: 6px;
   font-family: var(--font-title);
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 3px;
   color: rgba(255, 245, 210, .85);
   text-shadow: 0 1px 3px rgba(0,0,0,.7);
@@ -243,7 +243,7 @@ function onSkip() {
   font-weight: 800;
 }
 .evt-quote {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--c-gold-dark);
   letter-spacing: 1px;
   font-style: italic;
@@ -251,7 +251,7 @@ function onSkip() {
 }
 
 .evt-desc {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--c-ink);
   letter-spacing: 0.5px;
   line-height: 1.75;
@@ -285,13 +285,13 @@ function onSkip() {
 }
 .ec-label {
   font-family: var(--font-title);
-  font-size: 13px;
+  font-size: 14px;
   letter-spacing: 2px;
   font-weight: 700;
   margin-bottom: 2px;
 }
 .ec-desc {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--c-muted);
   line-height: 1.4;
 }
@@ -307,12 +307,12 @@ function onSkip() {
   align-items: center;
   cursor: pointer;
   font-family: var(--font-title);
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: 2px;
   color: var(--c-gold-dark);
 }
 .lore-text {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--c-ink);
   letter-spacing: 0.5px;
   line-height: 1.7;
@@ -330,12 +330,12 @@ function onSkip() {
   padding-top: 6px;
 }
 .evt-tip {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--c-muted);
   letter-spacing: 1px;
 }
 .btn.ghost.small {
-  font-size: 10px;
+  font-size: 12px;
   padding: 4px 10px;
   background: transparent;
   border: 1px solid var(--c-muted);
@@ -350,7 +350,7 @@ function onSkip() {
   bottom: 50px;
   transform: translateX(-50%);
   padding: 6px 14px;
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: 1px;
   border: 1px solid var(--c-gold-dark);
   background: rgba(40, 24, 14, .92);

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <section class="view heroes-view">
     <h2 class="view-title">武 将 录</h2>
     <p class="view-tip">▎收集名将·培养精英·凝聚羁绊▎</p>
@@ -394,7 +394,7 @@ function onDismiss(heroId) {
   justify-content: space-between;
   margin: 14px 0 8px;
   font-family: var(--font-title);
-  font-size: 14px;
+  font-size: 15px;
   letter-spacing: 4px;
   color: var(--c-gold-light);
   border-bottom: 1px dashed rgba(232, 196, 104, .55);
@@ -402,13 +402,13 @@ function onDismiss(heroId) {
   text-shadow: 0 1px 2px rgba(0, 0, 0, .85);
 }
 .section-title .cap {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--c-gold);
   letter-spacing: 1px;
   font-family: var(--font-num);
 }
 .section-title .refresh-btn {
-  font-size: 11px;
+  font-size: 13px;
   padding: 3px 10px;
   letter-spacing: 2px;
   display: inline-flex;
@@ -425,8 +425,8 @@ function onDismiss(heroId) {
   display: inline-flex;
   filter: drop-shadow(0 0 6px rgba(232, 196, 104, .45));
 }
-.empty-title { font-family: var(--font-title); font-size: 14px; letter-spacing: 3px; color: var(--c-gold-light); margin: 2px 0; }
-.empty-hint { font-size: 11px; color: var(--c-gold-light); opacity: .7; letter-spacing: 1px; }
+.empty-title { font-family: var(--font-title); font-size: 15px; letter-spacing: 3px; color: var(--c-gold-light); margin: 2px 0; }
+.empty-hint { font-size: 13px; color: var(--c-gold-light); opacity: .7; letter-spacing: 1px; }
 
 /* 羁绊条幅 */
 .bond-banner {
@@ -443,7 +443,7 @@ function onDismiss(heroId) {
   justify-content: center;
   gap: 8px;
   font-family: var(--font-title);
-  font-size: 13px;
+  font-size: 14px;
   letter-spacing: 6px;
   color: var(--c-gold-light);
   text-align: center;
@@ -455,23 +455,23 @@ function onDismiss(heroId) {
   background: rgba(0, 0, 0, .35);
   border-left: 3px solid var(--c-gold);
   padding: 4px 8px;
-  border-radius: 2px;
+  border-radius: var(--r-sm);
 }
 .bond-name {
   font-family: var(--font-title);
-  font-size: 13px;
+  font-size: 14px;
   letter-spacing: 2px;
   color: #ffd86b;
   font-weight: 700;
 }
 .bond-flavor {
-  font-size: 10px;
+  font-size: 12px;
   color: rgba(255, 240, 200, .6);
   margin: 1px 0 2px;
   letter-spacing: 1px;
 }
 .bond-effect {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--c-gold-light);
   font-family: var(--font-num);
   display: flex;
@@ -494,7 +494,7 @@ function onDismiss(heroId) {
   border: 1px dashed var(--c-gold);
 }
 .hint-line {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--c-gold-light);
   letter-spacing: 1px;
   text-align: center;
@@ -532,7 +532,7 @@ function onDismiss(heroId) {
 .hero-gallery::-webkit-scrollbar { height: 6px; }
 .hero-gallery::-webkit-scrollbar-thumb {
   background: linear-gradient(90deg, var(--c-gold-dark), var(--c-gold));
-  border-radius: 3px;
+  border-radius: var(--r-sm);
 }
 .hero-gallery .hero-card {
   flex: 0 0 220px;
@@ -587,7 +587,7 @@ function onDismiss(heroId) {
   background: var(--panel-bg-deep);
   border: 1px solid rgba(232, 196, 104, .55);
   padding: 10px 10px 8px;
-  border-radius: 2px;
+  border-radius: var(--r-sm);
   color: var(--c-gold-light);
   box-shadow:
     inset 0 0 0 1px rgba(255, 240, 200, .12),
@@ -684,7 +684,7 @@ function onDismiss(heroId) {
 }
 .name {
   font-family: var(--font-title);
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 700;
   letter-spacing: 2px;
   color: var(--c-gold-light);
@@ -694,7 +694,7 @@ function onDismiss(heroId) {
   display: inline-block;
   padding: 0 5px;
   font-family: var(--font-title);
-  font-size: 11px;
+  font-size: 13px;
   color: var(--c-gold-light);
   border: 1px solid rgba(0,0,0,.55);
   box-shadow: inset 0 0 0 1px rgba(255,240,200,.3);
@@ -706,7 +706,7 @@ function onDismiss(heroId) {
 }
 .level-badge {
   font-family: var(--font-num);
-  font-size: 11px;
+  font-size: 13px;
   background: linear-gradient(180deg, #d75a52, #8e1a14);
   color: #fff5cf;
   padding: 1px 6px;
@@ -714,7 +714,7 @@ function onDismiss(heroId) {
   letter-spacing: 1px;
 }
 .q-tag {
-  font-size: 11px;
+  font-size: 13px;
   font-family: var(--font-title);
   letter-spacing: 2px;
   font-weight: 600;
@@ -729,7 +729,7 @@ function onDismiss(heroId) {
   border: 1px solid var(--c-gold-dark);
   color: #fff5cf;
   font-family: var(--font-title);
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 1px;
 }
 .dismiss {
@@ -738,24 +738,24 @@ function onDismiss(heroId) {
   color: var(--c-muted);
   width: 22px;
   height: 22px;
-  font-size: 14px;
+  font-size: 15px;
   cursor: pointer;
   line-height: 1;
   padding: 0;
-  border-radius: 2px;
+  border-radius: var(--r-sm);
 }
 .dismiss:hover { color: var(--c-red); border-color: var(--c-red); background: rgba(168, 35, 26, .2); }
 
 .stat-row {
   display: flex;
   justify-content: space-around;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--c-gold-light);
   background: rgba(0, 0, 0, .35);
   border: 1px solid rgba(232, 196, 104, .4);
   padding: 4px 0;
   margin-bottom: 6px;
-  border-radius: 2px;
+  border-radius: var(--r-sm);
 }
 .stat-row .s b {
   color: #ff8a78;
@@ -764,13 +764,13 @@ function onDismiss(heroId) {
 }
 
 .skill-box {
-  font-size: 11px;
+  font-size: 13px;
   padding: 4px 6px;
   background: rgba(168, 35, 26, .2);
   border-left: 3px solid var(--c-red);
   margin-bottom: 6px;
   line-height: 1.4;
-  border-radius: 2px;
+  border-radius: var(--r-sm);
 }
 .skill-name {
   font-family: var(--font-title);
@@ -786,7 +786,7 @@ function onDismiss(heroId) {
   margin-bottom: 6px;
 }
 .task-label {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--c-gold);
   flex-shrink: 0;
 }
@@ -798,7 +798,7 @@ function onDismiss(heroId) {
 }
 .task-locked {
   flex: 1;
-  font-size: 10px;
+  font-size: 12px;
   color: #b3e5a3;
   background: rgba(45, 90, 60, .35);
   border: 1px dashed #4d7a4c;
@@ -813,7 +813,7 @@ function onDismiss(heroId) {
 .task-btn {
   flex: 1;
   min-width: 50px;
-  font-size: 10px;
+  font-size: 12px;
   padding: 3px 4px;
   background: rgba(20, 10, 4, .75);
   border: 1px solid rgba(232, 196, 104, .4);
@@ -825,7 +825,7 @@ function onDismiss(heroId) {
   align-items: center;
   justify-content: center;
   gap: 3px;
-  border-radius: 2px;
+  border-radius: var(--r-sm);
 }
 .task-btn.active {
   background: linear-gradient(180deg, #f5d678, #b8862e);
@@ -846,7 +846,7 @@ function onDismiss(heroId) {
   height: 6px;
   background: rgba(0, 0, 0, .55);
   border: 1px solid rgba(232, 196, 104, .35);
-  border-radius: 2px;
+  border-radius: var(--r-sm);
   overflow: hidden;
 }
 .exp-fill {
@@ -856,7 +856,7 @@ function onDismiss(heroId) {
   box-shadow: 0 0 4px rgba(212, 175, 55, .55);
 }
 .exp-num {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--c-gold-light);
   opacity: .8;
   min-width: 56px;
@@ -864,7 +864,7 @@ function onDismiss(heroId) {
 }
 .lvup-btn {
   width: 100%;
-  font-size: 11px;
+  font-size: 13px;
   padding: 4px 8px;
   letter-spacing: 2px;
 }
@@ -909,7 +909,7 @@ function onDismiss(heroId) {
 .r-avatar-img.loaded { opacity: 1; }
 .r-name {
   font-family: var(--font-title);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   letter-spacing: 2px;
   color: var(--c-gold-light);
@@ -921,9 +921,9 @@ function onDismiss(heroId) {
   gap: 4px;
   margin: 3px 0;
 }
-.r-stat { font-size: 10px; color: rgba(255, 240, 200, .65); }
+.r-stat { font-size: 12px; color: rgba(255, 240, 200, .65); }
 .r-skill {
-  font-size: 10px;
+  font-size: 12px;
   color: #ff8a78;
   font-family: var(--font-title);
   margin: 3px 0;
@@ -932,7 +932,7 @@ function onDismiss(heroId) {
 .r-cost {
   display: flex;
   justify-content: space-around;
-  font-size: 10px;
+  font-size: 12px;
   color: var(--c-gold-light);
   margin: 4px 0;
 }
@@ -944,7 +944,7 @@ function onDismiss(heroId) {
 .r-cost .lack { color: var(--c-red); text-decoration: line-through; }
 .recruit-btn {
   width: 100%;
-  font-size: 10px;
+  font-size: 12px;
   padding: 3px 0;
   letter-spacing: 2px;
 }
@@ -957,7 +957,7 @@ function onDismiss(heroId) {
   z-index: 100;
   padding: 8px 18px;
   font-family: var(--font-title);
-  font-size: 14px;
+  font-size: 15px;
   letter-spacing: 3px;
   border: 1px solid var(--c-gold-dark);
   background: linear-gradient(180deg, #fff5cf, #d8a04a);

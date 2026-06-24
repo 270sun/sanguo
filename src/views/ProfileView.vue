@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <section class="view profile-view">
     <h2 class="view-title">主 公 府</h2>
     <p class="view-tip">▎运筹帷幄·决胜千里▎</p>
@@ -376,7 +376,7 @@ function formatDate(ts) {
       rgba(28, 14, 6, .92) 6px, rgba(28, 14, 6, .92) 12px),
     linear-gradient(180deg, rgba(40, 22, 10, .92), rgba(20, 10, 4, .96));
   border: 1px solid rgba(232, 196, 104, .55);
-  border-radius: 2px;
+  border-radius: var(--r-sm);
   box-shadow:
     inset 0 0 0 1px rgba(255, 240, 200, .12),
     inset 0 0 14px rgba(0, 0, 0, .55),
@@ -393,10 +393,10 @@ function formatDate(ts) {
   border: 1px solid rgba(232, 196, 104, .35);
   color: var(--c-gold-light);
   font-family: var(--font-title);
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: 2px;
   cursor: pointer;
-  border-radius: 2px;
+  border-radius: var(--r-sm);
   transition: all .2s;
   text-shadow: 0 1px 2px rgba(0, 0, 0, .85);
 }
@@ -405,7 +405,7 @@ function formatDate(ts) {
   box-shadow: 0 0 8px rgba(232, 196, 104, .35);
 }
 .tab-btn .tab-icon { display: inline-flex; align-items: center; line-height: 1; filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .55)); }
-.tab-btn .tab-name { font-size: 12px; }
+.tab-btn .tab-name { font-size: 13px; }
 .tab-btn.active {
   background: linear-gradient(180deg, #f5d678, #b8862e);
   color: #2a1810;
@@ -446,7 +446,7 @@ function formatDate(ts) {
     inset 0 0 18px rgba(0, 0, 0, .55),
     0 2px 0 #0e0703,
     0 4px 10px rgba(0, 0, 0, .55);
-  border-radius: 2px;
+  border-radius: var(--r-sm);
 }
 
 /* 主公肖像 */
@@ -492,7 +492,7 @@ function formatDate(ts) {
   outline: none;
 }
 .title-row {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--c-gold-light);
   opacity: .75;
   margin-top: 4px;
@@ -514,16 +514,16 @@ function formatDate(ts) {
   background: rgba(0, 0, 0, .35);
   border: 1px solid rgba(232, 196, 104, .4);
   padding: 6px 8px;
-  border-radius: 2px;
+  border-radius: var(--r-sm);
 }
 .stat .k {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--c-gold);
   letter-spacing: 1px;
   opacity: .85;
 }
 .stat .v {
-  font-size: 14px;
+  font-size: 15px;
   color: var(--c-gold-light);
   margin-top: 2px;
   text-shadow: 0 1px 2px rgba(0, 0, 0, .85);
@@ -559,14 +559,14 @@ function formatDate(ts) {
   height: 70px;
   margin-top: 8px;
   padding: 6px;
-  font-size: 11px;
+  font-size: 13px;
   font-family: monospace;
   resize: vertical;
   box-sizing: border-box;
   background: rgba(0, 0, 0, .55);
   border: 1px solid rgba(232, 196, 104, .45);
   color: var(--c-gold-light);
-  border-radius: 2px;
+  border-radius: var(--r-sm);
 }
 .codebox:focus {
   outline: none;
@@ -577,7 +577,7 @@ function formatDate(ts) {
 .import-block .btn { margin-top: 6px; }
 .footer-tip {
   text-align: center;
-  font-size: 11px;
+  font-size: 13px;
   color: var(--c-gold-light);
   opacity: .6;
   margin-top: 20px;
@@ -603,7 +603,7 @@ function formatDate(ts) {
   letter-spacing: 1px;
   transition: all .2s;
   box-shadow: inset 0 0 0 1px rgba(255, 240, 200, .08);
-  border-radius: 2px;
+  border-radius: var(--r-sm);
   text-shadow: 0 1px 2px rgba(0, 0, 0, .85);
 }
 .tax-btn:hover {
@@ -620,9 +620,9 @@ function formatDate(ts) {
     0 0 12px rgba(232, 196, 104, .75);
   text-shadow: none;
 }
-.tax-btn .t-name { font-size: 14px; font-weight: 700; letter-spacing: 3px; }
+.tax-btn .t-name { font-size: 15px; font-weight: 700; letter-spacing: 3px; }
 .tax-btn .t-meta {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--c-gold);
   opacity: .85;
   margin-top: 2px;
@@ -635,7 +635,7 @@ function formatDate(ts) {
 
 .tax-tip {
   margin: 4px 0 10px;
-  font-size: 11px;
+  font-size: 13px;
   color: var(--c-gold-light);
   opacity: .7;
   text-align: center;
@@ -648,7 +648,7 @@ function formatDate(ts) {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
+  font-size: 13px;
   margin-bottom: 4px;
 }
 .m-label {
@@ -661,7 +661,7 @@ function formatDate(ts) {
   height: 10px;
   background: rgba(0, 0, 0, .55);
   border: 1px solid rgba(232, 196, 104, .4);
-  border-radius: 2px;
+  border-radius: var(--r-sm);
   overflow: hidden;
 }
 .m-fill {
@@ -673,22 +673,22 @@ function formatDate(ts) {
 .m-num {
   flex-shrink: 0;
   color: var(--c-gold-light);
-  font-size: 12px;
+  font-size: 13px;
   text-shadow: 0 1px 2px rgba(0, 0, 0, .85);
 }
 .morale-note {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--c-gold-light);
   opacity: .7;
   text-align: center;
   margin: 4px 0 0;
   letter-spacing: 1px;
 }
-.morale-note b { color: #ff8a78; font-size: 12px; opacity: 1; }
+.morale-note b { color: #ff8a78; font-size: 13px; opacity: 1; }
 
 /* 国策流派 */
 .spec-tip {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--c-gold-light);
   opacity: .7;
   text-align: center;
@@ -713,7 +713,7 @@ function formatDate(ts) {
   box-shadow:
     inset 0 0 0 1px rgba(255, 240, 200, .1),
     inset 0 0 14px rgba(0, 0, 0, .55);
-  border-radius: 2px;
+  border-radius: var(--r-sm);
 }
 .spec-card:hover { transform: translateY(-2px); }
 .spec-icon {
@@ -726,7 +726,7 @@ function formatDate(ts) {
 }
 .spec-name {
   font-family: var(--font-title);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   letter-spacing: 2px;
   margin: 2px 0;
@@ -734,20 +734,20 @@ function formatDate(ts) {
 }
 .spec-title {
   font-family: var(--font-title);
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 3px;
   color: var(--c-gold-light);
   text-shadow: 0 1px 2px rgba(0, 0, 0, .85);
 }
 .spec-desc {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--c-gold-light);
   opacity: .75;
   margin: 3px 0 2px;
   letter-spacing: 1px;
 }
 .spec-flavor {
-  font-size: 9px;
+  font-size: 12px;
   color: var(--c-gold);
   letter-spacing: 1px;
   font-style: italic;
@@ -755,7 +755,7 @@ function formatDate(ts) {
   opacity: .85;
 }
 .spec-preview {
-  font-size: 10px;
+  font-size: 12px;
   color: #b3e5a3;
   font-family: var(--font-num);
   line-height: 1.4;
@@ -767,7 +767,7 @@ function formatDate(ts) {
   border: 1.5px solid var(--c-gold);
   padding: 8px;
   background: var(--panel-bg-deep);
-  border-radius: 2px;
+  border-radius: var(--r-sm);
   box-shadow:
     inset 0 0 0 1px rgba(255, 240, 200, .12),
     inset 0 0 18px rgba(0, 0, 0, .55);
@@ -787,13 +787,13 @@ function formatDate(ts) {
 .head-meta { flex: 1; }
 .head-name {
   font-family: var(--font-title);
-  font-size: 14px;
+  font-size: 15px;
   letter-spacing: 3px;
   font-weight: 700;
   text-shadow: 0 0 6px rgba(0, 0, 0, .75), 0 1px 2px rgba(0, 0, 0, .85);
 }
 .head-sub {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--c-gold-light);
   opacity: .7;
   letter-spacing: 1px;
@@ -804,11 +804,11 @@ function formatDate(ts) {
   color: var(--c-gold-light);
   width: 22px;
   height: 22px;
-  font-size: 14px;
+  font-size: 15px;
   cursor: pointer;
   line-height: 1;
   padding: 0;
-  border-radius: 2px;
+  border-radius: var(--r-sm);
 }
 .dismiss-spec:hover {
   color: #ff8a78;
@@ -826,16 +826,16 @@ function formatDate(ts) {
   border: 1px solid rgba(232, 196, 104, .4);
   padding: 4px 2px;
   text-align: center;
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 1px;
   transition: all .25s;
   background: rgba(0, 0, 0, .35);
   color: var(--c-gold-light);
   opacity: .65;
-  border-radius: 2px;
+  border-radius: var(--r-sm);
 }
-.stage-cell .cell-no { font-family: var(--font-title); font-size: 11px; }
-.stage-cell .cell-name { font-size: 9px; margin-top: 1px; }
+.stage-cell .cell-no { font-family: var(--font-title); font-size: 13px; }
+.stage-cell .cell-name { font-size: 12px; margin-top: 1px; }
 .stage-cell.done {
   box-shadow: 0 0 8px rgba(212, 175, 55, .65);
   font-weight: 700;
@@ -849,10 +849,10 @@ function formatDate(ts) {
   padding: 5px 8px;
   margin-bottom: 6px;
   min-height: 30px;
-  border-radius: 2px;
+  border-radius: var(--r-sm);
 }
 .ef-line {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--c-gold-light);
   letter-spacing: 1px;
   line-height: 1.5;
@@ -869,7 +869,7 @@ function formatDate(ts) {
   border-top: 1px dashed rgba(232, 196, 104, .45);
 }
 .next-info {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--c-gold-light);
   flex: 1;
   text-shadow: 0 1px 2px rgba(0, 0, 0, .85);
@@ -881,14 +881,14 @@ function formatDate(ts) {
 }
 .next-info .cost {
   display: block;
-  font-size: 10px;
+  font-size: 12px;
   color: var(--c-gold);
   opacity: .85;
   font-family: var(--font-num);
   margin-top: 1px;
 }
 .advance-btn {
-  font-size: 11px;
+  font-size: 13px;
   padding: 4px 10px;
   letter-spacing: 2px;
   display: inline-flex;
@@ -900,7 +900,7 @@ function formatDate(ts) {
   font-family: var(--font-title);
   letter-spacing: 4px;
   color: var(--c-gold-light);
-  font-size: 13px;
+  font-size: 14px;
   padding: 6px 0;
   text-shadow: 0 0 8px rgba(212, 175, 55, .65), 0 1px 2px rgba(0, 0, 0, .85);
 }
@@ -916,13 +916,13 @@ function formatDate(ts) {
   background: rgba(0, 0, 0, .35);
   border: 1px solid rgba(232, 196, 104, .4);
   padding: 5px 7px;
-  border-radius: 2px;
+  border-radius: var(--r-sm);
 }
 .gov-head {
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 12px;
+  font-size: 13px;
 }
 .gov-icon { display: inline-flex; align-items: center; filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .55)); }
 .gov-label {
@@ -934,7 +934,7 @@ function formatDate(ts) {
 }
 .gov-val {
   margin-left: auto;
-  font-size: 13px;
+  font-size: 14px;
   color: var(--c-gold-light);
   text-shadow: 0 1px 2px rgba(0, 0, 0, .85);
 }
@@ -944,7 +944,7 @@ function formatDate(ts) {
   background: rgba(0, 0, 0, .55);
   border: 1px solid rgba(232, 196, 104, .4);
   margin: 4px 0 3px;
-  border-radius: 2px;
+  border-radius: var(--r-sm);
   overflow: hidden;
 }
 .gov-fill {
@@ -960,7 +960,7 @@ function formatDate(ts) {
   pointer-events: none;
 }
 .gov-desc {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--c-gold);
   letter-spacing: 1px;
   font-style: italic;
@@ -975,7 +975,7 @@ function formatDate(ts) {
   flex-wrap: wrap;
   gap: 4px;
   align-items: center;
-  font-size: 10px;
+  font-size: 12px;
   color: var(--c-gold-light);
   opacity: .85;
   margin-bottom: 3px;
@@ -989,12 +989,12 @@ function formatDate(ts) {
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  border-radius: 2px;
+  border-radius: var(--r-sm);
   text-shadow: 0 1px 2px rgba(0, 0, 0, .85);
 }
 .gov-tip {
   margin: 0;
-  font-size: 10px;
+  font-size: 12px;
   color: var(--c-gold-light);
   opacity: .7;
   letter-spacing: 1px;

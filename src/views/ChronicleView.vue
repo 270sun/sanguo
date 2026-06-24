@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="chronicle-view">
     <header class="ch-head paper-bg">
       <div class="ch-title-row">
@@ -160,7 +160,7 @@ function onClear() {
   font-weight: 800;
 }
 .ch-stats {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--c-muted);
   letter-spacing: 1px;
   display: flex;
@@ -175,7 +175,7 @@ function onClear() {
 }
 .ch-count { color: var(--c-muted); }
 .ch-sub {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--c-gold-dark);
   letter-spacing: 1px;
   font-style: italic;
@@ -190,7 +190,7 @@ function onClear() {
   background: rgba(255, 240, 200, .35);
   border: 1px solid var(--c-line);
   color: var(--c-muted);
-  font-size: 10px;
+  font-size: 12px;
   padding: 3px 7px;
   letter-spacing: 1px;
   cursor: pointer;
@@ -210,8 +210,8 @@ function onClear() {
   color: var(--c-muted);
 }
 .empty-icon { font-size: 48px; opacity: .55; margin-bottom: 8px; }
-.empty-text { font-family: var(--font-title); letter-spacing: 4px; font-size: 14px; }
-.empty-hint { font-size: 11px; margin-top: 4px; letter-spacing: 1px; }
+.empty-text { font-family: var(--font-title); letter-spacing: 4px; font-size: 15px; }
+.empty-hint { font-size: 13px; margin-top: 4px; letter-spacing: 1px; }
 
 .ch-list {
   list-style: none;
@@ -228,7 +228,7 @@ function onClear() {
   background: linear-gradient(180deg, #8a2525 0%, #5a1818 100%);
   color: #fff5cf;
   font-family: var(--font-title);
-  font-size: 10px;
+  font-size: 12px;
   text-align: center;
   padding: 6px 2px;
   letter-spacing: 1px;
@@ -294,14 +294,14 @@ function onClear() {
 .ch-icon { font-size: 18px; }
 .ch-event-title {
   font-family: var(--font-title);
-  font-size: 13px;
+  font-size: 14px;
   letter-spacing: 3px;
   color: var(--c-ink);
   font-weight: 700;
 }
 .ch-type-pill {
   margin-left: auto;
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 1px;
   padding: 1px 6px;
   background: rgba(40, 24, 14, .85);
@@ -314,13 +314,13 @@ function onClear() {
 .type-history .ch-type-pill { background: #3d2c52; }
 .type-culture .ch-type-pill { background: #2c5a3d; }
 
-.ch-meta { font-size: 10px; color: var(--c-muted); margin-bottom: 4px; letter-spacing: 1px; }
+.ch-meta { font-size: 12px; color: var(--c-muted); margin-bottom: 4px; letter-spacing: 1px; }
 .ch-date { font-family: var(--font-num); }
-.ch-choice { font-size: 11px; color: var(--c-ink); margin-bottom: 3px; }
+.ch-choice { font-size: 13px; color: var(--c-ink); margin-bottom: 3px; }
 .ch-choice-label { color: var(--c-red); font-weight: 600; }
 .ch-choice-text { font-family: var(--font-title); letter-spacing: 1px; }
 .ch-result {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--c-gold-dark);
   background: rgba(232, 196, 104, .12);
   padding: 4px 6px;
@@ -339,12 +339,12 @@ function onClear() {
   justify-content: space-between;
   align-items: center;
   font-family: var(--font-title);
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 1px;
   color: var(--c-gold-dark);
 }
 .ch-lore-text {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--c-ink);
   line-height: 1.65;
   margin: 4px 0 0;
@@ -359,7 +359,7 @@ function onClear() {
   border: 1px solid var(--c-muted);
   color: var(--c-muted);
   font-family: var(--font-title);
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 2px;
   padding: 5px 14px;
   cursor: pointer;

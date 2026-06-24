@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <section class="view battle-view">
     <h2 class="view-title">出 征 演 武</h2>
     <p class="view-tip">▎编排队伍·选定目标·决战沙场▎</p>
@@ -396,11 +396,11 @@ function fmtTs(ts) {
 }
 .sel-ctx .t-name {
   flex: 0 0 auto;
-  font-size: 12px;
+  font-size: 13px;
 }
 .sel-ctx .tier-tag { flex: 0 0 auto; }
 .sel-ctx .ctx-item {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--c-gold-light);
   display: inline-flex;
   align-items: center;
@@ -414,7 +414,7 @@ function fmtTs(ts) {
   overflow: hidden;
   text-overflow: ellipsis;
   opacity: .7;
-  font-size: 10px;
+  font-size: 12px;
 }
 .sel-ctx .cd-inline {
   color: #ff8a78;
@@ -426,7 +426,7 @@ function fmtTs(ts) {
   justify-content: space-between;
   margin: 8px 0 4px;
   font-family: var(--font-title);
-  font-size: 13px;
+  font-size: 14px;
   letter-spacing: 4px;
   color: var(--c-gold-light);
   border-bottom: 1px dashed rgba(232, 196, 104, .55);
@@ -434,7 +434,7 @@ function fmtTs(ts) {
   text-shadow: 0 1px 2px rgba(0, 0, 0, .85);
 }
 .section-title .hint {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--c-gold);
   letter-spacing: 1px;
   font-family: var(--font-num);
@@ -450,17 +450,17 @@ function fmtTs(ts) {
     inset 0 0 18px rgba(0, 0, 0, .55),
     0 2px 0 #0e0703,
     0 4px 10px rgba(0, 0, 0, .55);
-  border-radius: 2px;
+  border-radius: var(--r-sm);
 }
 .empty-title {
   font-family: var(--font-title);
-  font-size: 14px;
+  font-size: 15px;
   letter-spacing: 3px;
   color: var(--c-gold-light);
   text-shadow: 0 1px 2px rgba(0, 0, 0, .85);
 }
 .empty-hint {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--c-gold-light);
   opacity: .7;
   letter-spacing: 1px;
@@ -479,7 +479,7 @@ function fmtTs(ts) {
   cursor: pointer;
   transition: all .15s;
   color: var(--c-gold-light);
-  border-radius: 2px;
+  border-radius: var(--r-sm);
   box-shadow:
     inset 0 0 0 1px rgba(255, 240, 200, .12),
     inset 0 0 14px rgba(0, 0, 0, .55),
@@ -513,14 +513,14 @@ function fmtTs(ts) {
 .t-name {
   font-family: var(--font-title);
   font-weight: 700;
-  font-size: 13px;
+  font-size: 14px;
   letter-spacing: 1px;
   color: var(--c-gold-light);
   text-shadow: 0 1px 2px rgba(0, 0, 0, .85);
 }
 .tier-tag {
   font-family: var(--font-title);
-  font-size: 10px;
+  font-size: 12px;
   color: #fff1c2;
   padding: 0 5px;
   border: 1px solid rgba(0, 0, 0, .55);
@@ -530,17 +530,17 @@ function fmtTs(ts) {
 }
 .owner-tag {
   font-family: var(--font-title);
-  font-size: 10px;
+  font-size: 12px;
   padding: 0 5px;
   border: 1px solid;
   border-left-width: 3px;
-  border-radius: 2px;
+  border-radius: var(--r-sm);
   background: rgba(20, 10, 4, .65);
   letter-spacing: 1px;
   cursor: help;
 }
 .t-desc {
-  font-size: 10px;
+  font-size: 12px;
   color: rgba(255, 240, 200, .65);
   margin-bottom: 3px;
   line-height: 1.3;
@@ -549,7 +549,7 @@ function fmtTs(ts) {
 .t-meta {
   display: flex;
   justify-content: space-between;
-  font-size: 10px;
+  font-size: 12px;
   color: var(--c-gold-light);
 }
 .t-meta .cost-line {
@@ -560,7 +560,7 @@ function fmtTs(ts) {
 .t-meta b { color: #ff8a78; }
 .cd {
   margin-top: 3px;
-  font-size: 10px;
+  font-size: 12px;
   color: #ff8a78;
   text-align: center;
   letter-spacing: 1px;
@@ -581,7 +581,7 @@ function fmtTs(ts) {
   border: 1px solid rgba(232, 196, 104, .55);
   cursor: pointer;
   color: var(--c-gold-light);
-  border-radius: 2px;
+  border-radius: var(--r-sm);
   box-shadow:
     inset 0 0 0 1px rgba(255, 240, 200, .12),
     inset 0 0 14px rgba(0, 0, 0, .55),
@@ -639,25 +639,25 @@ function fmtTs(ts) {
 .pick-info { flex: 1; min-width: 0; }
 .pick-name {
   font-family: var(--font-title);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--c-gold-light);
   letter-spacing: 1px;
   text-shadow: 0 1px 2px rgba(0, 0, 0, .85);
 }
 .pick-name .lv {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--c-gold);
   margin-left: 3px;
   font-family: var(--font-num);
 }
 .pick-stat {
-  font-size: 10px;
+  font-size: 12px;
   color: rgba(255, 240, 200, .65);
 }
 .pick-mark {
   font-family: var(--font-title);
-  font-size: 16px;
+  font-size: 17px;
   color: var(--c-gold-light);
   width: 16px;
   text-align: center;
@@ -671,7 +671,7 @@ function fmtTs(ts) {
   background:
     linear-gradient(180deg, rgba(168, 35, 26, .42), rgba(60, 18, 12, .85));
   border: 1px solid var(--c-red);
-  border-radius: 2px;
+  border-radius: var(--r-sm);
   box-shadow:
     0 0 14px rgba(212, 175, 55, .35),
     inset 0 0 0 1px rgba(255, 240, 200, .25),
@@ -683,7 +683,7 @@ function fmtTs(ts) {
   justify-content: center;
   gap: 8px;
   font-family: var(--font-title);
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: 5px;
   color: var(--c-gold-light);
   text-align: center;
@@ -694,7 +694,7 @@ function fmtTs(ts) {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 11px;
+  font-size: 13px;
   padding: 1px 0;
 }
 .fire-name {
@@ -711,7 +711,7 @@ function fmtTs(ts) {
 }
 .fire-total {
   text-align: center;
-  font-size: 11px;
+  font-size: 13px;
   color: var(--c-gold-light);
   border-top: 1px dashed rgba(232, 196, 104, .55);
   padding-top: 3px;
@@ -720,13 +720,13 @@ function fmtTs(ts) {
 .fire-total b {
   color: #ffd86b;
   font-family: var(--font-num);
-  font-size: 13px;
+  font-size: 14px;
   text-shadow: 0 0 6px rgba(212, 175, 55, .65);
 }
 
 .bond-fire-hint {
   text-align: center;
-  font-size: 10px;
+  font-size: 12px;
   color: var(--c-gold-light);
   opacity: .75;
   letter-spacing: 1px;
@@ -749,7 +749,7 @@ function fmtTs(ts) {
   background: var(--panel-bg-deep);
   border: 1px solid rgba(232, 196, 104, .55);
   padding: 6px 8px;
-  border-radius: 2px;
+  border-radius: var(--r-sm);
   box-shadow:
     inset 0 0 0 1px rgba(255, 240, 200, .12),
     inset 0 0 18px rgba(0, 0, 0, .55),
@@ -768,7 +768,7 @@ function fmtTs(ts) {
   padding: 4px 4px;
   background: rgba(0, 0, 0, .35);
   border: 1px solid rgba(232, 196, 104, .4);
-  border-radius: 2px;
+  border-radius: var(--r-sm);
 }
 .vs-side.enemy {
   background: rgba(168, 35, 26, .25);
@@ -776,7 +776,7 @@ function fmtTs(ts) {
 }
 .vs-label {
   font-family: var(--font-title);
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: 2px;
   color: var(--c-gold-light);
   opacity: .8;
@@ -794,7 +794,7 @@ function fmtTs(ts) {
   text-shadow: 0 0 8px rgba(168, 35, 26, .55), 0 1px 2px rgba(0, 0, 0, .85);
 }
 .vs-sub {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--c-gold-light);
   opacity: .75;
 }
@@ -808,7 +808,7 @@ function fmtTs(ts) {
 }
 .go-btn {
   width: 100%;
-  font-size: 13px;
+  font-size: 14px;
   letter-spacing: 6px;
   padding: 5px;
 }
@@ -819,13 +819,13 @@ function fmtTs(ts) {
   grid-template-columns: 16px 1fr auto auto;
   gap: 6px;
   align-items: center;
-  font-size: 11px;
+  font-size: 13px;
   padding: 4px 6px;
   background: var(--panel-bg-deep);
   border: 1px solid rgba(232, 196, 104, .35);
   border-left: 3px solid var(--c-muted);
   color: var(--c-gold-light);
-  border-radius: 2px;
+  border-radius: var(--r-sm);
   box-shadow: inset 0 0 0 1px rgba(255, 240, 200, .08), 0 2px 4px rgba(0, 0, 0, .4);
 }
 .log-item.win { border-left-color: #b3e5a3; }
@@ -851,7 +851,7 @@ function fmtTs(ts) {
   color: var(--c-gold-light);
   opacity: .65;
   font-family: var(--font-num);
-  font-size: 10px;
+  font-size: 12px;
 }
 
 /* 战报弹窗 */
@@ -871,7 +871,7 @@ function fmtTs(ts) {
   padding: 18px 16px;
   text-align: center;
   color: var(--c-gold-light);
-  border-radius: 2px;
+  border-radius: var(--r-sm);
   box-shadow:
     inset 0 0 0 1px rgba(255, 240, 200, .25),
     inset 0 0 22px rgba(0, 0, 0, .65),
@@ -898,7 +898,7 @@ function fmtTs(ts) {
 }
 .report-line {
   font-family: var(--font-title);
-  font-size: 14px;
+  font-size: 15px;
   letter-spacing: 3px;
   color: var(--c-gold-light);
   border-top: 1px dashed rgba(232, 196, 104, .55);
@@ -909,7 +909,7 @@ function fmtTs(ts) {
 }
 .report-roll {
   margin-bottom: 8px;
-  font-size: 14px;
+  font-size: 15px;
   color: var(--c-gold-light);
 }
 .report-roll b {
@@ -922,7 +922,7 @@ function fmtTs(ts) {
   margin: 0 6px;
   color: var(--c-gold);
   opacity: .8;
-  font-size: 11px;
+  font-size: 13px;
 }
 .rounds-stage {
   position: relative;
@@ -934,12 +934,12 @@ function fmtTs(ts) {
   background: linear-gradient(180deg, rgba(20, 10, 4, .85), rgba(40, 24, 14, .8));
   border: 1px solid rgba(232, 196, 104, .35);
   border-left: 3px solid rgba(232, 196, 104, .6);
-  border-radius: 2px;
+  border-radius: var(--r-sm);
   box-shadow: inset 0 0 0 1px rgba(0,0,0,.4);
 }
 .rounds-wrap { display: flex; flex-direction: column; gap: 3px; }
 .round-line {
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.5;
   color: var(--c-paper);
   display: flex;
@@ -958,7 +958,7 @@ function fmtTs(ts) {
   padding-top: 3px;
   border-top: 1px dashed rgba(232, 196, 104, .35);
   font-family: var(--font-title);
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: .06em;
   color: var(--c-gold);
 }
@@ -972,14 +972,14 @@ function fmtTs(ts) {
   background: transparent;
   border: 1px solid rgba(232, 196, 104, .4);
   color: var(--c-paper-dark);
-  font-size: 9px;
+  font-size: 12px;
   padding: 1px 6px;
   cursor: pointer;
   letter-spacing: .08em;
 }
 .skip-btn:hover { color: var(--c-gold); border-color: var(--c-gold); }
 .report-detail {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--c-gold-light);
   text-align: left;
   background: rgba(0, 0, 0, .4);
@@ -987,7 +987,7 @@ function fmtTs(ts) {
   border: 1px dashed rgba(232, 196, 104, .45);
   margin-bottom: 10px;
   line-height: 1.6;
-  border-radius: 2px;
+  border-radius: var(--r-sm);
 }
 .report-detail span {
   margin-right: 6px;
@@ -1013,13 +1013,13 @@ function fmtTs(ts) {
   z-index: 300;
   padding: 8px 18px;
   font-family: var(--font-title);
-  font-size: 14px;
+  font-size: 15px;
   letter-spacing: 3px;
   border: 1px solid rgba(232, 196, 104, .75);
   background:
     linear-gradient(180deg, rgba(40, 22, 10, .95), rgba(20, 10, 4, .98));
   color: var(--c-gold-light);
-  border-radius: 2px;
+  border-radius: var(--r-sm);
   text-shadow: 0 1px 2px rgba(0, 0, 0, .85);
   box-shadow:
     inset 0 0 0 1px rgba(255, 240, 200, .2),

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <header class="hud-mini">
     <!-- 左：主公 + 季节小印 -->
     <div class="hud-left">
@@ -145,20 +145,20 @@ function formatNum(n) {
   font-size: 18px;
   border: 1.5px solid #f0d590;
   box-shadow: 0 0 6px rgba(212, 175, 55, .55);
-  border-radius: 4px;
+  border-radius: var(--r-md);
   letter-spacing: 0;
 }
 .lord-info { display: flex; flex-direction: column; line-height: 1.15; }
 .lord-name {
   font-family: var(--font-title);
-  font-size: 14px;
+  font-size: 15px;
   color: #fff1c2;
   letter-spacing: 2px;
   text-shadow: 0 1px 2px rgba(0, 0, 0, .8);
 }
 .sub-line {
   display: flex; align-items: center; gap: 4px;
-  font-size: 10px;
+  font-size: 12px;
   color: #d4c082;
   letter-spacing: 1px;
 }
@@ -175,10 +175,10 @@ function formatNum(n) {
   background: rgba(255, 240, 200, .12);
   border: 1px solid rgba(232, 196, 104, .55);
   color: #fff1c2;
-  border-radius: 3px;
+  border-radius: var(--r-sm);
   cursor: pointer;
   font-family: var(--font-title);
-  font-size: 14px;
+  font-size: 15px;
   text-decoration: none;
   letter-spacing: 0;
   transition: background .15s, color .15s;
@@ -188,8 +188,8 @@ function formatNum(n) {
   color: #1a0e07;
 }
 .chronicle-pin { gap: 2px; }
-.pin-char { font-size: 12px; }
-.pin-count { font-size: 11px; font-family: var(--font-num); color: #e8c468; }
+.pin-char { font-size: 13px; }
+.pin-count { font-size: 13px; font-family: var(--font-num); color: var(--c-gold); }
 .chronicle-pin.alert .pin-char { color: #ff9c4a; }
 .cb-dot, .warn-dot {
   position: absolute;
@@ -199,7 +199,7 @@ function formatNum(n) {
   border-radius: 50%;
   box-shadow: 0 0 6px rgba(255, 70, 60, .9);
 }
-.mute-btn { font-size: 14px; background: transparent; }
+.mute-btn { font-size: 15px; background: transparent; }
 
 /* 账册抽屉 */
 .ledger-drawer {
@@ -228,7 +228,7 @@ function formatNum(n) {
 }
 .ledger-title {
   font-family: var(--font-title);
-  font-size: 12px;
+  font-size: 13px;
   color: var(--c-red);
   letter-spacing: 3px;
   border-left: 2px solid var(--c-red);
@@ -244,20 +244,20 @@ function formatNum(n) {
   border: 1px solid var(--c-line);
 }
 .res-meta { display: flex; flex-direction: column; line-height: 1.15; }
-.res-val { font-family: var(--font-num); font-size: 13px; color: var(--c-ink); font-weight: 700; }
-.res-rate { font-size: 9px; color: var(--c-muted); font-family: var(--font-num); }
+.res-val { font-family: var(--font-num); font-size: 14px; color: var(--c-ink); font-weight: 700; }
+.res-rate { font-size: 12px; color: var(--c-muted); font-family: var(--font-num); }
 .res-rate.pos { color: var(--c-green); }
 .res-rate.neg { color: var(--c-red); }
 .status-row { display: flex; flex-direction: column; gap: 4px; }
 .status-bar { display: flex; align-items: center; gap: 6px; }
-.s-label { font-size: 11px; color: var(--c-muted); letter-spacing: 1px; font-family: var(--font-title); min-width: 28px; }
+.s-label { font-size: 13px; color: var(--c-muted); letter-spacing: 1px; font-family: var(--font-title); min-width: 28px; }
 .s-label.warn { color: var(--c-red); }
 .bar-track {
   flex: 1; height: 12px;
   background: rgba(20, 10, 4, .35);
   border: 1px solid var(--c-line);
   position: relative;
-  border-radius: 2px;
+  border-radius: var(--r-sm);
   overflow: hidden;
 }
 .bar-fill { height: 100%; transition: width .4s; background: var(--c-gold); }
@@ -265,7 +265,7 @@ function formatNum(n) {
 .bar-text {
   position: absolute; inset: 0;
   display: flex; align-items: center; justify-content: center;
-  font-size: 9px;
+  font-size: 12px;
   font-family: var(--font-num);
   color: #fff1c2;
   text-shadow: 0 0 2px #000;
@@ -273,7 +273,7 @@ function formatNum(n) {
 }
 .season-tip {
   margin-top: 6px;
-  font-size: 10px;
+  font-size: 12px;
   color: var(--c-muted);
   font-style: italic;
   letter-spacing: 0.5px;
