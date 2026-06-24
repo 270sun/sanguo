@@ -81,19 +81,6 @@ const EVENT_SEEDS = {
   gossip:   'sanguo-teahouse'
 }
 
-// 建筑兜底：Picsum 灰度风景
-const BUILDING_SEEDS = {
-  lordHall:   'sanguo-palace-hall',
-  farm:       'sanguo-rice-field',
-  market:     'sanguo-street',
-  lumber:     'sanguo-pine-forest',
-  barrack:    'sanguo-fortress',
-  academy:    'sanguo-library',
-  inn:        'sanguo-lantern-inn',
-  strategist: 'sanguo-strategist',
-  workshop:   'sanguo-forge'
-}
-
 /* ============================================================
  *  对外 API —— 保持原签名，调用方零改动
  * ============================================================ */
@@ -126,25 +113,4 @@ export function eventImage(type) {
   return `https://picsum.photos/seed/${seed}/800/240`
 }
 
-/**
- * 全局背景 URL
- * 本地优先 → Picsum 兜底
- */
-export function bgImage() {
-  if (HAS_LOCAL_BG) {
-    return `${IMG_BASE}bg.png`
-  }
-  return 'https://picsum.photos/seed/sanguo-mountains/1600/900?grayscale&blur=1'
-}
 
-/**
- * 建筑底图 URL
- * 本地优先 → Picsum 兜底
- */
-export function buildingImage(key) {
-  if (LOCAL_BUILDING_SET.has(key)) {
-    return `${IMG_BASE}buildings/${key}.png`
-  }
-  const seed = BUILDING_SEEDS[key] || `sanguo-${key}`
-  return `https://picsum.photos/seed/${seed}/300/300?grayscale`
-}

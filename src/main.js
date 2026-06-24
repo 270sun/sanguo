@@ -28,3 +28,23 @@ if (import.meta.hot) {
 }
 
 app.mount('#app')
+
+/**
+ * 路由背景图预热：mount 后空闲时段提前 fetch 6 张大背景图，
+ * 让用户切换路由时图片已在内存缓存中，避免肉眼可见的白闪/loading。
+ * 用 requestIdleCallback 兜底 setTimeout，确保不抢首屏关键资源。
+ */
+function _preloadRouteBackgrounds() {
+  const base = (import.meta.env.BASE_URL || '/').replace(/\/+$/, '/')
+  const files = ['city', 'heroes', 'battle', 'map', 'profile', 'chronicle']
+  for (const name of files) {
+    const img = new Image()
+    img.decoding = 'async'
+    img.src = `${base}img/bg/${name}.png`
+  }
+}
+const _schedulePreload =
+  typeof window !== 'undefined' && typeof window.requestIdleCallback === 'function'
+    ? (cb) => window.requestIdleCallback(cb, { timeout: 3000 })
+    : (cb) => setTimeout(cb, 1500)
+_schedulePreload(_preloadRouteBackgrounds)

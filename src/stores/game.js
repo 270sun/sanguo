@@ -6,8 +6,9 @@ import { TERRITORY_MAP, MAJOR_IDS, BATTLE_COOLDOWN_SEC, computePartyPower, resol
 import { detectBonds, combinePowerMul, combineRateBonus } from '../data/bonds.js'
 import { SPECIALIZATION_MAP, aggregateSpecEffects, nextStageCost } from '../data/specializations.js'
 import { rollEvent, EVENT_MAP } from '../data/events.js'
-import { SEASONS, seasonOfElapsed, seasonProgressOfElapsed, yearOfElapsed, dayOfElapsed, buffSummary } from '../data/season.js'
-import { FACTIONS, INITIAL_WORLD, FACTION_AI, ownerOf, factionOf, neighborsOf } from '../data/factions.js'
+import { seasonOfElapsed, seasonProgressOfElapsed, yearOfElapsed, dayOfElapsed, buffSummary } from '../data/season.js'
+import { INITIAL_WORLD, FACTION_AI, factionOf, neighborsOf } from '../data/factions.js'
+import { deepMergeDefaults } from './saveHelpers.js'
 
 /** 客栈刷新铜钱花费、招募名额计算 */
 const TAVERN_REFRESH_COIN = 80
@@ -61,36 +62,6 @@ function stopGlobalTick() {
     clearInterval(_tickHandle)
     _tickHandle = null
   }
-}
-
-/**
- * 通用深合并：用 init 默认值填补 data 缺失字段，已存在的 leaf 值以 data 为准。
- * 数组按"data 优先"原则整体替换（避免把存档数组与默认空数组拼起来导致重复）。
- */
-function _isPlainObject(v) {
-  return v && typeof v === 'object' && !Array.isArray(v)
-}
-function deepMergeDefaults(defaults, data) {
-  if (!_isPlainObject(defaults)) return data === undefined ? defaults : data
-  const out = {}
-  for (const k of Object.keys(defaults)) {
-    const dv = defaults[k]
-    const sv = data?.[k]
-    if (sv === undefined || sv === null) {
-      out[k] = dv
-    } else if (_isPlainObject(dv) && _isPlainObject(sv)) {
-      out[k] = deepMergeDefaults(dv, sv)
-    } else {
-      out[k] = sv
-    }
-  }
-  // 保留 data 中默认值未声明的额外字段（向前兼容）
-  if (_isPlainObject(data)) {
-    for (const k of Object.keys(data)) {
-      if (!(k in out)) out[k] = data[k]
-    }
-  }
-  return out
 }
 
 /**
@@ -247,7 +218,7 @@ export const useGameStore = defineStore('game', {
     },
     /** 实际产出（已叠加民心 + 税率 + 武将任务 + 领地特产 + 麾下羁绊 + 专精流派 + 治理 + 季节） */
     rates(state) {
-      const base = computeBaseRates(state.city, state.garrison, findHero)
+      const base = this.baseRates
       const m = 0.5 + state.policy.morale / 200
       const coinMul = (TAX_TABLE[state.policy.tax] || TAX_TABLE.normal).coinMul
       const taskAdd = this.heroTaskRates
@@ -483,8 +454,9 @@ export const useGameStore = defineStore('game', {
 
     /** 每秒 tick：增加资源、恢复精力、税率影响民心、推进建造队列、检查事件触发 */
     applyTick(seconds = 1) {
-      // 累计游戏时长 & 季节切换检测
-      const prevSeasonKey = this.currentSeason.key
+      // 一次性快照所有需要的 getter，避免 state 修改后 tick 内多次重算
+      const prevSeason = this.currentSeason
+      const prevSeasonKey = prevSeason.key
       this.meta.playSec = (this.meta.playSec || 0) + seconds
       const curSeason = this.currentSeason
       if (curSeason.key !== prevSeasonKey) {
@@ -493,12 +465,11 @@ export const useGameStore = defineStore('game', {
       }
 
       const r = this.rates
+      const spec = this.specEffects
       this.resources.grain   = Math.max(0, this.resources.grain   + r.grain   * seconds)
       this.resources.coin    = Math.max(0, this.resources.coin    + r.coin    * seconds)
       this.resources.wood    = Math.max(0, this.resources.wood    + r.wood    * seconds)
       this.resources.soldier = Math.max(0, this.resources.soldier + r.soldier * seconds)
-
-      const spec = this.specEffects
 
       // 精力恢复（亚秒累计，受集贤馆 apRegenMul 影响）
       const apRegenMul = spec.apRegenMul || 1

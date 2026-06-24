@@ -404,6 +404,3 @@ export const ICON_GROUPS = {
 }
 
 export const FALLBACK_ICON = MISC_ICONS.fallback
-
-/** 给老调用方留兼容线描包装（避免历史代码崩溃） */
-export { line as lineWrap }

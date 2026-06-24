@@ -7,6 +7,8 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <title>卧龙吟·诸侯纪</title>
+    <!-- 首屏书房背景预加载：HTML 解析阶段即并行 fetch，先于 CSS 中的 url() 触发 -->
+    <link rel="preload" as="image" href="./img/bg/study.png" />
   </head>
   <body>
     <div id="app"></div>

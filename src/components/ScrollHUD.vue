@@ -41,7 +41,12 @@
         <div class="ledger-panel" @wheel.stop>
           <div class="ledger-title">▸ 府库账册</div>
           <div class="res-grid">
-            <div v-for="r in game.resourceList" :key="r.key" class="res-cell">
+            <div
+              v-for="r in game.resourceList"
+              :key="r.key"
+              v-memo="[r.value, r.rate]"
+              class="res-cell"
+            >
               <AppIcon class="res-icon" :kind="r.iconKind || 'res'" :id="r.iconId || r.key" :size="20" />
               <div class="res-meta">
                 <div class="res-val">{{ formatNum(r.value) }}</div>

@@ -40,8 +40,8 @@
       <EventModal />
       <EndingModal />
 
-      <!-- 飘落落叶/灰烬粒子（沉浸气氛；移动端 3 颗，PC 8 颗） -->
-      <div class="particle-layer" aria-hidden="true">
+      <!-- 飘落落叶/灰烬粒子（沉浸气氛；移动端 3 颗，PC 8 颗；弹窗打开时停渲染减负载） -->
+      <div v-if="!hasModalOpen" class="particle-layer" aria-hidden="true">
         <span v-for="i in particleCount" :key="i" class="particle" :style="particleStyle(i)"></span>
       </div>
     </div>
@@ -64,6 +64,8 @@ const transitionName = ref('scene-fade')
 const mainEl = ref(null)
 
 const inSubPage = computed(() => route.path !== '/')
+/** 任一全屏弹窗（事件/结局）打开时，停掉粒子动画以减负载，明显改善弹窗期间的交互流畅度 */
+const hasModalOpen = computed(() => !!game.pendingEvent || !!game.pendingEnding)
 function goStudy() {
   game.playSfx && game.playSfx('page')
   router.push('/')

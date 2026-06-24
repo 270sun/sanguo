@@ -245,7 +245,6 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useGameStore } from '../stores/game'
 import { BUILDING_MAP } from '../data/buildings.js'
-import BUILDINGS from '../data/buildings.js'
 import BuildingDetailModal from '../components/BuildingDetailModal.vue'
 import AppIcon from '../components/AppIcon.vue'
 
