@@ -24,8 +24,7 @@ const router = useRouter()
 const GLYPH = {
   '/city': '城',
   '/heroes': '将',
-  '/battle': '战',
-  '/map': '图',
+  '/world': '图',
   '/profile': '主',
   '/chronicle': '史'
 }

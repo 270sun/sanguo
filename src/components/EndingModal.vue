@@ -1,4 +1,4 @@
-﻿<template>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<template>
   <transition name="ending-fade">
     <div v-if="game.pendingEnding" class="ending-mask" @click.self="close">
       <div class="scroll-wrap">

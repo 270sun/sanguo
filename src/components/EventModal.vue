@@ -1,4 +1,4 @@
-﻿<template>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<template>
   <transition name="evt-modal">
     <div v-if="show" class="evt-mask" @click.self="onSkip">
       <div class="evt-panel ink-frame" :class="typeClass">

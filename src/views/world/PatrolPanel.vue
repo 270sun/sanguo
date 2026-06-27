@@ -1,5 +1,5 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<template>
-  <section class="view map-view">
+<template>
+  <section class="patrol-panel">
     <div class="overview-bar">
       <span class="pill pill-title">疆 域</span>
       <span class="pill pill-num">
@@ -24,14 +24,9 @@
     </div>
 
     <div class="map-stage">
-      <ChinaMap
-        :owned-ids="game.territories"
-        :cooldown="game.territoryCooldown"
-        @pick="onPick"
-      />
+      <slot name="map" />
     </div>
 
-    <!-- 天下大事简报：显示最近 NPC 势力的攻伐 -->
     <div v-if="game.worldLog && game.worldLog.length" class="world-chronicle">
       <div class="wc-head">
         <AppIcon kind="misc" id="scroll" :size="12" tone="gold" />
@@ -87,13 +82,12 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
-import { useGameStore } from '../stores/game'
-import { TERRITORIES, TIER_META } from '../data/territories'
-import AppIcon from '../components/AppIcon.vue'
-import ChinaMap from '../components/ChinaMap.vue'
+import { useGameStore } from '../../stores/game'
+import { TERRITORIES, TIER_META } from '../../data/territories'
+import AppIcon from '../../components/AppIcon.vue'
 
-const router = useRouter()
+const emit = defineEmits(['unowned-pick'])
+
 const game = useGameStore()
 const totalCount = TERRITORIES.length
 
@@ -104,7 +98,8 @@ const hasSpecial = computed(() => {
 
 const detail = ref(null)
 
-function onPick(t) {
+function handlePick(t) {
+  if (!t) return
   const owned = game.territories.includes(t.id)
   if (owned) {
     const conqueredAt = game.territoryConqueredAt?.[t.id] || null
@@ -114,7 +109,7 @@ function onPick(t) {
       conqueredAt
     }
   } else {
-    router.push({ path: '/battle', query: { target: t.id } })
+    emit('unowned-pick', t.id)
   }
 }
 
@@ -132,11 +127,12 @@ function formatTime(ts) {
   const pad = (n) => String(n).padStart(2, '0')
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`
 }
+
+defineExpose({ handlePick })
 </script>
 
 <style scoped>
-.map-view {
-  /* 贴合 .app-main 的可视高度（外层已是滚动容器） */
+.patrol-panel {
   height: 100%;
   display: flex;
   flex-direction: column;

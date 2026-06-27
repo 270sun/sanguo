@@ -20,16 +20,24 @@ const routes = [
     meta: { title: '武将', icon: '⚔️', iconKind: 'tab', iconId: 'heroes' }
   },
   {
+    path: '/world',
+    name: 'world',
+    component: () => import('../views/WorldView.vue'),
+    meta: { title: '天下', icon: '🗺️', iconKind: 'tab', iconId: 'map' }
+  },
+  {
     path: '/battle',
-    name: 'battle',
-    component: () => import('../views/BattleView.vue'),
-    meta: { title: '出征', icon: '🐎', iconKind: 'tab', iconId: 'battle' }
+    redirect: (to) => ({
+      path: '/world',
+      query: { ...to.query, mode: 'battle' }
+    })
   },
   {
     path: '/map',
-    name: 'map',
-    component: () => import('../views/MapView.vue'),
-    meta: { title: '天下', icon: '🗺️', iconKind: 'tab', iconId: 'map' }
+    redirect: (to) => ({
+      path: '/world',
+      query: { ...to.query, mode: 'patrol' }
+    })
   },
   {
     path: '/profile',

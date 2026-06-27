@@ -1,4 +1,4 @@
-﻿<template>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<template>
   <!-- 仅在根路径渲染：6 件案上器物作为入口 -->
   <transition name="study-fade">
     <div v-if="isStudy" class="study-shell" :class="{ hovering: !!hover }">
@@ -50,10 +50,9 @@ function itemImg(id) { return `${ITEM_BASE}${id}.png` }
 const items = [
   { id: 'city',      title: '城 · 城池', x: 20, y: 46, path: '/city',      tip: '巡视城防，整顿政务' },
   { id: 'heroes',    title: '将 · 武将', x: 50, y: 44, path: '/heroes',    tip: '点阅麾下武将，论功行赏' },
-  { id: 'map',       title: '图 · 天下', x: 80, y: 46, path: '/map',       tip: '俯瞰天下舆图，洞察四方' },
-  { id: 'battle',    title: '战 · 出征', x: 20, y: 80, path: '/battle',    tip: '亲点三军，出征讨贼' },
-  { id: 'profile',   title: '主 · 主公', x: 50, y: 78, path: '/profile',   tip: '览阅主公本纪与品阶' },
-  { id: 'chronicle', title: '史 · 史册', x: 80, y: 80, path: '/chronicle', tip: '翻阅起居注，回首旧事' }
+  { id: 'map',       title: '图 · 天下', x: 80, y: 46, path: '/world',     tip: '俯瞰天下舆图·亲点三军出征' },
+  { id: 'profile',   title: '主 · 主公', x: 35, y: 80, path: '/profile',   tip: '览阅主公本纪与品阶' },
+  { id: 'chronicle', title: '史 · 史册', x: 65, y: 80, path: '/chronicle', tip: '翻阅起居注，回首旧事' }
 ]
 
 const whisperText = computed(() => {

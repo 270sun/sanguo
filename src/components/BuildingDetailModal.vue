@@ -1,4 +1,4 @@
-﻿<template>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<template>
   <transition name="modal">
     <div v-if="show" class="modal-mask" @click.self="$emit('close')">
       <div class="modal-panel ink-frame" @wheel.stop>

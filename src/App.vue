@@ -1,4 +1,4 @@
-﻿<template>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<template>
   <div class="stage">
     <div class="app-shell" :class="{ 'in-subpage': inSubPage }">
       <!-- 全屏沉浸场景背景层：按路由 cross-fade + 子页面 zoom 推进 -->
@@ -77,8 +77,7 @@ const ROUTE_BG = {
   '/':          'study.png',
   '/city':      'city.png',
   '/heroes':    'heroes.png',
-  '/battle':    'battle.png',
-  '/map':       'map.png',
+  '/world':     'map.png',
   '/profile':   'profile.png',
   '/chronicle': 'chronicle.png'
 }
@@ -119,7 +118,7 @@ function onWheel(e) {
   _wheelRaf = requestAnimationFrame(step)
 }
 
-const ORDER = ['/city', '/heroes', '/battle', '/map', '/profile', '/chronicle']
+const ORDER = ['/city', '/heroes', '/world', '/profile', '/chronicle']
 watch(
   () => route.path,
   (to, from) => {

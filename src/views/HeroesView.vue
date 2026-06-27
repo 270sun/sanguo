@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <section class="view heroes-view">
     <h2 class="view-title">武 将 录</h2>
     <p class="view-tip">▎收集名将·培养精英·凝聚羁绊▎</p>
@@ -535,31 +535,44 @@ function onDismiss(heroId) {
   border-radius: var(--r-sm);
 }
 .hero-gallery .hero-card {
-  flex: 0 0 220px;
-  min-height: 340px;
+  flex: 0 0 230px;
+  min-height: 360px;
   scroll-snap-align: start;
   overflow: hidden;
+  /* 立绘 + 文字上下分区，padding-top 让出立绘区域 */
+  padding-top: 0;
 }
-/* 立绘背景层 */
+/* 立绘背景层：只占卡片上半部分，与文字区互不重叠 */
 .hero-art {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 168px;
   z-index: 0;
   background-size: cover;
   background-position: top center;
-  opacity: .92;
+  opacity: 1;
   transition: transform 8s ease;
 }
-.hero-card:hover .hero-art { transform: scale(1.05); }
+.hero-card:hover .hero-art { transform: scale(1.04); }
+/* 阴影仅在立绘底边羽化过渡到文字区，不再压满整图 */
 .hero-art-shade {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 168px;
   z-index: 1;
   background:
-    linear-gradient(180deg, rgba(20,10,4,.15) 0%, rgba(20,10,4,.45) 55%, rgba(10,4,2,.95) 100%);
+    linear-gradient(180deg,
+      rgba(20,10,4,0)   0%,
+      rgba(20,10,4,0)   60%,
+      rgba(20,10,4,.65) 90%,
+      rgba(10,4,2,.95) 100%);
   pointer-events: none;
 }
-/* 文字内容浮在立绘上：放到底部 */
+/* 文字内容走文档流，落在立绘下方（padding-top = 立绘高 + 8px 间距） */
 .hero-gallery .hero-card .card-head,
 .hero-gallery .hero-card .stat-row,
 .hero-gallery .hero-card .skill-box,
@@ -569,16 +582,19 @@ function onDismiss(heroId) {
   position: relative;
   z-index: 2;
 }
-.hero-gallery .hero-card .card-head { margin-top: 160px; }
-.hero-gallery .hero-card .avatar-wrap {
-  width: 28px; height: 28px;
-  background: rgba(20,10,4,.85);
+.hero-gallery .hero-card .card-head {
+  margin-top: 168px;
+  padding-top: 6px;
 }
-.hero-gallery .hero-card .name { font-size: 15px; text-shadow: 0 2px 8px rgba(0,0,0,.95); }
+/* 立绘廊里不再重复显示头像（立绘本身就是大图） */
+.hero-gallery .hero-card .avatar-wrap { display: none; }
+.hero-gallery .hero-card .name { font-size: 16px; text-shadow: 0 2px 6px rgba(0,0,0,.85); }
 
 @media (max-width: 640px), (pointer: coarse) {
-  .hero-gallery .hero-card { flex-basis: 190px; min-height: 300px; }
-  .hero-gallery .hero-card .card-head { margin-top: 130px; }
+  .hero-gallery .hero-card { flex-basis: 200px; min-height: 330px; }
+  .hero-gallery .hero-card .hero-art,
+  .hero-gallery .hero-card .hero-art-shade { height: 140px; }
+  .hero-gallery .hero-card .card-head { margin-top: 140px; }
   .hero-card:hover .hero-art { transform: none; }
 }
 

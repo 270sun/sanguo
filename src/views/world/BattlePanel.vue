@@ -1,29 +1,14 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<template>
-  <section class="view battle-view">
-    <h2 class="view-title">出 征 演 武</h2>
-    <p class="view-tip">▎编排队伍·选定目标·决战沙场▎</p>
-
+﻿﻿﻿﻿﻿﻿﻿﻿<template>
+  <section class="battle-panel">
     <transition name="flash">
       <div v-if="toast" class="toast" :class="toast.type">{{ toast.msg }}</div>
     </transition>
 
-    <!-- 1. 选择目标 -->
-    <div class="section-title">
-      <span>① 选 择 目 标</span>
-      <span class="hint">{{ availableList.length }} 可征</span>
-    </div>
     <div v-if="availableList.length === 0" class="card empty-state">
       <p class="empty-title">天下已定</p>
       <p class="empty-hint">所有州郡均在治下</p>
     </div>
-    <div v-else class="map-wrap">
-      <ChinaMap
-        :owned-ids="game.territories"
-        :cooldown="game.territoryCooldown"
-        :selected-id="targetId"
-        @pick="onMapPick"
-      />
-    </div>
+    <div v-else-if="!target" class="hint-pick">▎在 舆 图 上 点 选 未 占 领 州 郡 ▎</div>
 
     <!-- 选中州上下文 -->
     <div v-if="target" class="t-card sel-ctx" :class="{ cooling: target.cooling > 0 }">
@@ -49,7 +34,7 @@
 
     <!-- 2. 编排队伍 -->
     <div class="section-title">
-      <span>② 编 排 队 伍</span>
+      <span>① 编 排 队 伍</span>
       <span class="hint">{{ selectedHeroes.length }}/3</span>
     </div>
     <div v-if="game.heroes.length === 0" class="card empty-state">
@@ -200,20 +185,21 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { useRoute } from 'vue-router'
-import { useGameStore } from '../stores/game'
-import { TERRITORIES, TIER_META, computePartyPower } from '../data/territories'
-import { findHero } from '../data/heroes'
-import { detectBonds, combinePowerMul } from '../data/bonds'
-import { FACTIONS } from '../data/factions'
-import AppIcon from '../components/AppIcon.vue'
-import ChinaMap from '../components/ChinaMap.vue'
-import { heroImage, hasLocalAsset } from '../utils/aiImage.js'
+import { useGameStore } from '../../stores/game'
+import { TERRITORIES, TIER_META, computePartyPower } from '../../data/territories'
+import { findHero } from '../../data/heroes'
+import { detectBonds, combinePowerMul } from '../../data/bonds'
+import { FACTIONS } from '../../data/factions'
+import AppIcon from '../../components/AppIcon.vue'
+import { heroImage, hasLocalAsset } from '../../utils/aiImage.js'
+
+const props = defineProps({
+  targetId: { type: String, default: '' }
+})
+const emit = defineEmits(['update:targetId'])
 
 const game = useGameStore()
-const route = useRoute()
 
-const targetId = ref('')
 const selectedHeroes = ref([])
 const lastResult = ref(null)
 const visibleRoundCount = ref(0)
@@ -251,11 +237,6 @@ function skipRounds() {
 }
 
 onMounted(() => {
-  // 支持 ?target=xxx 预选
-  const q = route.query.target
-  if (q && typeof q === 'string') {
-    targetId.value = q
-  }
   nowTimer = setInterval(() => (now.value = Date.now()), 1000)
 })
 onUnmounted(() => {
@@ -289,7 +270,7 @@ const availableList = computed(() => {
     .sort((a, b) => a.tier - b.tier || a.power - b.power)
 })
 
-const target = computed(() => availableList.value.find((t) => t.id === targetId.value) || null)
+const target = computed(() => availableList.value.find((t) => t.id === props.targetId) || null)
 
 const heroOptions = computed(() =>
   game.heroes.map((h) => ({ ...h, meta: findHero(h.id) || { avatar: '👤', name: h.id, stats: {} } }))
@@ -341,12 +322,6 @@ const battleBtnLabel = computed(() => {
   return '出 征'
 })
 
-function selectTarget(id) { targetId.value = id }
-function onMapPick(t) {
-  if (!t) return
-  if (game.territories.includes(t.id)) return
-  selectTarget(t.id)
-}
 function toggleHero(id) {
   const i = selectedHeroes.value.indexOf(id)
   if (i >= 0) selectedHeroes.value.splice(i, 1)
@@ -354,7 +329,7 @@ function toggleHero(id) {
   else showToast('最多 3 将出征', 'err')
 }
 function onBattle() {
-  const res = game.battle(targetId.value, [...selectedHeroes.value])
+  const res = game.battle(props.targetId, [...selectedHeroes.value])
   if (!res.ok) {
     showToast(res.reason, 'err')
     return
@@ -363,7 +338,7 @@ function onBattle() {
   startRoundsAnimation()
   if (res.result.win) {
     selectedHeroes.value = []
-    targetId.value = ''
+    emit('update:targetId', '')
   }
 }
 function showToast(msg, type = 'ok') {
@@ -378,11 +353,15 @@ function fmtTs(ts) {
 </script>
 
 <style scoped>
-.battle-view {
-  /* 由 .app-main 统一滚动，本页不再自滚（避免双层 overflow 卡顿） */
-}
-.map-wrap {
-  width: 100%;
+.battle-panel { display: contents; }
+.hint-pick {
+  text-align: center;
+  font-family: var(--font-title);
+  font-size: 13px;
+  color: var(--c-gold-light);
+  opacity: .7;
+  letter-spacing: 3px;
+  padding: 6px 0;
 }
 .sel-ctx {
   display: flex;
