@@ -1,13 +1,19 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<template>
+<template>
   <transition name="modal">
     <div v-if="show" class="modal-mask" @click.self="$emit('close')">
       <div class="modal-panel ink-frame" @wheel.stop>
         <header class="m-head">
           <div class="m-title">
-            <span class="m-icon">{{ cfg.icon }}</span>
+            <span class="m-icon-seal"><span class="m-icon-emoji">{{ cfg.icon }}</span></span>
             <div class="m-name-wrap">
               <div class="m-name">{{ cfg.name }}</div>
-              <div class="m-sub">Lv {{ curLv }}<span v-if="building">·驻守 {{ garrisonCount }}/{{ garrisonCap }}</span></div>
+              <div class="m-sub">
+                <span class="m-sub-pill m-sub-lv"><span class="m-sub-k">Lv</span><span class="m-sub-v">{{ curLv }}</span></span>
+                <span v-if="building && garrisonCap > 0" class="m-sub-pill m-sub-gar">
+                  <AppIcon kind="misc" id="star" :size="11" tone="gold" />
+                  <span class="m-sub-k">驻守</span><span class="m-sub-v">{{ garrisonCount }}/{{ garrisonCap }}</span>
+                </span>
+              </div>
             </div>
           </div>
           <button class="m-close" @click="$emit('close')">✕</button>
@@ -25,16 +31,21 @@
             </div>
             <div class="build-actions">
               <button class="btn small ghost" @click="onCancel">放弃·退50%</button>
-              <button class="btn small primary" @click="onRush" :disabled="game.resources.jadeShard < 1">急造·💎1</button>
+              <button class="btn small primary rush-btn" @click="onRush" :disabled="game.resources.jadeShard < 1">
+                <span>急造·</span><AppIcon kind="res" id="jadeShard" :size="11" tone="gold" /><span>1</span>
+              </button>
             </div>
           </div>
           <div v-else class="upgrade-row">
             <div class="upgrade-cost">
-              <span class="u-label">升级耗：</span>
+              <span class="u-label">升级耗</span>
               <span v-for="(v, k) in upgradeCost" :key="k" class="u-cost" :class="{ lack: !canAfford(k, v) }">
-                {{ iconOf(k) }}{{ v }}
+                <AppIcon kind="res" :id="k" :size="12" tone="gold" /><span class="u-cost-v">{{ v }}</span>
               </span>
-              <span class="u-time">⏳{{ formatSec(upgradeTime) }}</span>
+              <span class="u-time">
+                <AppIcon kind="misc" id="hourglass" :size="11" tone="gold" />
+                <span>{{ formatSec(upgradeTime) }}</span>
+              </span>
             </div>
             <button class="btn primary upgrade-btn" :disabled="!canStart.ok" @click="onUpgrade">
               {{ canStart.ok ? `开始营造 Lv${curLv + 1}` : canStart.reason }}
@@ -44,7 +55,7 @@
 
         <!-- 主动操作 -->
         <section v-if="cfg.actions && cfg.actions.length" class="m-sec actions-sec">
-          <div class="sec-title">▸ 主动决策</div>
+          <div class="sec-title"><span class="sec-title-text">主 动 决 策</span></div>
           <div class="actions-grid">
             <div
               v-for="a in cfg.actions"
@@ -56,12 +67,15 @@
               <div class="ac-head">
                 <span class="ac-icon">{{ a.icon }}</span>
                 <span class="ac-name">{{ a.name }}</span>
-                <span class="ac-ap">精{{ a.apCost }}</span>
+                <span class="ac-ap">
+                  <AppIcon kind="res" id="ap" :size="10" />
+                  <span class="ac-ap-v">{{ a.apCost }}</span>
+                </span>
               </div>
               <div class="ac-desc">{{ a.desc }}</div>
               <div class="ac-status">
                 <span v-if="actionRemain(a) > 0" class="ac-cd">冷却 {{ formatSec(actionRemain(a)) }}</span>
-                <span v-else class="ac-ready">▸ 可执行</span>
+                <span v-else class="ac-ready">可 执 行</span>
               </div>
             </div>
           </div>
@@ -69,16 +83,27 @@
 
         <!-- 驻守武将 -->
         <section v-if="garrisonCap > 0" class="m-sec garrison-sec">
-          <div class="sec-title">▸ 武将驻守 <span class="cap">{{ garrisonCount }}/{{ garrisonCap }}</span></div>
+          <div class="sec-title">
+            <span class="sec-title-text">武 将 驻 守</span>
+            <span class="cap">{{ garrisonCount }}/{{ garrisonCap }}</span>
+          </div>
           <div class="garr-list">
             <div v-for="hid in garrisonHeroes" :key="hid" class="garr-slot occupied">
-              <span class="g-avatar">{{ findHero(hid)?.avatar || '？' }}</span>
+              <span class="g-avatar">
+                <img
+                  v-if="hasLocalAsset('hero', hid)"
+                  class="g-art"
+                  :src="heroImage(hid)"
+                  :alt="findHero(hid)?.name || ''"
+                />
+                <span v-else class="g-emoji">{{ findHero(hid)?.avatar || '？' }}</span>
+              </span>
               <span class="g-name">{{ findHero(hid)?.name }}</span>
               <button class="g-btn" @click="onUnassign(hid)">撤回</button>
             </div>
             <div v-if="garrisonCount < garrisonCap" class="garr-slot empty" @click="pickerOpen = !pickerOpen">
               <span class="plus">＋</span>
-              <span class="hint">点此派遣</span>
+              <span class="hint">点 此 派 遣</span>
             </div>
           </div>
           <div v-if="pickerOpen" class="garr-picker">
@@ -89,8 +114,16 @@
               class="picker-card"
               @click="onAssign(h.id)"
             >
-              <span class="p-avatar">{{ h.meta.avatar }}</span>
-              <span class="p-name">{{ h.meta.name }}</span>
+              <span class="p-avatar">
+                <img
+                  v-if="hasLocalAsset('hero', h.id)"
+                  class="p-art"
+                  :src="heroImage(h.id)"
+                  :alt="h.meta?.name || ''"
+                />
+                <span v-else class="p-emoji">{{ h.meta?.avatar }}</span>
+              </span>
+              <span class="p-name">{{ h.meta?.name }}</span>
               <span class="p-lv">Lv{{ h.level }}</span>
             </div>
           </div>
@@ -100,8 +133,11 @@
         <!-- 历史科普 -->
         <section v-if="cfg.lore" class="m-sec lore-sec">
           <div class="lore-head" @click="loreOpen = !loreOpen">
-            <span>🕮 {{ cfg.lore.title }}</span>
-            <span class="lore-toggle">{{ loreOpen ? '▾' : '▸' }}</span>
+            <span class="lore-title">
+              <AppIcon kind="misc" id="scroll" :size="12" tone="gold" />
+              <span>{{ cfg.lore.title }}</span>
+            </span>
+            <span class="lore-toggle">{{ loreOpen ? '收 起' : '展 开' }}</span>
           </div>
           <p v-if="loreOpen" class="lore-text">{{ cfg.lore.text }}</p>
         </section>
@@ -115,6 +151,8 @@ import { computed, ref, onMounted, onUnmounted, watch } from 'vue'
 import { useGameStore } from '../stores/game'
 import { BUILDING_MAP } from '../data/buildings.js'
 import { findHero } from '../data/heroes.js'
+import AppIcon from './AppIcon.vue'
+import { heroImage, hasLocalAsset } from '../utils/aiImage.js'
 
 const props = defineProps({
   show: Boolean,
@@ -244,105 +282,283 @@ function showToast(msg, type = 'ok') {
 .modal-mask {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, .65);
+  background: rgba(0, 0, 0, .72);
   display: flex;
   align-items: flex-end;
   justify-content: center;
   z-index: 200;
-  padding: 8px;
+  padding: var(--sp-2);
 }
+
+/* 羊皮纸卷宗面板：浅米黄 + 鎏金描边 + 朱砂阴影；与 .evt-panel 同主题 */
 .modal-panel {
   width: 100%;
   max-width: 460px;
   max-height: 88vh;
   overflow-y: auto;
   background:
+    radial-gradient(ellipse at 50% 0%, rgba(255, 245, 210, .55) 0%, transparent 60%),
     linear-gradient(180deg, rgba(255, 245, 210, .98), rgba(220, 195, 140, .98));
-  border: 2px solid var(--c-gold-dark);
+  border: 1px solid var(--c-gold);
+  border-radius: var(--r-md);
   box-shadow:
-    inset 0 0 0 1px rgba(255, 240, 200, .55),
-    0 -8px 24px rgba(0, 0, 0, .55);
-  padding: 10px 12px 14px;
+    inset 0 0 0 1px rgba(232, 196, 104, .55),
+    inset 0 0 16px rgba(168, 122, 40, .18),
+    0 -8px 28px rgba(0, 0, 0, .55),
+    0 0 22px rgba(232, 196, 104, .25);
+  padding: var(--sp-3) var(--sp-3) var(--sp-3);
+  color: #2a1810;
 }
 .modal-enter-active, .modal-leave-active { transition: opacity .22s ease, transform .25s ease; }
 .modal-enter-from .modal-panel,
 .modal-leave-to .modal-panel { transform: translateY(20px); }
 .modal-enter-from, .modal-leave-to { opacity: 0; }
 
+/* 关键：弹窗全域强制墨黑色兜底，覆盖 body 的鎏金 color 级联，
+   —— 避免任何未显式声明 color 的子节点落入“浅底浅字”陷阱 */
+.modal-panel,
+.modal-panel * {
+  color: #2a1810;
+}
+/* 例外：保留必须的强调色（深色背景上的元素，如关闭按钮/朱砂胶囊） */
+.modal-panel .m-close,
+.modal-panel .m-close * { color: #fff1c2; }
+.modal-panel .ac-ap,
+.modal-panel .ac-ap * { color: #fff1c2; }
+.modal-panel .rush-btn,
+.modal-panel .rush-btn * { color: #fff1c2; }
+.modal-panel .u-cost.lack,
+.modal-panel .u-cost.lack * { color: #a8231a; }
+.modal-panel .ac-cd { color: #a8231a; }
+.modal-panel .ac-ready { color: #2d6a1f; }
+.modal-panel .m-head,
+.modal-panel .m-head * { color: #fff5cf; }
+.modal-panel .m-head .m-sub-k { color: #f5d98c; }
+.modal-panel .m-head .m-sub-v { color: #fff5cf; }
+.modal-panel .m-name { color: #fff5cf; }
+.modal-panel .lore-head,
+.modal-panel .lore-toggle { color: #7a4a14; }
+.modal-panel .plus { color: #a87a28; }
+.modal-panel .p-lv { color: #7a4a14; }
+.modal-panel .sec-title { color: #7a4a14; }
+/* 标题栏：sticky 吸顶，深底鎏金 */
 .m-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1.5px solid var(--c-line);
-  padding: 4px 2px 8px;
-  margin: -10px -12px 8px;
-  padding-left: 12px;
-  padding-right: 12px;
-  /* 始终吸顶，滚动时关闭按钮永远可见 */
+  border-bottom: 1px solid rgba(232, 196, 104, .55);
+  box-shadow: 0 1px 0 rgba(232, 196, 104, .15);
+  padding: var(--sp-1) var(--sp-3) var(--sp-2);
+  margin: calc(var(--sp-3) * -1) calc(var(--sp-3) * -1) var(--sp-2);
   position: sticky;
-  top: -10px;
+  top: calc(var(--sp-3) * -1);
   z-index: 3;
-  background: linear-gradient(180deg, rgba(255, 245, 210, .99) 88%, rgba(255, 245, 210, .92));
+  background: linear-gradient(180deg, rgba(20, 10, 4, .98) 88%, rgba(40, 22, 10, .92));
   backdrop-filter: blur(2px);
 }
-.m-title { display: flex; align-items: center; gap: 8px; }
-.m-icon { font-size: 30px; }
-.m-name { font-family: var(--font-title); font-size: 17px; letter-spacing: 3px; color: var(--c-ink); }
-.m-sub { font-size: 13px; color: var(--c-muted); letter-spacing: 1px; }
+.m-title { display: flex; align-items: center; gap: var(--sp-2); }
+
+/* 印章式建筑大图标 */
+.m-icon-seal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--c-gold);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, rgba(232, 196, 104, .25), rgba(20, 10, 4, .9) 70%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 240, 200, .35),
+    inset 0 0 6px rgba(0, 0, 0, .55),
+    0 0 6px rgba(232, 196, 104, .35);
+  flex-shrink: 0;
+}
+.m-icon-emoji {
+  font-size: var(--fs-xl);
+  line-height: 1;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, .65));
+}
+.m-name {
+  font-family: var(--font-title);
+  font-size: 19px;
+  letter-spacing: 3px;
+  color: var(--c-gold);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .85), 0 0 8px rgba(232, 196, 104, .25);
+}
+.m-sub {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+  margin-top: 3px;
+}
+.m-sub-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px 7px;
+  font-size: var(--fs-3xs);
+  letter-spacing: 1px;
+  border: 1px solid rgba(232, 196, 104, .65);
+  border-radius: var(--r-pill);
+  background: rgba(40, 22, 10, .55);
+  color: #f5d98c;
+}
+.m-sub-k { color: #f5d98c; letter-spacing: 1px; opacity: .85; }
+.m-sub-v {
+  font-family: var(--font-num);
+  color: #fff5cf;
+  font-weight: 700;
+  margin-left: 2px;
+}
+
+/* 关闭按钮：朱砂红章方块 */
 .m-close {
   position: relative;
-  background: rgba(255, 240, 200, .9);
-  border: 1.5px solid var(--c-gold-dark);
+  background: linear-gradient(180deg, var(--c-red-light), var(--c-red));
+  border: 1px solid var(--c-red-dark);
   width: 36px; height: 36px;
-  font-size: 18px;
+  font-size: var(--fs-lg);
   line-height: 1;
   cursor: pointer;
   padding: 0;
-  color: var(--c-ink);
+  color: #fff1c2;
   border-radius: var(--r-md);
   flex-shrink: 0;
-  transition: background .15s, color .15s, border-color .15s, transform .15s;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 240, 200, .35),
+    inset 0 0 0 1px rgba(0, 0, 0, .35),
+    0 1px 3px rgba(0, 0, 0, .55);
+  transition: background .15s, transform .15s, box-shadow .15s;
 }
-/* 隐形扩大点击热区到 48×48，避免手指/鼠标"擦边" */
 .m-close::before {
   content: '';
   position: absolute;
   inset: -6px;
 }
 .m-close:hover {
-  color: #fff1c2;
-  background: var(--c-red);
-  border-color: var(--c-red);
   transform: scale(1.05);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 240, 200, .55),
+    0 0 10px rgba(168, 35, 26, .65),
+    0 1px 4px rgba(0, 0, 0, .6);
 }
 .m-close:active { transform: scale(.95); }
 
-.m-sec { margin-bottom: 10px; }
+.m-sec { margin-bottom: var(--sp-3); }
+
+/* 章节标题：正中四字 + 上下金线（浅底版） */
 .sec-title {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: var(--sp-2) 0 var(--sp-2);
+  padding: 4px 0;
+  border-top: 1px solid rgba(168, 122, 40, .55);
+  border-bottom: 1px solid rgba(168, 122, 40, .55);
   font-family: var(--font-title);
-  font-size: 13px;
-  letter-spacing: 3px;
-  color: var(--c-red);
-  margin-bottom: 6px;
-  border-left: 2px solid var(--c-red);
-  padding-left: 6px;
+  font-size: var(--fs-xs);
+  letter-spacing: 4px;
+  color: #7a4a14;
+  text-shadow: 0 1px 0 rgba(255, 245, 210, .55);
 }
-.sec-title .cap { font-size: 12px; color: var(--c-muted); letter-spacing: 1px; }
+.sec-title-text {
+  padding: 0 var(--sp-2);
+}
+.sec-title .cap {
+  position: absolute;
+  right: var(--sp-1);
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: var(--fs-2xs);
+  font-family: var(--font-num);
+  color: #5a3a1c;
+  opacity: .75;
+  letter-spacing: 1px;
+}
 
-/* 升级 */
-.upgrade-row { display: flex; align-items: center; gap: 8px; }
-.upgrade-cost { flex: 1; display: flex; flex-wrap: wrap; gap: 4px; font-size: 13px; align-items: center; }
-.u-label { color: var(--c-muted); }
-.u-cost { color: var(--c-ink); }
-.u-cost.lack { color: var(--c-red); text-decoration: line-through; }
-.u-time { margin-left: 4px; color: var(--c-gold-dark); font-family: var(--font-num); font-size: 13px; }
-.upgrade-btn { font-size: 13px; padding: 5px 12px; letter-spacing: 1px; white-space: nowrap; }
+/* 升级行：暗羊皮内嵌 + 鎏金 */
+.upgrade-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-1) 0;
+}
+.upgrade-cost {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: var(--fs-xs);
+  align-items: center;
+}
+.u-label {
+  color: #5a3a1c;
+  opacity: .85;
+  letter-spacing: 1px;
+}
+.u-cost {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  color: #2a1810;
+  font-family: var(--font-num);
+}
+.u-cost-v { margin-left: 1px; }
+.u-cost.lack { color: #a8231a; text-decoration: line-through; }
+.u-time {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-left: 4px;
+  color: #7a4a14;
+  font-family: var(--font-num);
+  font-size: var(--fs-xs);
+}
+.upgrade-btn {
+  font-size: var(--fs-xs);
+  padding: 5px 12px;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
 
-.build-bar-row { background: rgba(255, 240, 200, .55); border: 1px dashed var(--c-line); padding: 6px 8px; }
-.build-info { display: flex; justify-content: space-between; align-items: center; font-size: 13px; margin-bottom: 4px; }
-.b-label { color: var(--c-ink); letter-spacing: 1px; font-weight: 600; }
-.b-time { font-family: var(--font-num); color: var(--c-gold-dark); }
-.bar-track { height: 10px; background: rgba(0,0,0,.3); border: 1px solid var(--c-gold-dark); border-radius: var(--r-sm); overflow: hidden; position: relative; }
+/* 升级条 / 建造行 */
+.build-bar-row {
+  background:
+    linear-gradient(180deg, rgba(255, 245, 210, .55), rgba(220, 195, 140, .45));
+  border: 1px solid rgba(168, 122, 40, .55);
+  border-radius: var(--r-sm);
+  box-shadow:
+    inset 0 0 0 1px rgba(232, 196, 104, .35),
+    inset 0 0 8px rgba(168, 122, 40, .15);
+  padding: 7px 10px;
+}
+.build-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--fs-xs);
+  margin-bottom: 4px;
+}
+.b-label {
+  color: #2a1810;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+.b-time {
+  font-family: var(--font-num);
+  color: #7a4a14;
+}
+.bar-track {
+  height: 14px;
+  background: rgba(40, 22, 10, .35);
+  border: 1px solid var(--c-gold);
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, .55);
+}
 .bar-fill.build {
   height: 100%;
   background: linear-gradient(90deg, #b8862e 0%, #d4af37 50%, #fff5cf 100%);
@@ -354,104 +570,285 @@ function showToast(msg, type = 'ok') {
   0%   { background-position: 0% 0; }
   100% { background-position: -200% 0; }
 }
-.build-actions { display: flex; gap: 6px; margin-top: 6px; }
-.btn.small { font-size: 12px; padding: 3px 8px; }
-.btn.ghost {
-  background: transparent;
-  border: 1px solid var(--c-muted);
-  color: var(--c-muted);
+.build-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 7px;
 }
-.btn.ghost:hover { border-color: var(--c-red); color: var(--c-red); }
+.rush-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
 
-/* 操作 */
+/* action-card：浅米黄底 + 暗赭描边 */
 .actions-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 6px;
 }
 .action-card {
-  border: 1px solid var(--c-line);
-  background: rgba(255, 245, 210, .55);
-  padding: 6px;
+  position: relative;
+  border: 1px solid rgba(168, 122, 40, .55);
+  background: linear-gradient(180deg, rgba(255, 245, 210, .85), rgba(232, 205, 150, .85));
+  border-radius: var(--r-sm);
+  padding: 6px 8px;
   cursor: pointer;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 245, 210, .65),
+    inset 0 0 8px rgba(168, 122, 40, .15);
   transition: transform .15s, box-shadow .15s;
 }
 .action-card:not(.disabled):hover {
   transform: translateY(-1px);
-  box-shadow: 0 0 8px rgba(232, 196, 104, .55);
+  box-shadow:
+    inset 0 0 0 1px rgba(232, 196, 104, .65),
+    inset 0 0 8px rgba(168, 122, 40, .2),
+    0 0 10px rgba(232, 196, 104, .55);
 }
-.action-card.disabled { opacity: .55; cursor: not-allowed; }
-.ac-head { display: flex; align-items: center; gap: 4px; }
-.ac-icon { font-size: 17px; }
-.ac-name { font-family: var(--font-title); font-size: 13px; letter-spacing: 2px; color: var(--c-ink); font-weight: 700; }
-.ac-ap { margin-left: auto; font-size: 12px; padding: 1px 4px; background: var(--c-red); color: #fff1c2; }
-.ac-desc { font-size: 12px; color: var(--c-muted); margin: 2px 0; line-height: 1.35; }
-.ac-status { font-size: 12px; font-family: var(--font-num); }
-.ac-ready { color: var(--c-green); }
-.ac-cd { color: var(--c-red); }
+.action-card.disabled {
+  opacity: .55;
+  cursor: not-allowed;
+  border-color: rgba(122, 90, 58, .45);
+}
+.ac-head {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.ac-icon {
+  font-size: var(--fs-lg);
+  filter: drop-shadow(0 1px 0 rgba(255, 245, 210, .65));
+}
+.ac-name {
+  font-family: var(--font-title);
+  font-size: var(--fs-sm);
+  letter-spacing: 2px;
+  color: #2a1810;
+  font-weight: 700;
+}
+.ac-ap {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: var(--fs-2xs);
+  font-family: var(--font-num);
+  padding: 1px 5px;
+  background: var(--c-red);
+  color: #fff1c2;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--c-red-dark);
+  box-shadow: inset 0 0 0 1px rgba(255, 240, 200, .2);
+}
+.ac-ap-v { font-weight: 700; }
+.ac-desc {
+  font-size: var(--fs-2xs);
+  color: #5a3a1c;
+  opacity: .9;
+  margin: 3px 0;
+  line-height: 1.4;
+}
+.ac-status {
+  font-size: var(--fs-2xs);
+  font-family: var(--font-num);
+  letter-spacing: 1px;
+}
+.ac-ready { color: #2d6a1f; letter-spacing: 2px; }
+.ac-cd { color: #a8231a; }
 
-/* 驻守 */
-.garr-list { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+/* 驻守 —— 红绳挂木牌 */
+.garr-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 6px;
+}
 .garr-slot {
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 5px 8px;
-  border: 1px solid var(--c-line);
-  background: rgba(255, 245, 210, .35);
-  min-width: 100px;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid rgba(168, 122, 40, .55);
+  border-radius: var(--r-sm);
+  background: linear-gradient(180deg, rgba(255, 245, 210, .85), rgba(232, 205, 150, .85));
+  min-width: 120px;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 245, 210, .55),
+    inset 0 0 6px rgba(168, 122, 40, .15);
+}
+.garr-slot.occupied {
+  border-left: 3px solid var(--c-red);
 }
 .garr-slot.empty {
-  border-style: dashed;
-  color: var(--c-muted);
+  border: 1px dashed rgba(168, 122, 40, .55);
+  background: rgba(255, 245, 210, .35);
+  color: #7a5a3a;
   cursor: pointer;
   justify-content: center;
 }
-.garr-slot.empty:hover { color: var(--c-red); border-color: var(--c-red); }
-.g-avatar { font-size: 17px; }
-.g-name { font-size: 13px; color: var(--c-ink); font-family: var(--font-title); letter-spacing: 1px; }
+.garr-slot.empty:hover {
+  color: #7a4a14;
+  border-color: var(--c-gold);
+  background: rgba(255, 245, 210, .65);
+  box-shadow:
+    inset 0 0 0 1px rgba(232, 196, 104, .55),
+    0 0 10px rgba(232, 196, 104, .45);
+}
+.g-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--c-gold);
+  background: radial-gradient(circle at 35% 30%, rgba(232, 196, 104, .35), rgba(20, 10, 4, .9) 70%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 240, 200, .25),
+    0 0 6px rgba(232, 196, 104, .35);
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.g-art {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+.g-emoji {
+  font-size: var(--fs-lg);
+  line-height: 1;
+}
+.g-name {
+  font-size: var(--fs-xs);
+  color: #2a1810;
+  font-family: var(--font-title);
+  letter-spacing: 1px;
+}
 .g-btn {
   margin-left: auto;
-  border: 1px solid var(--c-muted);
-  background: transparent;
-  font-size: 12px;
-  padding: 1px 5px;
+  border: 1px solid rgba(168, 122, 40, .65);
+  background: rgba(255, 245, 210, .65);
+  font-size: var(--fs-2xs);
+  padding: 2px 8px;
   cursor: pointer;
-  color: var(--c-muted);
+  color: #2a1810;
+  border-radius: var(--r-sm);
+  letter-spacing: 1px;
+  font-family: var(--font-serif);
+  box-shadow: none;
+  transition: color .15s, border-color .15s, background .15s;
 }
-.g-btn:hover { color: var(--c-red); border-color: var(--c-red); }
-.plus { font-size: 18px; line-height: 1; }
-.hint { font-size: 12px; }
+.g-btn:hover {
+  color: #fff1c2;
+  border-color: var(--c-red);
+  background: rgba(168, 35, 26, .85);
+}
+.plus {
+  font-size: 22px;
+  line-height: 1;
+  color: #a87a28;
+  font-family: var(--font-title);
+  text-shadow: 0 1px 0 rgba(255, 245, 210, .65);
+}
+.hint {
+  font-size: var(--fs-2xs);
+  color: #5a3a1c;
+  letter-spacing: 2px;
+}
+
+/* 驻守 picker：浅羊皮纸内嵌槽位（与外层 .modal-panel 同主题，略深一层做层次） */
 .garr-picker {
-  border: 1px solid var(--c-gold-dark);
-  background: rgba(232, 196, 104, .15);
-  padding: 5px;
+  border: 1px dashed rgba(168, 122, 40, .55);
+  background: rgba(232, 205, 150, .55);
+  border-radius: var(--r-sm);
+  padding: 6px;
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
+  gap: 5px;
   margin-bottom: 6px;
+  box-shadow: inset 0 0 8px rgba(168, 122, 40, .2);
 }
-.picker-empty { font-size: 13px; color: var(--c-muted); padding: 4px; }
+.picker-empty {
+  font-size: var(--fs-xs);
+  color: #5a3a1c;
+  padding: 4px;
+  width: 100%;
+  text-align: center;
+  letter-spacing: 1px;
+}
 .picker-card {
   display: flex;
   align-items: center;
-  gap: 3px;
-  padding: 3px 6px;
-  border: 1px solid var(--c-line);
-  background: rgba(255, 245, 210, .85);
+  gap: 5px;
+  padding: 4px 8px;
+  border: 1px solid rgba(168, 122, 40, .55);
+  border-radius: var(--r-sm);
+  background: linear-gradient(180deg, rgba(255, 245, 210, .85), rgba(232, 205, 150, .85));
   cursor: pointer;
-  font-size: 13px;
+  font-size: var(--fs-xs);
+  color: #2a1810;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 245, 210, .55),
+    inset 0 0 6px rgba(168, 122, 40, .15);
+  transition: transform .15s, box-shadow .15s;
 }
-.picker-card:hover { background: rgba(255, 215, 100, .55); }
-.p-avatar { font-size: 15px; }
-.p-name { font-family: var(--font-title); letter-spacing: 1px; }
-.p-lv { color: var(--c-gold-dark); font-family: var(--font-num); font-size: 12px; }
-.garr-tip { font-size: 12px; color: var(--c-muted); text-align: center; }
+.picker-card:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 0 0 1px rgba(232, 196, 104, .65),
+    0 0 8px rgba(232, 196, 104, .55);
+}
+.p-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid var(--c-gold);
+  background: radial-gradient(circle at 35% 30%, rgba(232, 196, 104, .3), rgba(20, 10, 4, .9) 70%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 240, 200, .2),
+    0 0 4px rgba(232, 196, 104, .3);
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.p-art {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+.p-emoji {
+  font-size: var(--fs-sm);
+  line-height: 1;
+}
+.p-name {
+  font-family: var(--font-title);
+  letter-spacing: 1px;
+  color: #2a1810;
+}
+.p-lv {
+  color: #7a4a14;
+  font-family: var(--font-num);
+  font-size: var(--fs-2xs);
+}
+.garr-tip {
+  font-size: var(--fs-2xs);
+  color: #5a3a1c;
+  text-align: center;
+  letter-spacing: 1px;
+  opacity: .85;
+}
 
-/* lore */
+/* lore —— 浅羊皮卷轴（与外层同主题，左侧朱砂条做装饰） */
 .lore-sec {
-  border-top: 1px dashed var(--c-line);
-  padding-top: 6px;
+  border-top: 1px dashed rgba(168, 122, 40, .55);
+  padding-top: var(--sp-2);
 }
 .lore-head {
   display: flex;
@@ -459,34 +856,75 @@ function showToast(msg, type = 'ok') {
   align-items: center;
   cursor: pointer;
   font-family: var(--font-title);
-  font-size: 13px;
+  font-size: var(--fs-xs);
   letter-spacing: 2px;
-  color: var(--c-gold-dark);
+  color: #7a4a14;
+}
+.lore-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.lore-toggle {
+  font-size: var(--fs-2xs);
+  letter-spacing: 2px;
+  color: #5a3a1c;
+  opacity: .85;
+  font-family: var(--font-serif);
 }
 .lore-text {
-  font-size: 13px;
-  color: var(--c-ink);
+  font-size: var(--fs-xs);
+  color: #2a1810;
   letter-spacing: 0.5px;
-  line-height: 1.65;
+  line-height: 1.7;
   margin: 6px 0 0;
-  padding: 6px 8px;
-  background: rgba(255, 240, 200, .6);
-  border-left: 2px solid var(--c-gold-dark);
+  padding: 8px 10px;
+  background: rgba(255, 245, 210, .55);
+  border-left: 3px solid var(--c-red);
+  border-radius: var(--r-sm);
+  box-shadow:
+    inset 0 0 0 1px rgba(232, 196, 104, .35),
+    inset 0 0 12px rgba(168, 122, 40, .12);
 }
 
-/* 移动端性能降级：去 backdrop-filter，简化建造进度条动画 */
+/* 移动端性能降级 */
 @media (max-width: 768px), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .modal-panel { padding: var(--sp-3) var(--sp-2) var(--sp-2); }
   .m-head { backdrop-filter: none; }
   .bar-fill.build {
     animation: none;
     background: linear-gradient(90deg, #b8862e, #d4af37);
   }
   .action-card { transition: none; }
-  .action-card:not(.disabled):hover { transform: none; box-shadow: none; }
-  /* 移动端 hover 状态会被 sticky-touch 保留，导致 box-shadow 一直亮——彻底禁用 */
-  .picker-card:hover { background: rgba(255, 245, 210, .85); }
-  .garr-slot.empty:hover { color: var(--c-muted); border-color: var(--c-line); }
-  .g-btn:hover, .btn.ghost:hover { color: var(--c-muted); border-color: var(--c-muted); }
-  .m-close:hover { color: var(--c-ink); background: rgba(255, 240, 200, .9); border-color: var(--c-gold-dark); transform: none; }
+  .action-card:not(.disabled):hover {
+    transform: none;
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 245, 210, .65),
+      inset 0 0 8px rgba(168, 122, 40, .15);
+  }
+  .picker-card:hover {
+    transform: none;
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 245, 210, .55),
+      inset 0 0 6px rgba(168, 122, 40, .15);
+  }
+  .garr-slot.empty:hover {
+    color: #7a5a3a;
+    border-color: rgba(168, 122, 40, .55);
+    background: rgba(255, 245, 210, .35);
+    box-shadow: none;
+  }
+  .g-btn:hover {
+    color: #2a1810;
+    border-color: rgba(168, 122, 40, .65);
+    background: rgba(255, 245, 210, .65);
+  }
+  .m-close:hover {
+    transform: none;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 240, 200, .35),
+      inset 0 0 0 1px rgba(0, 0, 0, .35),
+      0 1px 3px rgba(0, 0, 0, .55);
+  }
 }
 </style>

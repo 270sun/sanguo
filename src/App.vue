@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<template>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<template>
   <div class="stage">
     <div class="app-shell" :class="{ 'in-subpage': inSubPage }">
       <!-- 全屏沉浸场景背景层：按路由 cross-fade + 子页面 zoom 推进 -->
@@ -350,7 +350,7 @@ const particleCount = isLowPower ? 3 : 8
   transition: transform .55s cubic-bezier(.2,.8,.25,1.05), filter .45s ease;
 }
 
-/* 内容卡片：仿宣纸鎏金边 */
+/* 内容卡片：仿宣纸鎏金边（深木朱金质感） */
 .page-card {
   position: relative;
   margin: 0 auto;
@@ -358,12 +358,42 @@ const particleCount = isLowPower ? 3 : 8
   min-height: calc(100vh - 120px);
   padding: 44px 22px 28px 22px;
   background:
-    linear-gradient(180deg, rgba(28, 16, 8, .82) 0%, rgba(20, 10, 4, .92) 100%);
+    /* 1. 顶/底层 vignette：让中央更亮，边缘聚焦 */
+    radial-gradient(ellipse at 50% 0%, rgba(232, 196, 104, .12) 0%, transparent 55%),
+    radial-gradient(ellipse at 50% 100%, rgba(168, 35, 26, .08) 0%, transparent 55%),
+    /* 2. 木纹纹理（SVG 噪点，廉价不外联） */
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.55  0 0 0 0 0.35  0 0 0 0 0.15  0 0 0 0.10 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"),
+    /* 3. 主色深木渐变（暗赭→深栗→更深底） */
+    linear-gradient(170deg, #3a2412 0%, #2a1810 45%, #1d100a 100%);
+  background-size: cover, cover, 180px 180px, cover;
   border-radius: var(--r-lg);
   box-shadow:
-    0 0 0 1px rgba(232, 196, 104, .45),
+    inset 0 0 0 1px rgba(232, 196, 104, .55),
+    inset 0 0 24px rgba(0, 0, 0, .55),
+    0 0 0 1px rgba(232, 196, 104, .25),
     0 0 0 6px rgba(20, 10, 4, .55),
     0 0 32px rgba(0, 0, 0, .65);
+}
+/* 卡片四角阳刻装饰 */
+.page-card::before,
+.page-card::after {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid var(--c-gold, #e8c468);
+  pointer-events: none;
+  filter: drop-shadow(0 0 3px rgba(232, 196, 104, .65));
+}
+.page-card::before {
+  top: 8px; left: 8px;
+  border-right: none;
+  border-bottom: none;
+}
+.page-card::after {
+  bottom: 8px; right: 8px;
+  border-left: none;
+  border-top: none;
 }
 
 /* 返回书房按钮 */

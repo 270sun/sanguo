@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿/* ============================================================
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿/* ============================================================
    卧龙吟·诸侯纪 —— 主题样式
    主题：汉宫朱金（暗赭羊皮 + 鎏金 + 朱砂 + 墨黑）
    ============================================================ */
@@ -28,6 +28,32 @@
 
   --c-green: #4d7a4c;
   --c-blue: #355a78;
+
+  /* ============================================================
+   * 语义色板（核心：用语义名约束"在何种背景上用何种字色"）
+   *
+   *   --c-fg            主字色：深底沉浸场景（鎏金亮）
+   *   --c-fg-strong     深底强调字（接近白金）
+   *   --c-fg-dim        深底弱化字
+   *   --c-fg-muted      深底次要说明字（古铜）
+   *
+   *   --c-ink           主字色：浅羊皮纸场景（墨黑）
+   *   --c-ink-soft      浅底次要字（暗赭）
+   *   --c-ink-muted     浅底说明字（古铜）
+   *
+   *   --c-surface-deep  深底面板表面色（仿木纹漆面）
+   *   --c-surface-paper 浅羊皮纸表面色
+   * ============================================================ */
+  --c-fg:         #f5d98c;
+  --c-fg-strong:  #fff5cf;
+  --c-fg-dim:     #c9a96a;
+  --c-fg-muted:   #a87a28;
+
+  --c-ink-soft:   #5a3a1c;
+  --c-ink-muted:  #7a5a3a;
+
+  --c-surface-deep:  #2a1810;
+  --c-surface-paper: #f0dca6;
 
   /* 阴影 */
   --shadow-card: 0 2px 0 #6e4a20, 0 4px 12px rgba(0,0,0,.35);
@@ -103,7 +129,7 @@ html, body {
     radial-gradient(ellipse at 50% 110%, rgba(60, 90, 70, .55) 0%, transparent 55%),
     radial-gradient(ellipse at 50% -10%, rgba(180, 140, 70, .35) 0%, transparent 50%),
     linear-gradient(180deg, #f0dca6 0%, #e3c378 38%, #b9a05a 62%, #6e7a5a 85%, #3c4a3a 100%);
-  color: var(--c-ink);
+  color: var(--c-gold-light, #f5d98c);
   font-family: var(--font-serif);
   font-size: var(--fs-md);
   line-height: 1.55;
@@ -195,6 +221,8 @@ button, a, [role="button"], .b-cell, .action-card, .picker-card, .garr-slot, .m-
 
 /* ============================================================
    按钮：鎏金 / 朱印 / 古朴
+   —— 三件套必备：background / border / color，覆盖默认 + hover + active + disabled
+   —— 所有按钮显式声明 color，避免落入 body 兜底色
    ============================================================ */
 button {
   font-family: var(--font-serif);
@@ -213,10 +241,15 @@ button {
     inset 0 -2px 0 rgba(80, 40, 10, .3),
     0 2px 0 #6e4a20,
     0 4px 8px rgba(0, 0, 0, .35);
-  transition: transform .08s ease, box-shadow .15s ease, filter .15s;
+  transition: transform .08s ease, box-shadow .15s ease, filter .15s, color .15s, background .15s, border-color .15s;
+}
+button:hover:not(:disabled) {
+  filter: brightness(1.05);
+  color: #2a1810;
 }
 button:active:not(:disabled) {
   transform: translateY(2px);
+  color: #2a1810;
   box-shadow:
     inset 0 1px 4px rgba(80, 40, 10, .5),
     0 0 0 #6e4a20,
@@ -228,23 +261,72 @@ button:disabled {
   cursor: not-allowed;
 }
 
+/* ---- 主按钮：实心金牌 ---- */
 button.btn {
   background: linear-gradient(180deg, #f4e6c1 0%, #d8be83 100%);
-  color: var(--c-ink);
+  color: #2a1810;
   border: 1px solid var(--c-line);
   padding: 7px 14px;
   font-size: var(--fs-sm);
   letter-spacing: 0.5px;
 }
-button.btn.primary {
-  background: linear-gradient(180deg, #f5d98c, #c89938);
+button.btn:hover:not(:disabled) {
+  background: linear-gradient(180deg, #fbeec8 0%, #e6cf99 100%);
+  color: #2a1810;
   border-color: var(--c-gold-dark);
 }
+button.btn:active:not(:disabled) { color: #2a1810; }
+
+/* ---- 主按钮·强调（朱金重彩） ---- */
+button.btn.primary {
+  background: linear-gradient(180deg, #f5d98c, #c89938);
+  color: #2a1810;
+  border-color: var(--c-gold-dark);
+}
+button.btn.primary:hover:not(:disabled) {
+  background: linear-gradient(180deg, #fff1c2, #d8a93f);
+  color: #2a1810;
+}
+
+/* ---- 朱砂按钮 ---- */
 button.btn.danger {
   background: linear-gradient(180deg, #d75a52, #8e1a14);
   border-color: var(--c-red-dark);
   color: #fff1c2;
   text-shadow: 0 1px 0 rgba(0, 0, 0, .35);
+}
+button.btn.danger:hover:not(:disabled) {
+  background: linear-gradient(180deg, #e87269, #a3251e);
+  color: #fff1c2;
+}
+
+/* ---- 幽影按钮（深底浅字描金边） ---- */
+button.btn.ghost {
+  background: linear-gradient(180deg, rgba(40, 22, 10, .82), rgba(20, 10, 4, .9));
+  color: var(--c-fg);
+  border: 1px solid rgba(232, 196, 104, .55);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 240, 200, .15),
+    0 2px 0 #1a0e06,
+    0 3px 8px rgba(0, 0, 0, .45);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .65);
+}
+button.btn.ghost:hover:not(:disabled) {
+  color: var(--c-fg-strong);
+  border-color: var(--c-gold);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 240, 200, .25),
+    0 0 12px rgba(232, 196, 104, .4),
+    0 2px 6px rgba(0, 0, 0, .55);
+}
+button.btn.ghost:active:not(:disabled) {
+  color: var(--c-fg-strong);
+}
+
+/* ---- 小型按钮 ---- */
+button.btn.small {
+  padding: 4px 10px;
+  font-size: var(--fs-2xs);
 }
 
 /* ============================================================
@@ -363,11 +445,11 @@ button.btn.danger {
   font-weight: 700;
 }
 
-/* 输入框 */
-input, textarea {
+/* 输入框 / 文本域 / 存档码框：浅羊皮纸 + 墨黑字（高对比、不与按钮同色） */
+input, textarea, .codebox {
   font-family: var(--font-serif);
   color: var(--c-ink);
-  background: rgba(255, 245, 210, .85);
+  background: rgba(255, 245, 210, .92);
   border: 1px solid var(--c-line);
   border-radius: var(--r-sm);
   padding: 6px 10px;
@@ -375,9 +457,18 @@ input, textarea {
   outline: none;
   transition: border-color .15s, box-shadow .15s;
 }
-input:focus, textarea:focus {
+input:focus, textarea:focus, .codebox:focus {
   border-color: var(--c-gold-dark);
   box-shadow: 0 0 0 2px rgba(232, 196, 104, .35);
+}
+/* 存档码 textarea 专用：明确字色不被父级 .card 的鎏金继承 */
+.codebox {
+  width: 100%;
+  min-height: 80px;
+  resize: vertical;
+  font-family: 'Consolas', 'Menlo', monospace;
+  letter-spacing: .5px;
+  line-height: 1.5;
 }
 
 a { color: var(--c-red); text-decoration: none; }
@@ -400,3 +491,82 @@ a { color: var(--c-red); text-decoration: none; }
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+
+/* ============================================================
+   全局兜底字色（避免 <style scoped> 中 .modal-panel * 选择器
+   被 [data-v-xxx] 限定后失效，导致弹窗里出现意外色字）
+   —— BuildingDetailModal 已切换为浅羊皮纸卷宗风（与 EventModal 一致），
+      因此全局兜底也改为墨黑，确保浅底+墨字基线
+   —— 不使用 var()，确保 CSS 变量异常时仍生效
+   ============================================================ */
+.modal-panel,
+.modal-panel * {
+  color: #2a1810;
+}
+/* 例外：必要的强调色（深色子背景元素：关闭按钮 / 朱砂胶囊 / 卷首横幅） */
+.modal-panel .m-close,
+.modal-panel .m-close *,
+.modal-panel .ac-ap,
+.modal-panel .ac-ap *,
+.modal-panel .rush-btn,
+.modal-panel .rush-btn * { color: #fff1c2; }
+.modal-panel .m-head,
+.modal-panel .m-head * { color: #fff5cf; }
+.modal-panel .m-head .m-sub-k { color: #f5d98c; }
+.modal-panel .m-head .m-sub-v { color: #fff5cf; }
+.modal-panel .m-name { color: #fff5cf; }
+.modal-panel .u-cost.lack,
+.modal-panel .u-cost.lack *,
+.modal-panel .ac-cd { color: #a8231a; }
+.modal-panel .ac-ready { color: #2d6a1f; }
+.modal-panel .lore-head,
+.modal-panel .lore-toggle,
+.modal-panel .p-lv,
+.modal-panel .sec-title,
+.modal-panel .sec-title-text { color: #7a4a14; }
+.modal-panel .plus { color: #a87a28; }
+.modal-panel .m-sub-v { color: #fff5cf; }
+
+.sec-title,
+.sec-title-text { color: #7a4a14; }
+
+/* ============================================================
+   事件弹窗：浅羊皮纸底 + 墨黑字（与 body 鎏金兜底相反，需单独覆盖）
+   仅命中 .evt-panel 容器，避免污染其它弹窗
+   ============================================================ */
+.evt-panel,
+.evt-panel * {
+  color: #2a1810;
+}
+.evt-panel .evt-ribbon,
+.evt-panel .evt-ribbon * { color: #fff5cf; }
+.evt-panel .evt-hero-svg,
+.evt-panel .evt-hero-loading { color: rgba(255, 245, 210, .85); }
+.evt-panel .evt-quote,
+.evt-panel .lore-head,
+.evt-panel .lore-toggle { color: #a87a28; }
+.evt-panel .ec-desc,
+.evt-panel .evt-tip,
+.evt-panel .btn.ghost.small { color: #7a5a3a; }
+.evt-panel .evt-toast,
+.evt-panel .evt-toast * { color: #fff5cf; }
+.evt-panel .evt-toast.err,
+.evt-panel .evt-toast.err * { color: #ffb0b0; }
+
+/* ============================================================
+   其它浅羊皮纸底容器同样需要墨黑字兜底
+   - 卷宗记账层 .ledger-panel（ScrollHUD）
+   - 结局卷轴 .scroll-paper（EndingModal）
+   - 史册卡片 .paper-bg（ChronicleView 等）
+   ============================================================ */
+.ledger-panel,
+.ledger-panel *,
+.scroll-paper,
+.scroll-paper *,
+.paper-bg,
+.paper-bg * {
+  color: #2a1810;
+}
+.ledger-panel .ledger-title { color: #a8231a; }
+.scroll-paper .seal,
+.scroll-paper .seal * { color: #a8231a; }

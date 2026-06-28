@@ -61,6 +61,11 @@ export const RES_ICONS = {
   ap: wrap(`
     <path d="M13 2 L4 13 H10 L9 22 L20 10 H13 Z"/>
     <path d="M13 2 L4 13 H10 L9 22 L20 10 H13 Z" fill="none" stroke="rgba(255,240,180,.45)" stroke-width="0.4"/>
+  `),
+  jadeShard: wrap(`
+    <path d="M12 2 L20 10 L12 22 L4 10 Z"/>
+    <path d="M4 10 H20 M12 2 V22" stroke="rgba(0,0,0,.45)" stroke-width="0.5" fill="none"/>
+    <path d="M9 7 L12 10 L15 7" fill="none" stroke="rgba(255,255,220,.55)" stroke-width="0.6"/>
   `)
 }
 
@@ -386,6 +391,11 @@ export const MISC_ICONS = {
     <path d="M4 6 H20 M4 12 H20 M4 18 H20" fill="none" stroke-width="2"/>
   `),
   // 通用占位
+  hourglass: wrap(`
+    <path d="M6 3 H18 V6 Q18 9 12 12 Q6 15 6 18 V21 H18 V18 Q18 15 12 12 Q18 9 18 6 V3"/>
+    <path d="M5 3 H19 M5 21 H19" stroke-width="1.2"/>
+    <path d="M9 6 H15 L12 11 Z" fill="#a8231a" stroke="rgba(0,0,0,.55)" stroke-width="0.4"/>
+  `),
   fallback: wrap(`<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 8 L16 16 M16 8 L8 16" stroke="#1a0e07" stroke-width="1.2"/>`)
 }
 
