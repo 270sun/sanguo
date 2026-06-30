@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<template>
+<template>
   <section class="view profile-view">
     <h2 class="view-title">主 公 府</h2>
     <p class="view-tip">▎运筹帷幄·决胜千里▎</p>

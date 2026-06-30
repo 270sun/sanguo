@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<template>
+<template>
   <header class="hud-mini">
     <!-- 左：主公 + 季节小印 -->
     <div class="hud-left">
@@ -49,6 +49,7 @@
             >
               <AppIcon class="res-icon" :kind="r.iconKind || 'res'" :id="r.iconId || r.key" :size="20" />
               <div class="res-meta">
+                <div class="res-label">{{ r.label }}</div>
                 <div class="res-val">{{ formatNum(r.value) }}</div>
                 <div class="res-rate" :class="{ neg: r.rate < 0, pos: r.rate > 0 }">
                   {{ r.rate ? (r.rate >= 0 ? '+' : '') + r.rate + '/日' : '—' }}
@@ -204,17 +205,17 @@ function formatNum(n) {
 /* 账册抽屉 */
 .ledger-drawer {
   position: absolute;
-  top: 56px;
+  top: 100%;
+  bottom: auto;
   left: 0; right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, .35);
   z-index: 90;
   display: flex;
   justify-content: flex-end;
   padding: 0 12px;
-  pointer-events: auto;
+  pointer-events: none;
 }
 .ledger-panel {
+  pointer-events: auto;
   margin-top: 6px;
   width: 100%;
   max-width: 320px;
@@ -222,7 +223,7 @@ function formatNum(n) {
   border: 1.5px solid var(--c-gold-dark);
   box-shadow: 0 8px 24px rgba(0, 0, 0, .65);
   padding: 10px 12px;
-  max-height: 100%;
+  max-height: calc(100vh - 80px);
   overflow-y: auto;
   border-radius: 0 0 4px 4px;
 }
@@ -236,17 +237,26 @@ function formatNum(n) {
   margin-bottom: 6px;
 }
 .ledger-title.sec { margin-top: 8px; }
-.res-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px 8px; margin-bottom: 4px; }
+.res-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px 8px; margin-bottom: 4px; }
 .res-cell {
-  display: flex; align-items: center; gap: 6px;
-  padding: 4px 6px;
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 8px;
   background: rgba(255, 240, 200, .55);
   border: 1px solid var(--c-line);
+  border-radius: var(--r-sm);
 }
-.res-meta { display: flex; flex-direction: column; line-height: 1.15; }
+.res-cell .res-icon { flex-shrink: 0; color: #a87a28; }
+.res-meta { display: flex; flex-direction: column; line-height: 1.15; min-width: 0; }
+.res-label {
+  font-family: var(--font-title);
+  font-size: 12px;
+  color: #7a4a14;
+  letter-spacing: 1px;
+  margin-bottom: 1px;
+}
 .res-val { font-family: var(--font-num); font-size: 14px; color: var(--c-ink); font-weight: 700; }
 .res-rate { font-size: 12px; color: var(--c-muted); font-family: var(--font-num); }
-.res-rate.pos { color: var(--c-green); }
+.res-rate.pos { color: #4d7a4c; }
 .res-rate.neg { color: var(--c-red); }
 .status-row { display: flex; flex-direction: column; gap: 4px; }
 .status-bar { display: flex; align-items: center; gap: 6px; }

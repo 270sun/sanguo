@@ -452,9 +452,10 @@ function showToast(msg, type = 'ok') {
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
   margin: var(--sp-2) 0 var(--sp-2);
-  padding: 4px 0;
+  padding: 4px 8px;
   border-top: 1px solid rgba(168, 122, 40, .55);
   border-bottom: 1px solid rgba(168, 122, 40, .55);
   font-family: var(--font-title);
@@ -464,18 +465,24 @@ function showToast(msg, type = 'ok') {
   text-shadow: 0 1px 0 rgba(255, 245, 210, .55);
 }
 .sec-title-text {
-  padding: 0 var(--sp-2);
+  flex: 1;
+  text-align: center;
+  padding-left: 40px;
 }
 .sec-title .cap {
-  position: absolute;
-  right: var(--sp-1);
-  top: 50%;
-  transform: translateY(-50%);
+  flex-shrink: 0;
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: rgba(168, 122, 40, .14);
+  border: 1px solid rgba(168, 122, 40, .35);
   font-size: var(--fs-2xs);
   font-family: var(--font-num);
   color: #5a3a1c;
-  opacity: .75;
+  opacity: .92;
   letter-spacing: 1px;
+  white-space: nowrap;
+  min-width: 40px;
+  text-align: center;
 }
 
 /* 升级行：暗羊皮内嵌 + 鎏金 */
@@ -635,13 +642,17 @@ function showToast(msg, type = 'ok') {
   font-size: var(--fs-2xs);
   font-family: var(--font-num);
   padding: 1px 5px;
-  background: var(--c-red);
+  background: linear-gradient(180deg, #c8423a, #8e1a14);
   color: #fff1c2;
-  border-radius: var(--r-sm);
-  border: 1px solid var(--c-red-dark);
-  box-shadow: inset 0 0 0 1px rgba(255, 240, 200, .2);
+  border-radius: 3px;
+  border: 1px solid #6e1410;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 240, 200, .25),
+    inset 0 0 4px rgba(60, 8, 6, .55),
+    0 1px 2px rgba(0, 0, 0, .35);
+  text-shadow: 0 1px 1px rgba(60, 8, 6, .85);
 }
-.ac-ap-v { font-weight: 700; }
+.ac-ap-v { font-weight: 700; color: #fff5cf; }
 .ac-desc {
   font-size: var(--fs-2xs);
   color: #5a3a1c;

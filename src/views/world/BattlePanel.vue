@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿<template>
+<template>
   <section class="battle-panel">
     <transition name="flash">
       <div v-if="toast" class="toast" :class="toast.type">{{ toast.msg }}</div>

@@ -975,15 +975,31 @@ function onDismiss(heroId) {
   font-family: var(--font-title);
   font-size: 15px;
   letter-spacing: 3px;
-  border: 1px solid var(--c-gold-dark);
-  background: linear-gradient(180deg, #fff5cf, #d8a04a);
-  color: var(--c-ink);
-  box-shadow: 0 0 12px rgba(232, 196, 104, .6), 0 4px 10px rgba(0, 0, 0, .4);
+  border: 1px solid var(--c-gold);
+  border-radius: var(--r-sm);
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(255, 245, 210, .65) 0%, transparent 70%),
+    linear-gradient(180deg, rgba(255, 245, 210, .98), rgba(232, 205, 150, .98));
+  color: #2a1810;
+  text-shadow: 0 1px 0 rgba(255, 245, 210, .65);
+  box-shadow:
+    inset 0 0 0 1px rgba(232, 196, 104, .55),
+    inset 0 0 12px rgba(168, 122, 40, .15),
+    0 0 12px rgba(232, 196, 104, .55),
+    0 4px 10px rgba(0, 0, 0, .45);
 }
 .toast.err {
-  background: linear-gradient(180deg, #f7c9c5, #b8362c);
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(255, 200, 180, .45) 0%, transparent 70%),
+    linear-gradient(180deg, rgba(168, 35, 26, .98), rgba(110, 20, 16, .98));
   border-color: var(--c-red-dark);
   color: #fff1c2;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, .65);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 240, 200, .35),
+    inset 0 0 12px rgba(60, 8, 6, .55),
+    0 0 12px rgba(168, 35, 26, .65),
+    0 4px 10px rgba(0, 0, 0, .45);
 }
 .flash-enter-active, .flash-leave-active { transition: opacity .25s, transform .25s; }
 .flash-enter-from { opacity: 0; transform: translate(-50%, -8px); }

@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<template>
+<template>
   <section class="view map-view">
     <div class="overview-bar">
       <span class="pill pill-title">疆 域</span>

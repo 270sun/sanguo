@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<template>
+<template>
   <section class="view battle-view">
     <h2 class="view-title">出 征 演 武</h2>
     <p class="view-tip">▎编排队伍·选定目标·决战沙场▎</p>

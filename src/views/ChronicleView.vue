@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<template>
+<template>
   <div class="chronicle-view">
     <header class="ch-head paper-bg">
       <div class="ch-title-row">

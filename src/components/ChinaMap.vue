@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<template>
+<template>
   <div class="china-map" :class="{ compact }">
     <svg class="map-svg" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid meet">
       <defs>

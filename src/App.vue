@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<template>
+<template>
   <div class="stage">
     <div class="app-shell" :class="{ 'in-subpage': inSubPage }">
       <!-- 全屏沉浸场景背景层：按路由 cross-fade + 子页面 zoom 推进 -->

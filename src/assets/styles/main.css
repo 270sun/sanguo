@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿/* ============================================================
+/* ============================================================
    卧龙吟·诸侯纪 —— 主题样式
    主题：汉宫朱金（暗赭羊皮 + 鎏金 + 朱砂 + 墨黑）
    ============================================================ */
@@ -568,5 +568,13 @@ a { color: var(--c-red); text-decoration: none; }
   color: #2a1810;
 }
 .ledger-panel .ledger-title { color: #a8231a; }
+.ledger-panel .app-icon,
+.ledger-panel .app-icon *,
+.scroll-paper .app-icon,
+.scroll-paper .app-icon *,
+.paper-bg .app-icon,
+.paper-bg .app-icon * { color: inherit; }
+.ledger-panel .ai-tone-gold,
+.ledger-panel .ai-tone-gold * { color: #a87a28; }
 .scroll-paper .seal,
 .scroll-paper .seal * { color: #a8231a; }
